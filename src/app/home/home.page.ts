@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {NFC, Ndef, NfcTag} from '@ionic-native/nfc/ngx';
 import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
-import {Observable, Observer, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 
 @Component({
     selector: 'app-home',

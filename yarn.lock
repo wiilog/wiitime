@@ -288,20 +288,6 @@
   resolved "https://registry.yarnpkg.com/@assemblyscript/loader/-/loader-0.10.1.tgz#70e45678f06c72fa2e350e8553ec4a4d72b92e06"
   integrity sha512-H71nDOOL8Y7kWRLqf6Sums+01Q5msqBW2KhDUTemh1tvY04eSkSXrK0uj/4mmY0Xr16/3zyZmsrxN7CKuRbNRg==
 
-"@awesome-cordova-plugins/core@^5.44.0":
-  version "5.44.0"
-  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/core/-/core-5.44.0.tgz#7e90fa629ed2c9d2e53d9ee3bb39d2093e810364"
-  integrity sha512-LFa0RQyKoiMoh8GiFTOUh+SHdxs6XiozCAzOqq0YUrAAGb/sQRwZ+pDtqw0RTSQqN7DV3FH8ayeuHX8LEm3bNA==
-  dependencies:
-    "@types/cordova" latest
-
-"@awesome-cordova-plugins/nfc@^5.44.0":
-  version "5.44.0"
-  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/nfc/-/nfc-5.44.0.tgz#6d1515e56b518ab072271930319ec0eef7bab7be"
-  integrity sha512-7jZSWVyEQGhNw4OKavvtiJKmu6jKSIAxes2G6UpOmF6S9U14JtDdUBB8eXmgDVrnzb4shLYm3gnzBwfevycZCw==
-  dependencies:
-    "@types/cordova" latest
-
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -7017,10 +7003,6 @@ performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==
-
-phonegap-nfc@SachinAgarwal1337/phonegap-nfc#patch-1:
-  version "1.2.0"
-  resolved "https://codeload.github.com/SachinAgarwal1337/phonegap-nfc/tar.gz/63f903b999f708a49bf718b978869b7873dee911"
 
 picocolors@^1.0.0:
   version "1.0.0"
