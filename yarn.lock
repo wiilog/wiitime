@@ -1320,6 +1320,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/status-bar/-/status-bar-1.0.8.tgz#a783561fb5815b30f3e75dd95c87e00aaff5450b"
   integrity sha512-lhxa70K6vg0QjdddbT9RqFLfQ9a0Fk1OVE54MhUH30DWymv4h2LrC+mJgH6JS46WQbR2UCHRymfmVCq1PS2Qiw==
 
+"@capacitor/storage@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@capacitor/storage/-/storage-1.2.5.tgz#48206869cbbf1404fcdbb5c440a882140bd3abd8"
+  integrity sha512-pWhnw4U7wN/zFV4lA4BLMypSufTktCbk548Yk4whSb0KAq3R0mLfSubRIHkGdcPqQWCsM6g/zUuszurhz6ncWQ==
+
 "@colors/colors@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
@@ -1452,6 +1457,13 @@
   version "5.36.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/nfc/-/nfc-5.36.0.tgz#41a3e7f74df0fff4f478313c34ca3085a03f2557"
   integrity sha512-dowVmKUntI60RDSuE8TjgS/icZ9RF9WMhZ1t4ILDT9Nn2oksczPL13QhP4U5kyBh8QQK6pu+tSKmhO7WuKaJ6Q==
+  dependencies:
+    "@types/cordova" latest
+
+"@ionic-native/sqlite@^5.36.0":
+  version "5.36.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/sqlite/-/sqlite-5.36.0.tgz#6ac937a7cd8600579dcda997987da4c496e501fb"
+  integrity sha512-+1nXUqBucwG6MYoEvqKlZecvI3xVGWeKIzdZf8Nc4vQx4JFDUYdluiEw3mfzptCC1S/4l6skBsL8eZLFfpzUKA==
   dependencies:
     "@types/cordova" latest
 
