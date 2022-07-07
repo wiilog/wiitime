@@ -24,13 +24,15 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 }
 
+//TODO delete all of this later
+
 /* force to use right or left for button param
     public cry(mode: 'right' | 'left'): void {
         console.log('I am now crying :\'(');
     }
 */
 
-/* Piece of home the where deleted
+/* Piece of home whichS where deleted
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>

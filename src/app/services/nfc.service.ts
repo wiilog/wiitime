@@ -27,7 +27,9 @@ export class NfcService {
             return false;
         }
 
-        const flags = this.nfc.FLAG_READER_NFC_A | this.nfc.FLAG_READER_NFC_V | this.nfc.FLAG_READER_NFC_B | this.nfc.FLAG_READER_NFC_F;
+        const flags = this.nfc.FLAG_READER_NFC_A | this.nfc.FLAG_READER_NFC_V
+                    | this.nfc.FLAG_READER_NFC_B | this.nfc.FLAG_READER_NFC_F
+                    | this.nfc.FLAG_READER_NO_PLATFORM_SOUNDS;
 
         this.reader$ = this.nfc.readerMode(flags).subscribe(
             tag => console.log(tag),
