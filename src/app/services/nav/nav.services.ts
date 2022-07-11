@@ -28,13 +28,6 @@ export class NavServices {
         });
     }
 
-    //TODO delete it if truly useless
-    /*
-    public static path(route: Paths) {
-        return NavServices.ROUTES[route];
-    }
-    */
-
     public push(route: Paths, params: any = {}): Observable<boolean> {
         this.removeLoaders();
 

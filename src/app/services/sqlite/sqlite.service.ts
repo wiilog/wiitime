@@ -1,16 +1,19 @@
 import {Injectable} from '@angular/core';
 import {from, Observable, of, ReplaySubject, Subject, zip} from 'rxjs';
-import {mergeMap, map, take, tap} from 'rxjs/operators';
+import {map, mergeMap, take, tap} from 'rxjs/operators';
 import {SQLite, SQLiteObject} from '@ionic-native/sqlite/ngx';
 import {Platform} from '@ionic/angular';
 import {TABLES_DEFINITION} from '@app/services/sqlite/table-definitions';
 import {TableName} from '@app/services/sqlite/table-name';
+import {Entity} from "@app/services/sqlite/entities/entity";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class SQLiteService {
+
+    private static readonly DB_NAME: string = 'wiitime.db';
 
     private sqliteObject$: Subject<SQLiteObject>;
 
@@ -70,14 +73,23 @@ export class SQLiteService {
         return list;
     }
 
-    public createDatabase(dbName: string): void {
+    // only use this function once platform.ready is true
+    public async initialiseDatabase(requireCreation: boolean): Promise<void> {
+        if(requireCreation) {
+            await this.createDatabase();
+        } else {
+            await this.openDatabase();
+        }
+    }
+
+    public createDatabase(): void {
         // We wait sqlite plugin loading and we create the database
-        from(this.platform.ready())
+        from(this.sqlite.create({name: SQLiteService.DB_NAME, location: 'default'}))
             .pipe(
-                mergeMap(() => this.sqlite.create({name: dbName, location: 'default'})),
                 mergeMap((sqliteObject: SQLiteObject) => SQLiteService
                     .resetDatabase(sqliteObject)
-                    .pipe(map(() => sqliteObject)))
+                    .pipe(map(() => sqliteObject))
+                )
             )
             .subscribe(
                 (sqliteObject: SQLiteObject) => {
@@ -87,11 +99,10 @@ export class SQLiteService {
             );
     }
 
-    public openDatabase(dbName: string): void {
+    public openDatabase(): void {
         // We wait sqlite plugin loading and we create the database
-        from(this.platform.ready())
+        from(this.sqlite.create({name: SQLiteService.DB_NAME, location: 'default'}))
             .pipe(
-                mergeMap(() => this.sqlite.create({name: dbName, location: 'default'})),
                 mergeMap((sqliteObject: SQLiteObject) => SQLiteService
                     .createTables(sqliteObject)
                     .pipe(map(() => sqliteObject)))
@@ -137,5 +148,47 @@ export class SQLiteService {
 
     public resetTable(table: TableName): Observable<any> {
         return this.dropTable(table).pipe(mergeMap(() => this.createTable(table)));
+    }
+
+    public async get<T extends Entity>(table: TableName, search: { [key: string]: any } = {}): Promise<Array<T>> {
+        let query = `SELECT * FROM ${table}`;
+
+        const values = [];
+
+        if (search) {
+            query += ` WHERE 1=1`;
+            for (const [field, value] of Object.entries(search)) {
+                query += ` AND ${field} LIKE ?`;
+                values.push(value);
+            }
+        }
+
+        return await this.executeQuery(query, values).toPromise() as Array<T>;
+    }
+
+    public async insert<T extends Entity>(table: TableName, data: T | Array<T>, empty = false): Promise<void> {
+        if (!Array.isArray(data)) {
+            data = [data];
+        }
+
+        if (empty) {
+            await this.executeQuery(`DELETE FROM ${table}`).toPromise();
+        }
+
+        const tableDefinition = TABLES_DEFINITION.find(({name}) => name === table);
+        const columns = Object.keys(tableDefinition.attributes);
+
+        for (const item of data) {
+            const commaColumns = columns.join(`,`);
+            const questionMarks = columns.map(_ => `?`).join(`,`);
+
+            const values = Object.entries(item)
+                .filter(([key, _]) => columns.indexOf(key) !== -1)
+                .sort(([k1], [k2]) => columns.indexOf(k1) - columns.indexOf(k2))
+                .map(([_, value]) => value);
+
+            await this.executeQuery(`INSERT INTO ${table}(${commaColumns})
+                                 VALUES (${questionMarks})`, values).toPromise();
+        }
     }
 }
