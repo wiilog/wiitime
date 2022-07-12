@@ -1,14 +1,19 @@
-<main>
-    <div id="container">
-        <strong>NFC is not enable on this device !</strong>
-        <br>
-        <strong>This application cannot work unless you activate it</strong>
-        <div id="text">
-            <p>Go to your phone option to active nfc, then restart this application</p>
-            <p>You can access also your device options with the following button</p>
+<ion-content>
+    <div id="test">
+        <div id="container">
+            <strong>NFC is not enable on this device !</strong>
+            <br>
+            <strong>This application cannot work unless you activate it</strong>
+            <div id="text">
+                <p>Go to your phone option to active nfc, then restart this application</p>
+                <p>You can access also your device options with the following button</p>
+            </div>
+            <ion-button (click)="openNfcParameters()"> Options NFC</ion-button>
         </div>
-        <ion-button (click)="openNfcParameters()"> Options NFC</ion-button>
     </div>
-</main>
+</ion-content>
+<ion-footer class="ion-no-border">
+    <app-footer></app-footer>
+</ion-footer>
 
 

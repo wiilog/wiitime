@@ -1,0 +1,6 @@
+$FontPathOpenSans: '~fontsource/open-sans';
+@import '@fontsource/open-sans';
+
+*:not(ion-icon) {
+    font-family: 'Open Sans', serif !important;
+}

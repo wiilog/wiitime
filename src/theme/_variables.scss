@@ -1,0 +1,43 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+
+$white: #ffffff;
+$black: #000000;
+
+//bootstrap overrides
+$primary: #030F4C;
+$secondary: #0087CD;
+$tertiary: #E6E8F0;
+$success: #2FC2AB;
+$warning: #D73353;
+$dark: #666666;
+$medium: #F2F2F4;
+$light: $white;
+
+$base-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "tertiary": $tertiary,
+    "success": $success,
+    "warning": $warning,
+    "dark": $dark,
+    "medium": $medium,
+    "light": $light,
+);
+
+@function toRGBParams ($color) {
+    @return red($color) + ", " + green($color) + ", " + blue($color);
+}
+
+:root {
+    @each $name, $value in $base-colors {
+        $contrast-color: $white;
+        --ion-color-#{$name}: #{$value};
+        --ion-color-#{$name}-rgb: #{toRGBParams($value)};
+        --ion-color-#{$name}-contrast: #{$contrast-color};
+        --ion-color-#{$name}-contrast-rgb: #{toRGBParams($contrast-color)};
+        --ion-color-#{$name}-shade: #{adjust-color($value, $lightness: -10%)};
+        --ion-color-#{$name}-tint: #{adjust-color($value, $lightness: 10%)};
+    }
+}

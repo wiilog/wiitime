@@ -1,9 +1,13 @@
-main {
-    width: 100%;
-    height: 100%;
-    background: #1E1F44;
+ion-content {
+    --background: #1E1F44;
+
+    display: flex;
     color: white;
     align-items: center;
+}
+
+ion-footer {
+    height: 65px;
 }
 
 #container {

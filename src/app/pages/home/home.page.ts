@@ -26,12 +26,13 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
                                                             badge_number: '22222',
                                                             clocking_date: '2022-07-12 13:25:03',
                                                             is_synchronised: 0
-        })).subscribe(() => console.log('ho yes'));
+        })).subscribe(() => console.log('test insert finished'));
         this.sqliteService.get(TableName.clocking).then(elems => {
             elems.map(elem => console.log(elem));
         });
         this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD).subscribe((oui: string|null) => console.log(oui));
         this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION).subscribe((oui: string|null) => console.log(oui));
+        // store les subscription pour les unsub en cas de changement de page
     }
 
     public async ionViewWillLeave(): Promise<any> {
@@ -39,6 +40,11 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
 
     public openNfcParameters(): void {
         this.nfcService.openParameters();
+    }
+
+    //Fonction call par l'event userClick
+    public onButtonClicked(message: string): void {
+        console.log(message);
     }
 }
 

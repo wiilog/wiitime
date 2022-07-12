@@ -1,0 +1,18 @@
+<ion-tabs>
+    <ion-tab-bar slot="bottom" color="light">
+        <ion-tab-button (click)="parametersButtonClicked()">
+            <ion-icon src="/assets/icon/settings.svg"></ion-icon>
+            <ion-label>Paramètres</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button (click)="changeModeButtonClicked()">
+            <ion-icon src="/assets/icon/mode.svg"></ion-icon>
+            <ion-label>Changer de mode</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button (click)="quitApplicationButtonClicked()">
+            <ion-icon src="/assets/icon/deconnexion.svg"></ion-icon>
+            <ion-label>Quitter</ion-label>
+        </ion-tab-button>
+    </ion-tab-bar>
+</ion-tabs>

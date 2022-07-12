@@ -2,10 +2,9 @@ import {Component} from '@angular/core';
 import {from, of} from 'rxjs';
 import {Platform} from '@ionic/angular';
 import {StorageService} from '@app/services/storage/storage-service';
-import {flatMap} from 'rxjs/internal/operators';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {mergeMap, tap} from 'rxjs/operators';
+import {mergeMap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-root',
