@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import {FooterComponent} from '@app/components/footer/footer.component';
+import { FooterComponent } from '@app/components/footer/footer.component';
+import { HeaderComponent} from '@app/components/header/header.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {FooterComponent} from '@app/components/footer/footer.component';
   ],
   declarations: [
       HomePage,
-      FooterComponent
+      FooterComponent,
+      HeaderComponent
   ]
 })
 export class HomePageModule {}

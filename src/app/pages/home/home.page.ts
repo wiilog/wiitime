@@ -6,7 +6,7 @@ import {StorageService} from '@app/services/storage/storage-service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {TableName} from '@app/services/sqlite/table-name';
-import {from} from 'rxjs';
+import {from, Subscription} from 'rxjs';
 
 @Component({
     selector: 'app-home',
@@ -15,6 +15,10 @@ import {from} from 'rxjs';
 })
 export class HomePage implements ViewWillEnter, ViewWillLeave {
 
+    private insertExampleSub: Subscription;
+    private getAdminPasswordSub: Subscription;
+    private getKioskModeCommunicationSub: Subscription;
+
     public constructor(private nfcService: NfcService,
                        private navService: NavServices,
                        private storageService: StorageService,
@@ -22,7 +26,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillEnter(): Promise<any> {
-        from(this.sqliteService.insert(TableName.clocking, {id: 5,
+        this.insertExampleSub = from(this.sqliteService.insert(TableName.clocking, {id: 5,
                                                             badge_number: '22222',
                                                             clocking_date: '2022-07-12 13:25:03',
                                                             is_synchronised: 0
@@ -30,21 +34,20 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
         this.sqliteService.get(TableName.clocking).then(elems => {
             elems.map(elem => console.log(elem));
         });
-        this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD).subscribe((oui: string|null) => console.log(oui));
-        this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION).subscribe((oui: string|null) => console.log(oui));
-        // store les subscription pour les unsub en cas de changement de page
+        this.getAdminPasswordSub = this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD)
+            .subscribe((oui: string|null) => console.log(oui));
+        this.getKioskModeCommunicationSub = this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION)
+            .subscribe((oui: string|null) => console.log(oui));
     }
 
     public async ionViewWillLeave(): Promise<any> {
+        this.insertExampleSub.unsubscribe();
+        this.getAdminPasswordSub.unsubscribe();
+        this.getKioskModeCommunicationSub.unsubscribe();
     }
 
     public openNfcParameters(): void {
         this.nfcService.openParameters();
-    }
-
-    //Fonction call par l'event userClick
-    public onButtonClicked(message: string): void {
-        console.log(message);
     }
 }
 
