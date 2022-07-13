@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {from, of} from 'rxjs';
 import {Platform} from '@ionic/angular';
-import {StorageService} from '@app/services/storage/storage-service';
+import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {mergeMap} from 'rxjs/operators';

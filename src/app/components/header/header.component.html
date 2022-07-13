@@ -1,3 +1,16 @@
-<div>
-    <img src="/assets/img/LogoGT.png"/>
-</div>
+<ion-content>
+    <div>
+        <div class="left-div">
+            <img *ngIf="headerMode === headerModeEnum.PARAMETER_MENU" src="/assets/icon/fleche-gauche.svg"
+                 (click)="hihihih()" class="button"/>
+        </div>
+        <div class="center-div">
+            <img src="/assets/img/LogoGT.png"/>
+        </div>
+        <div class="right-div">
+            <img *ngIf="headerMode === headerModeEnum.KIOSK_MODE" src="/assets/icon/deconnexion.svg"
+                 (click)="hihihih()" class="button"/>
+            <img *ngIf="headerMode === headerModeEnum.CONNECTION_PAGE" src="/assets/img/Logo-HeRa.png"/>
+        </div>
+    </div>
+</ion-content>

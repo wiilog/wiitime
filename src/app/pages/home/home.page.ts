@@ -2,11 +2,12 @@ import {Component} from '@angular/core';
 import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {NavServices} from '@app/services/nav/nav.services';
 import {NfcService} from '@app/services/nfc.service';
-import {StorageService} from '@app/services/storage/storage-service';
+import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {TableName} from '@app/services/sqlite/table-name';
 import {from, Subscription} from 'rxjs';
+import {HeaderMode} from '@app/components/header/header-mode.enum';
 
 @Component({
     selector: 'app-home',
@@ -14,6 +15,8 @@ import {from, Subscription} from 'rxjs';
     styleUrls: ['home.page.scss'],
 })
 export class HomePage implements ViewWillEnter, ViewWillLeave {
+
+    public headerMode: HeaderMode = HeaderMode.CONNECTION_PAGE;
 
     private insertExampleSub: Subscription;
     private getAdminPasswordSub: Subscription;

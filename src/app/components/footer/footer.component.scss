@@ -1,4 +1,9 @@
-@import "../../../theme/global";
+@import "src/theme/global";
+
+:host {
+    position: relative;
+    height: $footer-height;
+}
 
 ion-tabs {
     ion-tab-bar {
@@ -6,7 +11,7 @@ ion-tabs {
     }
 
     ion-icon {
-        height: 26px;
+        height: $footer-icon-height;
         color: $black;
     }
 

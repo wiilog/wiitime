@@ -4,7 +4,6 @@
 
 $white: #ffffff;
 $black: #000000;
-
 //bootstrap overrides
 $primary: #030F4C;
 $secondary: #0087CD;
@@ -25,6 +24,10 @@ $base-colors: (
     "medium": $medium,
     "light": $light,
 );
+
+$header-height: 65px;
+$footer-height: 65px;
+$footer-icon-height: 26px;
 
 @function toRGBParams ($color) {
     @return red($color) + ", " + green($color) + ", " + blue($color);

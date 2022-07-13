@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {App} from '@capacitor/app';
 import {NavServices} from '@app/services/nav/nav.services';
 import {Paths} from '@app/services/nav/nav.paths';
-import {StorageService} from '@app/services/storage/storage-service';
+import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 
 @Component({
