@@ -16,7 +16,7 @@ import {HeaderMode} from '@app/components/header/header-mode.enum';
 })
 export class HomePage implements ViewWillEnter, ViewWillLeave {
 
-    public headerMode: HeaderMode = HeaderMode.CONNECTION_PAGE;
+    public headerMode: HeaderMode = HeaderMode.ACCOUNT_CREATION_PAGE;
 
     private insertExampleSub: Subscription;
     private getAdminPasswordSub: Subscription;
