@@ -27,3 +27,10 @@
 
 @import "variables";
 @import "fonts";
+@import "mixins";
+
+@for $i from 1 through 5 {
+    .mt-#{$i} {
+        margin-top: #{$i * 0.5}rem !important;
+    }
+}

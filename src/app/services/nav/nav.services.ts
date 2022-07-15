@@ -3,7 +3,7 @@ import {NavController, Platform} from '@ionic/angular';
 import {from, Observable} from 'rxjs';
 import {Router, NavigationStart} from '@angular/router';
 import {LoadingController} from '@ionic/angular';
-import {Paths} from '@app/services/nav/nav.paths';
+import {PagePath} from '@app/services/nav/page-path.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +12,7 @@ export class NavServices {
 
     public menu: string;
 
-    private paramStack: Array<{ route: string; params: any }> = [];
+    private paramStack: Array<{ route: PagePath; params: any }> = [];
     private justNavigated: boolean;
 
     public constructor(private platform: Platform, private loader: LoadingController,
@@ -28,16 +28,16 @@ export class NavServices {
         });
     }
 
-    public push(route: Paths, params: any = {}): Observable<boolean> {
+    public push(route: PagePath, params: any = {}): Observable<boolean> {
         this.removeLoaders();
 
         this.justNavigated = true;
         this.paramStack.push({route, params});
 
-        return from(this.navController.navigateForward(route));
+        return from(this.navController.navigateForward(route.toString()));
     }
 
-    public pop(route: Paths = null, params: any = {}): Observable<void> {
+    public pop(route: PagePath = null, params: any = {}): Observable<void> {
         this.removeLoaders();
 
         this.justNavigated = true;
@@ -72,7 +72,7 @@ export class NavServices {
         }
     }
 
-    public setRoot(route: Paths, params: any = {}): Observable<boolean> {
+    public setRoot(route: PagePath, params: any = {}): Observable<boolean> {
         this.removeLoaders();
 
         this.justNavigated = true;

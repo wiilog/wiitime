@@ -5,23 +5,23 @@
 $white: #ffffff;
 $black: #000000;
 //bootstrap overrides
-$primary: #030F4C;
-$secondary: #0087CD;
-$tertiary: #E6E8F0;
+$dark-blue: #030F4C;
+$blue: #0087CD;
+$light-blue: #E6E8F0;
 $success: #2FC2AB;
-$warning: #D73353;
-$dark: #666666;
-$medium: #F2F2F4;
+$red: #D73353;
+$grey: #666666;
+$background: #F2F2F4;
 $light: $white;
 
 $base-colors: (
-    "primary": $primary,
-    "secondary": $secondary,
-    "tertiary": $tertiary,
+    "primary": $dark-blue,
+    "secondary": $blue,
+    "tertiary": $light-blue,
     "success": $success,
-    "warning": $warning,
-    "dark": $dark,
-    "medium": $medium,
+    "warning": $red,
+    "dark": $grey,
+    "medium": $background,
     "light": $light,
 );
 

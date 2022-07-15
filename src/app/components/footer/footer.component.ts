@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {App} from '@capacitor/app';
 import {NavServices} from '@app/services/nav/nav.services';
-import {Paths} from '@app/services/nav/nav.paths';
+import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 
@@ -31,10 +31,10 @@ export class FooterComponent implements OnInit {
                 const numberValue: number = parseInt(isActive.toString(), 10);
                 if (numberValue) {
                     // Todo connect to background mode
-                    this.navService.push(Paths.HOME);
+                    this.navService.push(PagePath.HOME);
                 } else {
                     // Todo connect to kiosk mode
-                    this.navService.push(Paths.HOME);
+                    this.navService.push(PagePath.HOME);
                 }
             } else {
                 console.error('Error storage value of key IS_BACKGROUND_MODE_ACTIVE is null -> should be 0 or 1');
@@ -45,7 +45,7 @@ export class FooterComponent implements OnInit {
 
     public parametersButtonClicked() {
         //Todo connect to parameter menu
-        this.navService.push(Paths.HOME);
+        this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('success'));
     }
 }
 

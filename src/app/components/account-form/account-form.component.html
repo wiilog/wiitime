@@ -1,0 +1,21 @@
+<div>
+    <h1 class="mt-5">Connexion application badgeage</h1>
+    <form class="mt-4" (ngSubmit)="formSubmitted()">
+        <ion-label>Nom d'utilisateur</ion-label>
+        <ion-item>
+            <ion-input type="text" name="username" required></ion-input>
+        </ion-item>
+
+        <ion-label class="mt-3">Mot de passe</ion-label>
+        <ion-item>
+            <app-password-button>
+                <ion-input type="password" name="password" required></ion-input>
+            </app-password-button>
+        </ion-item>
+
+        <ion-button class="larger" size="large" type="submit">
+            Connexion
+            <ion-icon src="/assets/icon/tick-blanc.svg"></ion-icon>
+        </ion-button>
+    </form>
+</div>
