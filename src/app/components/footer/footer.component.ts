@@ -31,10 +31,10 @@ export class FooterComponent implements OnInit {
                 const numberValue: number = parseInt(isActive.toString(), 10);
                 if (numberValue) {
                     // Todo connect to background mode
-                    this.navService.push(PagePath.HOME);
+                    this.navService.setRoot(PagePath.SETTINGS_MENU).subscribe(() => console.log('ho yes'));
                 } else {
                     // Todo connect to kiosk mode
-                    this.navService.push(PagePath.HOME);
+                    this.navService.setRoot(PagePath.SETTINGS_MENU).subscribe(() => console.log('ho yes'));
                 }
             } else {
                 console.error('Error storage value of key IS_BACKGROUND_MODE_ACTIVE is null -> should be 0 or 1');
@@ -45,7 +45,7 @@ export class FooterComponent implements OnInit {
 
     public parametersButtonClicked() {
         //Todo connect to parameter menu
-        this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('success'));
+        this.navService.setRoot(PagePath.SETTINGS_MENU).subscribe(() => console.log('success'));
     }
 }
 

@@ -1,0 +1,9 @@
+@import "src/theme/global";
+
+ion-title {
+    @include title(21pt);
+}
+
+.text {
+    @include text(body-big);
+}

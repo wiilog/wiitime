@@ -5,6 +5,7 @@ import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {PasswordButtonComponent} from '@app/components/password-button/password-button.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
     declarations: [
@@ -15,6 +16,7 @@ import {PasswordButtonComponent} from '@app/components/password-button/password-
         ReactiveFormsModule,
         IonicModule,
         FormsModule,
+        HttpClientModule,
     ],
     exports: [
         PasswordButtonComponent
