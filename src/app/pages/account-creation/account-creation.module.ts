@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 import {AccountCreationPageRoutingModule} from './account-creation-routing.module';
 import {AccountCreationPage} from './account-creation.page';
@@ -15,7 +15,8 @@ import {CommonModules} from '@app/common.modules';
         FormsModule,
         IonicModule,
         AccountCreationPageRoutingModule,
-        CommonModules
+        CommonModules,
+        ReactiveFormsModule
     ],
     declarations: [AccountCreationPage, HeaderComponent, AccountFormComponent]
 })

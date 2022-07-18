@@ -16,6 +16,7 @@
         display: flex;
         justify-content: center;
         text-align: center;
+        @include title(21pt)
     }
 
     form {
@@ -31,6 +32,15 @@
             @include text(body-grey)
         }
 
+        &:not(.ng-submitted) ion-item {
+            --border-color: transparent;
+            --highlight-background: transparent !important;
+        }
+
+        &.ng-submitted ion-item.ion-invalid {
+            --border-color: #{$red};
+        }
+
         ion-item {
             width: 100%;
 
@@ -38,6 +48,12 @@
                 text-align: left;
                 @include text();
             }
+        }
+
+        .error {
+            align-self: flex-start;
+            justify-content: left;
+            @include text(form-error)
         }
 
         ion-button {
