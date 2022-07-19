@@ -18,6 +18,9 @@ import {CommonModules} from '@app/common.modules';
         CommonModules,
         ReactiveFormsModule
     ],
+    exports: [
+        HeaderComponent
+    ],
     declarations: [AccountCreationPage, HeaderComponent, AccountFormComponent]
 })
 export class AccountCreationPageModule {

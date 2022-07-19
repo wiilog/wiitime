@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { GlobalSettingsPageRoutingModule } from './global-settings-routing.module';
 
 import { GlobalSettingsPage } from './global-settings.page';
+import {CommonModules} from '@app/common.modules';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    GlobalSettingsPageRoutingModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        GlobalSettingsPageRoutingModule,
+        CommonModules
+    ],
   declarations: [GlobalSettingsPage]
 })
 export class GlobalSettingsPageModule {}

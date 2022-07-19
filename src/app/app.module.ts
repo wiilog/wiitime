@@ -9,11 +9,12 @@ import {AppRoutingModule} from './app-routing.module';
 import {CommonModule} from '@angular/common';
 import {NFC, Ndef} from '@ionic-native/nfc/ngx';
 import {SQLite} from '@ionic-native/sqlite/ngx';
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 
 @NgModule({
     declarations: [AppComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, CommonModule],
-    providers: [{provide: RouteReuseStrategy, useClass: IonicRouteStrategy}, NFC, Ndef, SQLite],
+    providers: [{provide: RouteReuseStrategy, useClass: IonicRouteStrategy}, NFC, Ndef, SQLite, ScreenOrientation,],
     bootstrap: [AppComponent],
 })
 export class AppModule {

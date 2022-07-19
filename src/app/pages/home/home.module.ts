@@ -6,20 +6,20 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import { FooterComponent } from '@app/components/footer/footer.component';
-import { HeaderComponent} from '@app/components/header/header.component';
+import {CommonModules} from "@app/common.modules";
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    HomePageRoutingModule
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        HomePageRoutingModule,
+        CommonModules
+    ],
   declarations: [
       HomePage,
       FooterComponent,
-      HeaderComponent
   ]
 })
 export class HomePageModule {}

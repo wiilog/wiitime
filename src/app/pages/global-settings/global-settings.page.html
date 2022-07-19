@@ -1,9 +1,7 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>global-settings</ion-title>
-  </ion-toolbar>
-</ion-header>
-
+<app-header *ngIf="isFullMode" [headerMode]="headerModeFull"></app-header>
+<app-header *ngIf="!isFullMode" [headerMode]="headerModeTab"></app-header>
 <ion-content>
-
+    <ion-label>
+        HIHIHI
+    </ion-label>
 </ion-content>

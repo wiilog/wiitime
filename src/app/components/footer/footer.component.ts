@@ -44,8 +44,8 @@ export class FooterComponent implements OnInit {
     }
 
     public parametersButtonClicked() {
-        //Todo connect to parameter menu
-        this.navService.setRoot(PagePath.SETTINGS_MENU).subscribe(() => console.log('success'));
+        //Todo maybe stuff to set up ?
+        this.navService.push(PagePath.SETTINGS_MENU).subscribe(() => console.log('success'));
     }
 }
 

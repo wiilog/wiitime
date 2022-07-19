@@ -1,15 +1,12 @@
 <ion-split-pane when="md" contentId="main">
 
     <ion-menu contentId="main" menuId="g">
-        <ion-header>
-            <ion-toolbar>
-                <ion-title>Menu</ion-title>
-            </ion-toolbar>
-        </ion-header>
+        <app-header [headerMode]="headerMode"></app-header>
 
         <ion-content>
             <ion-menu-toggle menu="g" autoHide="false">
-                <ion-item [routerLink]="['global-settings']" routerDirection="root" routerLinkActive="active-link">
+                <ion-item [routerLink]="['global-settings']" routerDirection="root" routerLinkActive="active-link"
+                          (click)="jeSuisUnTest()">
                     <ion-label class="text">
                         Home S
                     </ion-label>

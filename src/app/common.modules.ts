@@ -6,10 +6,12 @@ import {IonicModule} from '@ionic/angular';
 
 import {PasswordButtonComponent} from '@app/components/password-button/password-button.component';
 import {HttpClientModule} from '@angular/common/http';
+import {HeaderComponent} from '@app/components/header/header.component';
 
 @NgModule({
     declarations: [
-        PasswordButtonComponent
+        PasswordButtonComponent,
+        HeaderComponent
     ],
     imports: [
         AngularCommonModule,
@@ -19,7 +21,8 @@ import {HttpClientModule} from '@angular/common/http';
         HttpClientModule,
     ],
     exports: [
-        PasswordButtonComponent
+        PasswordButtonComponent,
+        HeaderComponent
     ]
 })
 export class CommonModules {

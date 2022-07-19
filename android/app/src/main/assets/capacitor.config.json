@@ -2,8 +2,5 @@
 	"appId": "io.ionic.starter",
 	"appName": "wiitime",
 	"webDir": "www",
-	"bundledWebRuntime": false,
-	"server": {
-		"url": "http://192.168.1.97:8100"
-	}
+	"bundledWebRuntime": false
 }
