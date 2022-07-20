@@ -13,9 +13,13 @@ ion-title {
     @include text(body-big);
 }
 
-
 .split-pane-visible > .split-pane-side {
     border-right: none !important;
+}
+
+.show-menu {
+    --min-width: 100%;
+    --max-width: 100%;
 }
 
 .menu-pane-visible ion-content {

@@ -1,6 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
-import {NavServices} from '@app/services/nav/nav.services';
 
 @Component({
     selector: 'app-header',
@@ -11,6 +10,9 @@ export class HeaderComponent implements OnInit {
 
     @Input()
     public headerMode: HeaderMode;
+
+    @Output()
+    public backButtonClickedEvent: EventEmitter<any>;
 
     public headerModeEnum = HeaderMode;
 
@@ -23,26 +25,19 @@ export class HeaderComponent implements OnInit {
 
     public disconnectLogoPath = '/assets/icon/deconnexion.svg';
 
-    constructor(private navService: NavServices) {
+    constructor() {
+        this.backButtonClickedEvent = new EventEmitter<any>();
     }
 
     ngOnInit() {
     }
 
     public backButtonClicked() {
-        //Todo maybe something to do to ensure we go back to the right page
-        this.navService.pop();
+        //Todo maybe something to do to ensure we go back to the right page since it's not always a pop
+        this.backButtonClickedEvent.emit();
     }
 
     public disconnectButtonClicked() {
         //Todo open the password check modal and act depending on result
     }
 }
-
-/*
-<ion-content>
-    <div>
-        <div class="left-div-logo" *ngIf="headerMode === headerModeEnum.PARAMETER_TAB">
-            <img src="{{defaultLogoPath}}"/>
-        </div>
- */

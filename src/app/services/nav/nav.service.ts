@@ -8,7 +8,7 @@ import {PagePath} from '@app/services/nav/page-path.enum';
 @Injectable({
     providedIn: 'root'
 })
-export class NavServices {
+export class NavService {
 
     public menu: string;
 

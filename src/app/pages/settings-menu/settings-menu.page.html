@@ -1,12 +1,15 @@
-<ion-split-pane when="md" contentId="main">
+<ion-split-pane when="md" contentId="settings-menu-main">
 
-    <ion-menu contentId="main" menuId="g">
-        <app-header [headerMode]="headerMode"></app-header>
+    <ion-menu #menu contentId="settings-menu-main" [swipeGesture]="false">
+        <app-header [headerMode]="headerMode"
+                    (backButtonClickedEvent)="backButtonAction()">
+        </app-header>
 
         <ion-content>
-            <ion-menu-toggle menu="g" autoHide="false">
-                <ion-item [routerLink]="['global-settings']" routerDirection="root" routerLinkActive="active-link"
-                          (click)="jeSuisUnTest()">
+            <ion-menu-toggle autoHide="false">
+                <ion-item [routerLink]="['global-settings']"
+                          routerDirection="root"
+                          routerLinkActive="active-link">
                     <ion-label class="text">
                         Home S
                     </ion-label>
@@ -15,6 +18,6 @@
         </ion-content>
     </ion-menu>
 
-    <ion-router-outlet id="main"></ion-router-outlet>
+    <ion-router-outlet id="settings-menu-main"></ion-router-outlet>
 
 </ion-split-pane>

@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {NavServices} from '@app/services/nav/nav.services';
+import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {zip} from 'rxjs';
 
@@ -28,7 +28,7 @@ export class AccountFormComponent implements OnInit {
 
     constructor(public formBuilder: FormBuilder,
                 private storageService: StorageService,
-                private navService: NavServices) {
+                private navService: NavService) {
 
         this.validSubmission = new EventEmitter<any>();
         this.accountForm = this.formBuilder.group({

@@ -1,5 +1,4 @@
-<app-header *ngIf="isFullMode" [headerMode]="headerModeFull"></app-header>
-<app-header *ngIf="!isFullMode" [headerMode]="headerModeTab"></app-header>
+<app-header [headerMode]="currentHeaderMode" (backButtonClickedEvent)="backButtonAction()"></app-header>
 <ion-content>
     <ion-label>
         HIHIHI

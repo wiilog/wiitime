@@ -5,52 +5,44 @@
     height: $header-height;
 }
 
-ion-header ion-toolbar {
-    --min-height: #{$header-height} !important;
+ion-header > div {
+    height: #{$header-height} !important;
+    display: flex;
+    background: $white;
 }
 
-ion-toolbar {
+.left-div {
+    min-width: 18%;
+    display: flex;
 
-    .left-div {
-        justify-content: center;
-        display: flex;
-        margin: auto;
-        width: 18%;
-
-        ion-img {
-            height: $header-height * 0.7;
-        }
-    }
-
-    .left-div-logo {
-        justify-content: left;
-        width: 100%;
-
-        ion-img {
-            height: $header-height;
-        }
-    }
-
-    .center-div {
-        justify-content: center;
-        margin: auto;
-        width: 100%;
-
-        ion-img {
-            height: $header-height;
-        }
-    }
-
-    .right-div {
-        justify-content: center;
-        display: flex;
-        margin: auto;
-        width: 18%;
-
-        ion-img {
-            height: $header-height * 0.7;
-        }
+    img {
+        margin: auto auto auto 2%;
+        height: $header-height * 0.6;
     }
 }
 
+.left-div-logo {
+    display: flex;
+    justify-content: center;
+    flex: 2;
+}
 
+.center-div {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+.center-div-empty {
+    flex: 1;
+}
+
+.right-div {
+    min-width: 18%;
+    display: flex;
+
+    img {
+        margin: auto;
+        height: $header-height * 0.7;
+    }
+}

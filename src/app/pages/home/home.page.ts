@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
-import {NavServices} from '@app/services/nav/nav.services';
+import {NavService} from '@app/services/nav/nav.service';
 import {NfcService} from '@app/services/nfc.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
@@ -23,7 +23,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     private getKioskModeCommunicationSub: Subscription;
 
     public constructor(private nfcService: NfcService,
-                       private navService: NavServices,
+                       private navService: NavService,
                        private storageService: StorageService,
                        private sqliteService: SQLiteService) {
     }

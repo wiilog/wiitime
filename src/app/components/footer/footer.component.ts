@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {App} from '@capacitor/app';
-import {NavServices} from '@app/services/nav/nav.services';
+import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
@@ -12,7 +12,7 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 })
 export class FooterComponent implements OnInit {
 
-    constructor(private navService: NavServices,
+    constructor(private navService: NavService,
                 private storage: StorageService) {
     }
 

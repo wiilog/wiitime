@@ -1,68 +1,75 @@
-import {Component, OnInit} from '@angular/core';
-import {Platform} from '@ionic/angular';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {IonMenu, Platform, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import {NavService} from '@app/services/nav/nav.service';
+import {Subscription} from 'rxjs';
+import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 
 @Component({
     selector: 'app-settings-menu',
     templateUrl: './settings-menu.page.html',
     styleUrls: ['./settings-menu.page.scss'],
 })
-export class SettingsMenuPage implements OnInit {
+export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
 
-    public onlyDisplayMenu: boolean = this.checkIfPortraitMode();
+    @ViewChild('menu', {read: IonMenu})
+    public menu: IonMenu;
 
     public headerMode: HeaderMode = HeaderMode.PARAMETER_MENU;
 
-    public isMenuInToggleState: boolean;
+    private backButtonSubscription: Subscription;
+
+    private isMenuOpen: boolean;
 
     constructor(private screenOrientation: ScreenOrientation,
-                private platform: Platform) {
-        this.isMenuInToggleState = false;
-        this.screenOrientation.onChange().subscribe(
-            () => {
-                this.onlyDisplayMenu = this.checkIfPortraitMode();
-            }
-        );
-        this.isMenuInToggleState = this.platform.width() < 768;
+                private platform: Platform,
+                private navService: NavService,
+                private screenOrientationService: ScreenOrientationService) {
+        this.screenOrientation.onChange().subscribe(() => {
+            this.updateHeaderModeAfterScreenRotation();
+        });
+    }
+
+    ionViewWillEnter(): void {
+        this.menu.ionWillOpen.subscribe(() => {
+            this.isMenuOpen = true;
+            this.headerMode = HeaderMode.PARAMETER_FULL;
+        });
+
+        this.menu.ionWillClose.subscribe(() => {
+            this.isMenuOpen = false;
+            this.headerMode = HeaderMode.PARAMETER_MENU;
+        });
+        this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(100, () => {
+            this.backButtonAction();
+        });
+        this.isMenuOpen = true;
+        this.menu.open();
+    }
+
+    ionViewWillLeave(): void {
+        this.backButtonSubscription.unsubscribe();
     }
 
     ngOnInit() {
     }
 
-    public updateHeader() {
-        this.isMenuInToggleState = this.platform.width() < 768;
+    public backButtonAction() {
+        if (this.isMenuOpen) {
+            this.navService.pop();
+        } else {
+            this.menu.open();
+        }
     }
 
-    public checkIfPortraitMode(): boolean {
-        return this.screenOrientation.type === this.screenOrientation.ORIENTATIONS.PORTRAIT_SECONDARY
-            || this.screenOrientation.type === this.screenOrientation.ORIENTATIONS.PORTRAIT_PRIMARY;
+    private updateHeaderModeAfterScreenRotation() {
+        if (this.screenOrientationService.isPortraitMode()) {
+            this.headerMode = HeaderMode.PARAMETER_FULL;
+            this.isMenuOpen = false;
+        } else {
+            this.headerMode = HeaderMode.PARAMETER_MENU;
+            this.isMenuOpen = true;
+        }
     }
-
-    public jeSuisUnTest(): void {
-        this.onlyDisplayMenu = true;
-    }
-
-    public changeover(): void {
-        this.onlyDisplayMenu = false;
-    }
-
-    /*
-    <app-header [headerMode]="headerMode"></app-header>
-    <ion-content *ngIf="onlyDisplayMenu">
-        <ion-item>
-            <ion-label (click)="changeover()" class="text">
-                Home S
-            </ion-label>
-        </ion-item>
-    </ion-content>
-
-           <ion-menu-toggle menu="g" autoHide="false">
-                <ion-item [routerLink]="['global-settings']" routerDirection="root" routerLinkActive="active-link" (click)="jeSuisUnTest()">
-                    <ion-label class="text">
-                        Home S
-                    </ion-label>
-                </ion-item>
-            </ion-menu-toggle>
-     */
 }

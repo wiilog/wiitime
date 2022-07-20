@@ -1,27 +1,38 @@
 <ion-header>
-    <ion-toolbar>
-        <div *ngIf="headerMode === headerModeEnum.PARAMETER_TAB; then thenBlock else elseBlock"></div>
-        <ng-template #thenBlock>
-            <div class="left-div-logo" slot="start">
-                <ion-img src="{{defaultLogoPath}}"></ion-img>
+    <div>
+        <div *ngIf="headerMode === headerModeEnum.PARAMETER_TAB; then leftDivLogoBlock else leftDivBlock"></div>
+        <ng-template #leftDivLogoBlock>
+            <div class="left-div-logo">
+                <img [src]="defaultLogoPath">
             </div>
         </ng-template>
-        <ng-template #elseBlock>
-            <div class="left-div" slot="start">
-                <ion-img *ngIf="headerMode === headerModeEnum.PARAMETER_MENU || headerMode === headerModeEnum.PARAMETER_FULL"
-                         src="{{backButtonImagePath}}" (click)="backButtonClicked()"></ion-img>
+        <ng-template #leftDivBlock>
+            <div class="left-div">
+                <img
+                    *ngIf="headerMode === headerModeEnum.PARAMETER_MENU || headerMode === headerModeEnum.PARAMETER_FULL"
+                    [src]="backButtonImagePath"
+                    (click)="backButtonClicked()">
             </div>
         </ng-template>
 
-        <div class="center-div">
-            <ion-img *ngIf="headerMode !== headerModeEnum.PARAMETER_MENU && headerMode !== headerModeEnum.PARAMETER_TAB"
-                     src="{{defaultLogoPath}}"></ion-img>
-        </div>
+        <div *ngIf="headerMode === headerModeEnum.PARAMETER_TAB; then centerDivEmptyBlock else centerDivBlock"></div>
+        <ng-template #centerDivEmptyBlock>
+            <div class="center-div-empty">
+            </div>
+        </ng-template>
+        <ng-template #centerDivBlock>
+            <div class="center-div">
+                <img *ngIf="headerMode !== headerModeEnum.PARAMETER_MENU && headerMode !== headerModeEnum.PARAMETER_TAB"
+                     [src]="defaultLogoPath">
+            </div>
+        </ng-template>
 
-        <div slot="end" class="right-div">
-            <ion-img *ngIf="headerMode === headerModeEnum.KIOSK_MODE" src="{{disconnectLogoPath}}"
-                     (click)="disconnectButtonClicked()" class="button"></ion-img>
-            <ion-img *ngIf="headerMode === headerModeEnum.ACCOUNT_CREATION_PAGE" src="{{appLogoPath}}"></ion-img>
+        <div class="right-div">
+            <ion-img *ngIf="headerMode === headerModeEnum.KIOSK_MODE"
+                     class="button"
+                     [src]="disconnectLogoPath"
+                     (click)="disconnectButtonClicked()"></ion-img>
+            <img *ngIf="headerMode === headerModeEnum.ACCOUNT_CREATION_PAGE" [src]="appLogoPath">
         </div>
-    </ion-toolbar>
+    </div>
 </ion-header>
