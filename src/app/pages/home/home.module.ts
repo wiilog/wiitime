@@ -5,8 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
-import { FooterComponent } from '@app/components/footer/footer.component';
-import {CommonModules} from "@app/common.modules";
+import {CommonModules} from '@app/common.modules';
 
 
 @NgModule({
@@ -19,7 +18,6 @@ import {CommonModules} from "@app/common.modules";
     ],
   declarations: [
       HomePage,
-      FooterComponent,
   ]
 })
 export class HomePageModule {}

@@ -1,30 +1,39 @@
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
-import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {SettingsMenuPage} from '@app/pages/settings-menu/settings-menu.page';
+import {Subscription} from 'rxjs';
+import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 
 @Component({
     selector: 'app-global-settings',
     templateUrl: './global-settings.page.html',
     styleUrls: ['./global-settings.page.scss'],
 })
-export class GlobalSettingsPage implements OnInit {
+export class GlobalSettingsPage implements OnInit, ViewWillEnter,ViewWillLeave {
 
     public currentHeaderMode: HeaderMode;
 
-    constructor(private screenOrientation: ScreenOrientation,
-                private screenOrientationService: ScreenOrientationService,
+    private screenOrientationSubscription: Subscription;
+
+    constructor(private screenOrientationService: ScreenOrientationService,
                 private ngZone: NgZone,
                 private _settingMenuPage: SettingsMenuPage) {
+    }
+
+    ionViewWillEnter() {
         this.updateCurrentHeaderMod();
-        this.screenOrientation.onChange().subscribe(
+        this.screenOrientationSubscription =  this.screenOrientationService.getOrientationChangeObservable().subscribe(
             () => {
                 this.ngZone.run(() => {
                     this.updateCurrentHeaderMod();
                 });
             }
         );
+    }
+
+    ionViewWillLeave() {
+        this.screenOrientationSubscription.unsubscribe();
     }
 
     public backButtonAction() {

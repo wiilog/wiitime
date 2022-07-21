@@ -22,6 +22,34 @@ ion-title {
     --max-width: 100%;
 }
 
-.menu-pane-visible ion-content {
+.menu-pane-visible > ion-content {
     border-right: 1px solid $black;
+}
+
+ion-content {
+    color: $background;
+
+    ion-menu-toggle {
+        width: 100%;
+
+        ion-item {
+            --border-color: #{$border};
+            --inner-padding-end: 0;
+            display: flex;
+            height: 60px;
+            width: 95%;
+            margin: auto;
+
+            ion-label {
+                margin: auto auto auto 3%;
+                @include title(18pt);
+            }
+
+            ion-icon {
+
+                height: 100%;
+                width: 1.4em;
+            }
+        }
+    }
 }

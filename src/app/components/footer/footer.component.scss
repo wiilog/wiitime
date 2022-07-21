@@ -5,19 +5,46 @@
     height: $footer-height;
 }
 
-ion-tabs {
-    ion-tab-bar {
+.right-border {
+    border-right: 1px solid $black;
+}
+
+ion-footer {
+    height: 100%;
+
+    ion-tabs {
+        ion-tab-bar {
+            height: 100%;
+        }
+
+        ion-icon {
+            height: $footer-icon-height;
+            color: $black;
+        }
+
+        ion-label {
+            font-size: 15px;
+            font-style: normal;
+            color: $black;
+        }
+    }
+
+    div {
         height: 100%;
-    }
+        width: 96%;
+        display: flex;
+        margin: auto;
 
-    ion-icon {
-        height: $footer-icon-height;
-        color: $black;
-    }
+        ion-label {
+            @include text(body-grey, 13pt);
+            margin: auto 2% auto 2%;
+            text-align: left;
+        }
 
-    ion-label {
-        font-size: 15px;
-        font-style: normal;
-        color: $black;
+        img {
+            display: flex;
+            height: 80%;
+            margin: auto 2% auto auto;
+        }
     }
 }

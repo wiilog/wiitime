@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
+import {Observable} from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -7,6 +8,10 @@ import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 export class ScreenOrientationService {
 
     public constructor(private screenOrientation: ScreenOrientation) {
+    }
+
+    public getOrientationChangeObservable(): Observable<void> {
+        return this.screenOrientation.onChange();
     }
 
     public isPortraitMode(): boolean {

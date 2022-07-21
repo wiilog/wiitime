@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {IonMenu, Platform, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
-import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import {NavService} from '@app/services/nav/nav.service';
 import {Subscription} from 'rxjs';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
+import {FooterMode} from '@app/components/footer/footer-mode.enum';
 
 @Component({
     selector: 'app-settings-menu',
@@ -17,39 +17,53 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
     public menu: IonMenu;
 
     public headerMode: HeaderMode = HeaderMode.PARAMETER_MENU;
+    public footerMode: FooterMode = FooterMode.PARAMETER_MENU;
 
     private backButtonSubscription: Subscription;
+    private screenOrientationSubscription: Subscription;
+    private menuWillOpenSubscription: Subscription;
+    private menuWillCloseSubscription: Subscription;
 
     private isMenuOpen: boolean;
 
-    constructor(private screenOrientation: ScreenOrientation,
-                private platform: Platform,
+    constructor(private platform: Platform,
                 private navService: NavService,
-                private screenOrientationService: ScreenOrientationService) {
-        this.screenOrientation.onChange().subscribe(() => {
-            this.updateHeaderModeAfterScreenRotation();
-        });
+                private screenOrientationService: ScreenOrientationService,
+                private ngZone: NgZone) {
     }
 
     ionViewWillEnter(): void {
-        this.menu.ionWillOpen.subscribe(() => {
+        this.updateHeaderModeAfterScreenRotation();
+        this.screenOrientationSubscription = this.screenOrientationService.getOrientationChangeObservable()
+            .subscribe(() => {
+                this.ngZone.run(() => {
+                    this.updateHeaderModeAfterScreenRotation();
+                });
+            });
+
+        this.menuWillOpenSubscription = this.menu.ionWillOpen.subscribe(() => {
             this.isMenuOpen = true;
             this.headerMode = HeaderMode.PARAMETER_FULL;
         });
 
-        this.menu.ionWillClose.subscribe(() => {
+        this.menuWillCloseSubscription = this.menu.ionWillClose.subscribe(() => {
             this.isMenuOpen = false;
             this.headerMode = HeaderMode.PARAMETER_MENU;
         });
+
         this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(100, () => {
             this.backButtonAction();
         });
+
         this.isMenuOpen = true;
         this.menu.open();
     }
 
     ionViewWillLeave(): void {
+        this.menuWillCloseSubscription.unsubscribe();
+        this.menuWillOpenSubscription.unsubscribe();
         this.backButtonSubscription.unsubscribe();
+        this.screenOrientationSubscription.unsubscribe();
     }
 
     ngOnInit() {

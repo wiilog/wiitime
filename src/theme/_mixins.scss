@@ -8,7 +8,7 @@
     font-size: $font-size;
 }
 
-@mixin text($type: body) {
+@mixin text($type: body, $font-size: 0) {
     font-family: 'Open Sans', serif;
     font-style: normal;
 
@@ -29,10 +29,16 @@
             color: $black;
         }
 
-        @if ($type == body-big) {
-            font-size: 18pt;
+        @if($font-size == 0) {
+            @if ($type == body-big) {
+                font-size: 18pt;
+            } @else {
+                font-size: 16pt;
+            }
         } @else {
-            font-size: 16pt;
+            font-size: $font-size;
         }
+
+
     }
 }

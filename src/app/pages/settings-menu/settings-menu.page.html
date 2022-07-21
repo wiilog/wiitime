@@ -11,11 +11,14 @@
                           routerDirection="root"
                           routerLinkActive="active-link">
                     <ion-label class="text">
-                        Home S
+                        Général
                     </ion-label>
+                    <ion-icon src="/assets/icon/fleche-droite.svg">
+                    </ion-icon>
                 </ion-item>
             </ion-menu-toggle>
         </ion-content>
+        <app-footer [footerMode]="footerMode"></app-footer>
     </ion-menu>
 
     <ion-router-outlet id="settings-menu-main"></ion-router-outlet>
