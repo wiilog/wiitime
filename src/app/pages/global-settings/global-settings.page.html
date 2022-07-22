@@ -1,6 +1,35 @@
 <app-header [headerMode]="currentHeaderMode" (backButtonClickedEvent)="backButtonAction()"></app-header>
 <ion-content>
-    <ion-label>
-        HIHIHI
-    </ion-label>
+    <div class="page-title" *ngIf="isPortraitMode">
+        Géneral
+    </div>
+    <div>
+        <ion-item>
+            <ion-label>
+                Logo*
+            </ion-label>
+            <ion-img src="/assets/img/LogoGT.png"></ion-img>
+            <ion-icon src="/assets/icon/modifier.svg" (click)="test1()"></ion-icon>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>
+                Identifiant & Mot de passe*
+            </ion-label>
+            <ion-img *ngIf="false" src="/assets/img/LogoGT.png"></ion-img>
+            <ion-icon src="/assets/icon/modifier.svg" (click)="test1()"></ion-icon>
+        </ion-item>
+    </div>
+
+    <form>
+        <ion-item class="medium-field">
+            <ion-label position="stacked">Message accueil Kiosque</ion-label>
+            <ion-input></ion-input>
+        </ion-item>
+
+        <ion-item class="large-field">
+            <ion-label position="stacked">Message communication</ion-label>
+            <ion-textarea inputmode="text" maxlength="150"></ion-textarea>
+        </ion-item>
+    </form>
 </ion-content>

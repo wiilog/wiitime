@@ -9,7 +9,7 @@ export class FormField {
         this.control = control;
     }
 
-    setValue(value: any) {
+    public setValue(value: any): void {
         this.control.setValue(value);
     }
 }
@@ -24,11 +24,11 @@ export class Form {
         this.errors = {};
     }
 
-    static create(controls: { [key: string]: FormField }): Form {
+    public static create(controls: { [key: string]: FormField }): Form {
         return new Form(controls);
     }
 
-    static checkbox(): FormField {
+    public static checkbox(): FormField {
         return new FormField(`checkbox`, new FormControl(null));
     }
 

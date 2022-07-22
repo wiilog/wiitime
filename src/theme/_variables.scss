@@ -1,10 +1,9 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
-
+//Color
 $white: #ffffff;
 $black: #000000;
-//bootstrap overrides
 $dark-blue: #030F4C;
 $blue: #0087CD;
 $light-blue: #E6E8F0;
@@ -27,9 +26,17 @@ $base-colors: (
     "light": $light,
 );
 
+//Header
 $header-height: 65px;
-$footer-height: 65px;
-$footer-icon-height: 26px;
+
+//Footer
+$footer-height: 6.5rem;
+$footer-icon-height: 2.6rem;
+
+//Form
+$normal-field-height: 5.5rem;
+$medium-field-height: 8.5rem;
+$large-field-height: 12rem;
 
 @function toRGBParams ($color) {
     @return red($color) + ", " + green($color) + ", " + blue($color);

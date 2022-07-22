@@ -6,7 +6,7 @@
 }
 
 .right-border {
-    border-right: 1px solid $black;
+    border-right: 0.1rem solid $black;
 }
 
 ion-footer {
@@ -23,9 +23,7 @@ ion-footer {
         }
 
         ion-label {
-            font-size: 15px;
-            font-style: normal;
-            color: $black;
+            @include text(body, 1.3rem);
         }
     }
 
@@ -36,7 +34,7 @@ ion-footer {
         margin: auto;
 
         ion-label {
-            @include text(body-grey, 13pt);
+            @include text(body-grey, 1.3rem);
             margin: auto 2% auto 2%;
             text-align: left;
         }

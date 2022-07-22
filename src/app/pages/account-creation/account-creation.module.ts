@@ -5,7 +5,6 @@ import {IonicModule} from '@ionic/angular';
 import {AccountCreationPageRoutingModule} from './account-creation-routing.module';
 import {AccountCreationPage} from './account-creation.page';
 
-import {HeaderComponent} from '@app/components/header/header.component';
 import { AccountFormComponent} from '@app/components/account-form/account-form.component';
 import {CommonModules} from '@app/common.modules';
 
@@ -19,9 +18,8 @@ import {CommonModules} from '@app/common.modules';
         ReactiveFormsModule
     ],
     exports: [
-        HeaderComponent
     ],
-    declarations: [AccountCreationPage, HeaderComponent, AccountFormComponent]
+    declarations: [AccountCreationPage, AccountFormComponent]
 })
 export class AccountCreationPageModule {
 }

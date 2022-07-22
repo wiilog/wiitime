@@ -64,4 +64,5 @@ export class AccountFormComponent implements OnInit {
         const a: FormControl = new FormControl();
         a.setValidators([Validators.max(2), Validators.required]);
         this.accountForm.addControl('a', a);
+        this.accountForm.addControl('bg', ['', [Validators.required]]);
 */

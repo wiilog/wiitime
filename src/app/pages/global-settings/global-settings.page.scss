@@ -1,0 +1,90 @@
+@import "src/theme/global";
+
+.page-title {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 4%;
+    @include title(2rem);
+}
+
+ion-content {
+    --background: #{$background};
+
+    div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0.8rem auto auto auto;
+
+        ion-item {
+            --border-width: 0.1rem;
+            --min-height: #{$normal-field-height};
+            --inner-padding-end: 0;
+            --padding-start: 0;
+
+            display: flex;
+            width: 95%;
+            margin: 0.5rem 2% auto 2%;
+            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+
+            ion-label {
+                margin: auto auto auto 2%;
+                @include text(body-grey);
+            }
+
+            ion-img {
+                height: $normal-field-height * 0.8;
+                margin: auto;
+            }
+
+            ion-icon {
+                margin: auto;
+                width: 15%;
+                height: 60%;
+            }
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 5px;
+
+        .medium-field {
+            --min-height: #{$medium-field-height};
+        }
+
+        .large-field {
+            --min-height: #{$large-field-height};
+        }
+
+        ion-item {
+            width: 95%;
+            margin-bottom: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+            --padding-start: 2%;
+
+            ion-label {
+                text-align: left;
+                transform: scale(1.0) translateY(50%);
+                @include text(body-grey)
+            }
+
+            ion-input {
+                width: 96%;
+                text-align: left;
+                @include text();
+            }
+
+            ion-textarea {
+                width: 96%;
+                text-align: left;
+                @include text();
+            }
+        }
+    }
+}
+
+

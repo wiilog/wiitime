@@ -14,6 +14,8 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter,ViewWillLeave {
 
     public currentHeaderMode: HeaderMode;
 
+    public isPortraitMode: boolean;
+
     private screenOrientationSubscription: Subscription;
 
     constructor(private screenOrientationService: ScreenOrientationService,
@@ -22,11 +24,11 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter,ViewWillLeave {
     }
 
     ionViewWillEnter() {
-        this.updateCurrentHeaderMod();
+        this.updatePageAfterScreenRotation();
         this.screenOrientationSubscription =  this.screenOrientationService.getOrientationChangeObservable().subscribe(
             () => {
                 this.ngZone.run(() => {
-                    this.updateCurrentHeaderMod();
+                    this.updatePageAfterScreenRotation();
                 });
             }
         );
@@ -36,15 +38,20 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter,ViewWillLeave {
         this.screenOrientationSubscription.unsubscribe();
     }
 
+    ngOnInit() {
+    }
+
     public backButtonAction() {
         this._settingMenuPage.menu.open();
     }
 
-    public updateCurrentHeaderMod(): void {
-        this.currentHeaderMode = (this.screenOrientationService.isPortraitMode())
+    public updatePageAfterScreenRotation(): void {
+        this.isPortraitMode = this.screenOrientationService.isPortraitMode();
+        this.currentHeaderMode = (this.isPortraitMode)
             ? HeaderMode.PARAMETER_FULL: HeaderMode.PARAMETER_TAB;
     }
 
-    ngOnInit() {
+    public test1(): void {
+        console.log('clicked');
     }
 }

@@ -6,7 +6,7 @@ ion-split-pane {
 }
 
 ion-title {
-    @include title(21pt);
+    @include title(2.1rem);
 }
 
 .text {
@@ -23,7 +23,7 @@ ion-title {
 }
 
 .menu-pane-visible > ion-content {
-    border-right: 1px solid $black;
+    border-right: 0.1rem solid $black;
 }
 
 ion-content {
@@ -36,19 +36,19 @@ ion-content {
             --border-color: #{$border};
             --inner-padding-end: 0;
             display: flex;
-            height: 60px;
+            height: 6rem;
             width: 95%;
             margin: auto;
 
             ion-label {
-                margin: auto auto auto 3%;
-                @include title(18pt);
+                margin: auto auto auto 2%;
+                @include title(2rem);
             }
 
             ion-icon {
 
                 height: 100%;
-                width: 1.4em;
+                width: 2.8rem;
             }
         }
     }

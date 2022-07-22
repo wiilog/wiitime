@@ -8,24 +8,22 @@
 
 @media screen and (max-width: 1000px) {
     .flexible {
-        width: 80%;
+        width: 90%;
     }
 }
 
-:host {
-    position: relative;
-
+div {
     width: 100%;
     height: 100%;
 
     h1 {
         display: flex;
         justify-content: center;
-        text-align: center;
-        @include title(21pt)
+        @include title(2rem)
     }
 
     form {
+        height: 100%;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
@@ -64,15 +62,12 @@
         ion-button {
             --border-radius: 0;
 
-            margin: 3px;
             font-weight: bolder;
-            position: fixed;
-            bottom: 0;
-            width: 99%;
+            width: 100%;
 
             ion-icon {
-                margin: 0 5px;
-                max-height: 22px; /* text size */
+                margin: 0 0.5rem;
+                max-height: 1rem;
             }
 
             &.larger {
@@ -81,11 +76,11 @@
 
             .button-text-wrapper {
                 .title {
-                    font-size: 16pt;
+                    font-size: 2rem;
                 }
 
                 .subtitle {
-                    font-size: 10pt;
+                    font-size: 2rem;
                     font-weight: normal;
                 }
             }
