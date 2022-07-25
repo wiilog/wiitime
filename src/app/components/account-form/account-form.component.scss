@@ -1,18 +1,8 @@
 @import "src/theme/global";
 
-@media screen and (min-width: 1000px) {
-    .flexible {
-        width: 50%;
-    }
-}
-
-@media screen and (max-width: 1000px) {
-    .flexible {
-        width: 90%;
-    }
-}
-
-div {
+.account-form-container {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
 
@@ -22,16 +12,23 @@ div {
         @include title(2rem)
     }
 
-    form {
-        height: 100%;
-        margin: 0 auto;
+    .form {
+        margin: 0 1rem 1rem 1rem;
         display: flex;
+        flex: 1;
         flex-direction: column;
-        align-items: center;
 
-        ion-label {
-            align-self: flex-start;
-            justify-content: left;
+        .account-form-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            align-self: center;
+            max-width: 40rem;
+            width: 100%;
+        }
+
+        .field-name {
+            margin-top: 1rem;
             @include text(body-grey)
         }
 
@@ -44,8 +41,8 @@ div {
             --border-color: #{$red};
         }
 
-        ion-item {
-            width: 100%;
+        .account-creation-form-field {
+            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
 
             ion-input {
                 text-align: left;
@@ -54,34 +51,42 @@ div {
         }
 
         .error {
-            align-self: flex-start;
-            justify-content: left;
             @include text(form-error)
         }
 
-        ion-button {
-            --border-radius: 0;
+        .connexion-button {
+            margin-top: auto;
+            padding-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            font-weight: bolder;
-            width: 100%;
+            ion-button {
+                --border-radius: 0;
+                font-weight: bolder;
+                margin-top: auto;
+                flex: 1;
+                max-width: 55rem;
 
-            ion-icon {
-                margin: 0 0.5rem;
-                max-height: 1rem;
-            }
 
-            &.larger {
-                height: 5rem;
-            }
-
-            .button-text-wrapper {
-                .title {
-                    font-size: 2rem;
+                ion-icon {
+                    margin: 0 0.5rem;
+                    max-height: 1rem;
                 }
 
-                .subtitle {
-                    font-size: 2rem;
-                    font-weight: normal;
+                &.larger {
+                    height: $confirm-button-height;
+                }
+
+                .button-text-wrapper {
+                    .title {
+                        font-size: 2rem;
+                    }
+
+                    .subtitle {
+                        font-size: 2rem;
+                        font-weight: normal;
+                    }
                 }
             }
         }

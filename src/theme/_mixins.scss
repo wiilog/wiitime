@@ -1,9 +1,5 @@
 @import "variables";
 
-html {
-    font-size: 62.5%;
-}
-
 @mixin title($font-size: 2.2rem) {
     font-family: 'Open Sans', serif;
     font-style: normal;

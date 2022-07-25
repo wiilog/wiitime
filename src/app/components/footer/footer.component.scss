@@ -29,20 +29,19 @@ ion-footer {
 
     div {
         height: 100%;
-        width: 96%;
         display: flex;
-        margin: auto;
+        margin: auto 0.5rem auto 0.5rem;
 
         ion-label {
             @include text(body-grey, 1.3rem);
-            margin: auto 2% auto 2%;
+            margin: auto 0.5rem auto 0.5rem;
             text-align: left;
         }
 
         img {
             display: flex;
-            height: 80%;
-            margin: auto 2% auto auto;
+            height: $footer-height * 0.7;
+            margin: auto 0.5rem auto auto;
         }
     }
 }

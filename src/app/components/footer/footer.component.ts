@@ -8,6 +8,8 @@ import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {Subscription} from 'rxjs';
+import {WindowSizeService} from "@app/services/window-size.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
     selector: 'app-footer',
@@ -21,33 +23,37 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public footerModeEnum = FooterMode;
 
-    public isScreenPortrait: boolean;
+    public displayBorder: boolean;
 
     public currentVersionNumber: string; //TODO get value from storage instead
 
-    private screenOrientationSubscription: Subscription;
+    private widowSizeSubscription: Subscription;
 
     constructor(private navService: NavService,
                 private storage: StorageService,
                 private screenOrientationService: ScreenOrientationService,
+                private windowSizeService: WindowSizeService,
                 private ngZone: NgZone) {
         this.currentVersionNumber = '0.0.42';
     }
 
     ngOnInit() {
-        this.updateHeaderModeAfterScreenRotation();
-        this.screenOrientationSubscription = this.screenOrientationService.getOrientationChangeObservable()
+        this.updateFooterModeAfterWindowSizeChanged();
+        this.widowSizeSubscription = this.windowSizeService.getWindowResizedObservable()
             .subscribe(() => {
-                this.updateHeaderModeAfterScreenRotation();
+                this.ngZone.run(() => {
+                    this.updateFooterModeAfterWindowSizeChanged();
+                });
             });
     }
 
     ngOnDestroy() {
-        this.screenOrientationSubscription.unsubscribe();
+        this.widowSizeSubscription.unsubscribe();
     }
 
-    public updateHeaderModeAfterScreenRotation() {
-        this.isScreenPortrait = this.screenOrientationService.isPortraitMode();
+    public updateFooterModeAfterWindowSizeChanged() {
+        this.displayBorder = (!this.screenOrientationService.isPortraitMode())
+            && this.windowSizeService.getWindowWidth() >= environment.minWindowWidthForSideMenu;
     }
 
     public quitApplicationButtonClicked() {

@@ -35,19 +35,17 @@ ion-content {
         ion-item {
             --border-color: #{$border};
             --inner-padding-end: 0;
+            --inner-padding-start:0;
             display: flex;
             height: 6rem;
-            width: 95%;
-            margin: auto;
+            margin: auto 1rem auto 1rem;
 
             ion-label {
-                margin: auto auto auto 2%;
+                margin: auto auto auto 1rem;
                 @include title(2rem);
             }
 
             ion-icon {
-
-                height: 100%;
                 width: 2.8rem;
             }
         }

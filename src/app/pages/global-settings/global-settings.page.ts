@@ -1,9 +1,11 @@
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {SettingsMenuPage} from '@app/pages/settings-menu/settings-menu.page';
 import {Subscription} from 'rxjs';
 import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
+import {environment} from '../../../environments/environment';
+import {WindowSizeService} from '@app/services/window-size.service';
 
 @Component({
     selector: 'app-global-settings',
@@ -16,26 +18,27 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter,ViewWillLeave {
 
     public isPortraitMode: boolean;
 
-    private screenOrientationSubscription: Subscription;
+    private windowSizeSubscription: Subscription;
 
     constructor(private screenOrientationService: ScreenOrientationService,
+                private windowSizeService: WindowSizeService,
                 private ngZone: NgZone,
                 private _settingMenuPage: SettingsMenuPage) {
     }
 
     ionViewWillEnter() {
-        this.updatePageAfterScreenRotation();
-        this.screenOrientationSubscription =  this.screenOrientationService.getOrientationChangeObservable().subscribe(
+        this.updatePageAfterWindowSizeChanged();
+        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
             () => {
                 this.ngZone.run(() => {
-                    this.updatePageAfterScreenRotation();
+                    this.updatePageAfterWindowSizeChanged();
                 });
             }
         );
     }
 
     ionViewWillLeave() {
-        this.screenOrientationSubscription.unsubscribe();
+        this.windowSizeSubscription.unsubscribe();
     }
 
     ngOnInit() {
@@ -45,10 +48,13 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter,ViewWillLeave {
         this._settingMenuPage.menu.open();
     }
 
-    public updatePageAfterScreenRotation(): void {
+    public updatePageAfterWindowSizeChanged(): void {
         this.isPortraitMode = this.screenOrientationService.isPortraitMode();
-        this.currentHeaderMode = (this.isPortraitMode)
-            ? HeaderMode.PARAMETER_FULL: HeaderMode.PARAMETER_TAB;
+        if(this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu || this.isPortraitMode) {
+            this.currentHeaderMode = HeaderMode.PARAMETER_FULL;
+        } else {
+            this.currentHeaderMode = HeaderMode.PARAMETER_TAB;
+        }
     }
 
     public test1(): void {

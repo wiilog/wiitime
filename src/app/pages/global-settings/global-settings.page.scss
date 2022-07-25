@@ -1,20 +1,20 @@
 @import "src/theme/global";
 
 .page-title {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    margin-left: 4%;
+    text-align: center;
+    margin: 1rem auto 1rem auto;
     @include title(2rem);
 }
 
 ion-content {
-    --background: #{$background};
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 
-    div {
+    .form-div {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        margin: 0.8rem auto auto auto;
+        margin: 1rem 1rem auto 1rem;
 
         ion-item {
             --border-width: 0.1rem;
@@ -23,24 +23,22 @@ ion-content {
             --padding-start: 0;
 
             display: flex;
-            width: 95%;
-            margin: 0.5rem 2% auto 2%;
+            margin-top: 0.5rem;
             box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
 
             ion-label {
-                margin: auto auto auto 2%;
+                margin: auto auto auto 1rem;
                 @include text(body-grey);
             }
 
             ion-img {
                 height: $normal-field-height * 0.8;
-                margin: auto;
+                margin: auto 1rem auto 1rem;
             }
 
             ion-icon {
-                margin: auto;
-                width: 15%;
-                height: 60%;
+                margin: auto 1rem auto 1rem;
+                height: $normal-field-height * 0.6;
             }
         }
     }
@@ -48,9 +46,7 @@ ion-content {
     form {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin-top: 5px;
+        margin: 0.5rem 1rem auto 1rem;
 
         .medium-field {
             --min-height: #{$medium-field-height};
@@ -60,11 +56,10 @@ ion-content {
             --min-height: #{$large-field-height};
         }
 
-        ion-item {
-            width: 95%;
-            margin-bottom: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
-            --padding-start: 2%;
+        .text-field {
+            margin-bottom: 0.5rem;
+            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+            --padding-start: 1rem;
 
             ion-label {
                 text-align: left;
@@ -73,17 +68,31 @@ ion-content {
             }
 
             ion-input {
-                width: 96%;
                 text-align: left;
                 @include text();
             }
 
             ion-textarea {
-                width: 96%;
                 text-align: left;
                 @include text();
             }
         }
+
+        .toggle-field {
+            margin-bottom: 0.5rem;
+            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+            --padding-start: 1rem;
+
+            ion-label {
+                margin: auto auto auto 1rem;
+                @include text(body-grey);
+            }
+
+            ion-toggle{
+                --handle-background-checked: #fff url(/assets/icon/nuit.svg) no-repeat center / contain;
+            }
+        }
+
     }
 }
 

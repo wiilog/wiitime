@@ -5,6 +5,8 @@ import {NavService} from '@app/services/nav/nav.service';
 import {Subscription} from 'rxjs';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
+import {WindowSizeService} from '@app/services/window-size.service';
+import {environment} from "../../../environments/environment";
 
 @Component({
     selector: 'app-settings-menu',
@@ -20,7 +22,7 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
     public footerMode: FooterMode = FooterMode.PARAMETER_MENU;
 
     private backButtonSubscription: Subscription;
-    private screenOrientationSubscription: Subscription;
+    private windowSizeSubscription: Subscription;
     private menuWillOpenSubscription: Subscription;
     private menuWillCloseSubscription: Subscription;
 
@@ -29,17 +31,17 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
     constructor(private platform: Platform,
                 private navService: NavService,
                 private screenOrientationService: ScreenOrientationService,
+                private windowSizeService: WindowSizeService,
                 private ngZone: NgZone) {
     }
 
     ionViewWillEnter(): void {
-        this.updateHeaderModeAfterScreenRotation();
-        this.screenOrientationSubscription = this.screenOrientationService.getOrientationChangeObservable()
-            .subscribe(() => {
-                this.ngZone.run(() => {
-                    this.updateHeaderModeAfterScreenRotation();
-                });
+        this.updatePageAfterWindowSizeChanged();
+        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(() => {
+            this.ngZone.run(() => {
+                this.updatePageAfterWindowSizeChanged();
             });
+        });
 
         this.menuWillOpenSubscription = this.menu.ionWillOpen.subscribe(() => {
             this.isMenuOpen = true;
@@ -63,7 +65,7 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
         this.menuWillCloseSubscription.unsubscribe();
         this.menuWillOpenSubscription.unsubscribe();
         this.backButtonSubscription.unsubscribe();
-        this.screenOrientationSubscription.unsubscribe();
+        this.windowSizeSubscription.unsubscribe();
     }
 
     ngOnInit() {
@@ -77,8 +79,9 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
         }
     }
 
-    private updateHeaderModeAfterScreenRotation() {
-        if (this.screenOrientationService.isPortraitMode()) {
+    private updatePageAfterWindowSizeChanged() {
+        if(this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu
+            || this.screenOrientationService.isPortraitMode()) {
             this.headerMode = HeaderMode.PARAMETER_FULL;
             this.isMenuOpen = false;
         } else {

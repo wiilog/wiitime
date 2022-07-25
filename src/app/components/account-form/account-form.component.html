@@ -1,37 +1,39 @@
-<div>
+<div class="account-form-container">
     <h1 class="mt-5">Connexion application badgeage</h1>
-    <form [formGroup]="accountForm" class="mt-4 flexible" (ngSubmit)="formSubmitted()">
+    <form [formGroup]="accountForm" class="mt-4 form" (ngSubmit)="formSubmitted()">
+        <div class="account-form-wrapper">
+            <ion-label class="field-name">Nom d'utilisateur</ion-label>
+            <ion-item class="account-creation-form-field" fill="outline">
+                <ion-input formControlName="username" type="text" name="username"></ion-input>
+            </ion-item>
+            <span class="error" *ngIf="isSubmitted && errorControl.username.errors?.required">
+                Vous devez renseigner ce champ pour valider
+            </span>
+            <span class="error" *ngIf="isSubmitted && errorControl.username.errors?.maxlength">
+                Le nom d'utilisateur est limité à {{usernameMaxLength}} caractères
+            </span>
 
-        <ion-label>Nom d'utilisateur</ion-label>
-        <ion-item fill="outline">
-            <ion-input formControlName="username" type="text" name="username"></ion-input>
-        </ion-item>
-        <span class="error" *ngIf="isSubmitted && errorControl.username.errors?.required">
-            Vous devez renseigner ce champ pour valider
-        </span>
-        <span class="error" *ngIf="isSubmitted && errorControl.username.errors?.maxlength">
-            Le nom d'utilisateur est limité à {{usernameMaxLength}} caractères
-        </span>
-
-        <ion-label class="mt-3">Mot de passe</ion-label>
-        <ion-item fill="outline">
-            <app-password-button>
-                <ion-input formControlName="password" type="password" name="password"></ion-input>
-            </app-password-button>
-        </ion-item>
-        <span class="error" *ngIf="isSubmitted && errorControl.password.errors?.required">
-            vous devez renseigner ce champ pour valider
-        </span>
-        <span class="error" *ngIf="isSubmitted && errorControl.password.errors?.minlength">
-            Le mot de passe doit faire au moins {{passwordMinLength}} caractères
-        </span>
-        <span class="error" *ngIf="isSubmitted && errorControl.password.errors?.maxlength">
-            Le mot de passe est limité à {{passwordMaxLength}} caractères
-        </span>
-
-        <ion-button class="larger" size="large" type="submit">
-            Connexion
-            <ion-icon src="/assets/icon/tick-blanc.svg"></ion-icon>
-        </ion-button>
+            <ion-label class="mt-3 field-name">Mot de passe</ion-label>
+            <ion-item class="account-creation-form-field" fill="outline">
+                <app-password-button>
+                    <ion-input formControlName="password" type="password" name="password"></ion-input>
+                </app-password-button>
+            </ion-item>
+            <span class="error" *ngIf="isSubmitted && errorControl.password.errors?.required">
+                vous devez renseigner ce champ pour valider
+            </span>
+            <span class="error" *ngIf="isSubmitted && errorControl.password.errors?.minlength">
+                Le mot de passe doit faire au moins {{passwordMinLength}} caractères
+            </span>
+            <span class="error" *ngIf="isSubmitted && errorControl.password.errors?.maxlength">
+                Le mot de passe est limité à {{passwordMaxLength}} caractères
+            </span>
+        </div>
+        <div class="connexion-button">
+            <ion-button class="larger" size="large" type="submit">
+                Connexion
+                <ion-icon src="/assets/icon/tick-blanc.svg"></ion-icon>
+            </ion-button>
+        </div>
     </form>
 </div>

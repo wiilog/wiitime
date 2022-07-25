@@ -3,7 +3,7 @@
     <div class="page-title" *ngIf="isPortraitMode">
         Géneral
     </div>
-    <div>
+    <div class="form-div">
         <ion-item>
             <ion-label>
                 Logo*
@@ -22,14 +22,24 @@
     </div>
 
     <form>
-        <ion-item class="medium-field">
+        <ion-item class="medium-field text-field">
             <ion-label position="stacked">Message accueil Kiosque</ion-label>
-            <ion-input></ion-input>
+            <ion-input maxlength="25"></ion-input>
         </ion-item>
 
-        <ion-item class="large-field">
+        <ion-item class="large-field text-field">
             <ion-label position="stacked">Message communication</ion-label>
             <ion-textarea inputmode="text" maxlength="150"></ion-textarea>
         </ion-item>
+
+        <ion-item class="toggle-field">
+            <ion-label>
+                Mode*
+            </ion-label>
+            <ion-toggle
+                name="haha">
+            </ion-toggle>
+        </ion-item>
+
     </form>
 </ion-content>

@@ -34,3 +34,13 @@
         margin-top: #{$i * 0.5}rem !important;
     }
 }
+
+html {
+    //default font size is 16px. By multiplying it by 0.625 we change it's value to 10 which is way easier to as
+    // base value for all size.
+    font-size: 62.5%;
+}
+
+ion-content {
+    --background: #{$background};
+}

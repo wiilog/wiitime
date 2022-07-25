@@ -1,4 +1,4 @@
-<ion-footer [class.right-border]="footerMode === footerModeEnum.PARAMETER_MENU && !isScreenPortrait">
+<ion-footer [class.right-border]="footerMode === footerModeEnum.PARAMETER_MENU && displayBorder">
     <div *ngIf="footerMode === footerModeEnum.ACTIVE_MODE; then navBarFooter else iconFooter"></div>
     <ng-template #navBarFooter>
         <ion-tabs>
