@@ -1,0 +1,11 @@
+<ion-button [class.larger]="isLarge"
+            [class.medium]="!isLarge"
+            [class.limitedWidth]="!fillScreenWidth"
+            [class.stickToBottom]="stickToBottom"
+            size="large"
+            type="submit"
+            (click)="buttonClicked()">
+    {{buttonText}}
+    <ion-icon *ngIf="iconPath" [src]="iconPath"></ion-icon>
+</ion-button>
+

@@ -1,0 +1,48 @@
+@import "src/theme/global";
+
+ion-button {
+    --border-radius: 0;
+
+
+    &:not(.stickToBottom) {
+        flex: 1;
+        margin: 0.2rem 0 1rem 0;
+    }
+
+    .stickToBottom {
+
+    }
+
+    .limitedWidth {
+        max-width: 55rem;
+    }
+
+    ion-icon {
+        margin: 0 0.5rem;
+        max-height: 2rem;
+    }
+
+    &.larger {
+        height: $large-button-height;
+    }
+
+    &.medium {
+        height: $medium-button-height;
+    }
+
+    .button-text-wrapper {
+        color: $white;
+
+        .title {
+            @include title(2.5rem);
+            font-weight: bolder;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            @include text(body-bold);
+            font-size: 1.6rem;
+        }
+    }
+}
+

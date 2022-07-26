@@ -14,7 +14,7 @@ export class StorageService {
     private defaultParamValue = {
         [StorageKeyEnum.ADMIN_PASSWORD]: null,
         [StorageKeyEnum.ADMIN_USERNAME]: null,
-        [StorageKeyEnum.IS_BACKGROUND_MODE_ACTIVE]: '0',
+        [StorageKeyEnum.CURRENT_SECONDARY_MODE]: '0',
         [StorageKeyEnum.LOGO_PATH]: null,
         [StorageKeyEnum.KIOSK_MODE_MODAL_DURATION]: '3', //seconds
         [StorageKeyEnum.KIOSK_MODE_MESSAGE]: 'oui',

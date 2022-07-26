@@ -1,0 +1,27 @@
+@import "~theme/global";
+
+:host {
+    display: flex;
+}
+
+.tabs-wrapper {
+    display: flex;
+    flex: 1;
+    border: $dark-blue solid 0.3rem;
+    padding: 0.3rem;
+    background-color: $white;
+
+    .tab {
+        @include text(body-bold);
+
+        flex: 1;
+        padding: 1rem;
+        text-align: center;
+        color: $dark-blue;
+
+        &.active {
+            background-color: $dark-blue;
+            color: $white;
+        }
+    }
+}

@@ -11,19 +11,31 @@ ion-content {
     display: flex;
     flex-direction: column;
 
-    .form-div {
+    form {
         display: flex;
+        flex: 1;
         flex-direction: column;
-        margin: 1rem 1rem auto 1rem;
+        margin: 1rem 1rem ($large-button-height + 1.2rem) 1rem;
 
-        ion-item {
-            --border-width: 0.1rem;
+        .normal-field {
             --min-height: #{$normal-field-height};
+        }
+
+        .medium-field {
+            --min-height: #{$medium-field-height};
+        }
+
+        .large-field {
+            --min-height: #{$large-field-height};
+        }
+
+        .image {
+            --border-width: 0.1rem;
             --inner-padding-end: 0;
             --padding-start: 0;
 
             display: flex;
-            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
             box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
 
             ion-label {
@@ -41,25 +53,11 @@ ion-content {
                 height: $normal-field-height * 0.6;
             }
         }
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        margin: 0.5rem 1rem auto 1rem;
-
-        .medium-field {
-            --min-height: #{$medium-field-height};
-        }
-
-        .large-field {
-            --min-height: #{$large-field-height};
-        }
 
         .text-field {
+            --padding-start: 1rem;
             margin-bottom: 0.5rem;
             box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
-            --padding-start: 1rem;
 
             ion-label {
                 text-align: left;
@@ -79,20 +77,51 @@ ion-content {
         }
 
         .toggle-field {
+            --padding-start: 0;
+            --inner-padding-end: 0;
             margin-bottom: 0.5rem;
             box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
-            --padding-start: 1rem;
 
             ion-label {
                 margin: auto auto auto 1rem;
                 @include text(body-grey);
             }
 
-            ion-toggle{
-                --handle-background-checked: #fff url(/assets/icon/nuit.svg) no-repeat center / contain;
+            .toggle {
+                flex: 1;
+                margin: 0.5rem 1rem 0.5rem auto;
             }
         }
 
+        .range-field {
+            margin-bottom: 0.5rem;
+            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+            background: $white;
+
+            --padding-start: 1rem;
+
+            ion-label {
+                flex: 1;
+                margin: auto 5rem auto auto;
+                @include text(body-grey);
+            }
+        }
+    }
+
+    .fixed-at-bottom {
+        background: $background;
+        position: sticky;
+        top: 100%;
+        z-index: 1;
+        display: flex;
+
+        .bottom-button {
+            flex: 1;
+            margin: 0 1rem auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     }
 }
 

@@ -63,7 +63,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public changeModeButtonClicked() {
         //Todo connect to the kiosk or background mode depending on mode
-        this.storage.getValue(StorageKeyEnum.IS_BACKGROUND_MODE_ACTIVE).subscribe((isActive) => {
+        this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE).subscribe((isActive) => {
             if (isActive != null) {
                 const numberValue: number = parseInt(isActive.toString(), 10);
                 if (numberValue) {

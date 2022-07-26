@@ -8,7 +8,7 @@ import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {TableName} from '@app/services/sqlite/table-name';
 import {from, Subscription} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
-import {FooterMode} from "@app/components/footer/footer-mode.enum";
+import {FooterMode} from '@app/components/footer/footer-mode.enum';
 
 @Component({
     selector: 'app-home',

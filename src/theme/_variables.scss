@@ -37,7 +37,8 @@ $footer-icon-height: 2.6rem;
 $normal-field-height: 5.5rem;
 $medium-field-height: 8.5rem;
 $large-field-height: 12rem;
-$confirm-button-height: 9rem;
+$large-button-height: 9rem;
+$medium-button-height: 5.5rem;
 
 @function toRGBParams ($color) {
     @return red($color) + ", " + green($color) + ", " + blue($color);

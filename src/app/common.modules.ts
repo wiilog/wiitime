@@ -8,12 +8,16 @@ import {PasswordButtonComponent} from '@app/components/password-button/password-
 import {HttpClientModule} from '@angular/common/http';
 import {HeaderComponent} from '@app/components/header/header.component';
 import {FooterComponent} from '@app/components/footer/footer.component';
+import {TabComponent} from '@app/components/tab/tab.component';
+import {FormButtonComponent} from '@app/components/form-button/form-button.component';
 
 @NgModule({
     declarations: [
         PasswordButtonComponent,
         HeaderComponent,
-        FooterComponent
+        FooterComponent,
+        TabComponent,
+        FormButtonComponent
     ],
     imports: [
         AngularCommonModule,
@@ -25,7 +29,9 @@ import {FooterComponent} from '@app/components/footer/footer.component';
     exports: [
         PasswordButtonComponent,
         HeaderComponent,
-        FooterComponent
+        FooterComponent,
+        TabComponent,
+        FormButtonComponent
     ]
 })
 export class CommonModules {

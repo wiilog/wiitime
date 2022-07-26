@@ -32,16 +32,11 @@
         @if($font-size == 0) {
             @if ($type == body-big) {
                 font-size: 1.8rem;
-            } @else if($type == body-grey) {
-                font-size: 1.6rem;
-            }
-            @else {
+            } @else {
                 font-size: 1.6rem;
             }
         } @else {
             font-size: $font-size;
         }
-
-
     }
 }
