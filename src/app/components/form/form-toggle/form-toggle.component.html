@@ -1,0 +1,10 @@
+<ion-item class="medium-field toggle-field">
+    <ion-label>
+        {{fieldName}}
+    </ion-label>
+    <app-tab class="toggle"
+             [(activeKey)]="currentToggleOption"
+             (activeKeyChange)="activeKeyChanged($event)"
+             [config]="tabConfig">
+    </app-tab>
+</ion-item>

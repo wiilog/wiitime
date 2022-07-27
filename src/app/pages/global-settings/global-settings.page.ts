@@ -10,6 +10,7 @@ import {TabConfig} from '@app/components/tab/tab-config';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {mergeMap} from 'rxjs/operators';
+import {FormSize} from "@app/components/form/form-size-enum";
 
 enum SecondaryMode {
     KIOSQUE = 1,
@@ -26,12 +27,34 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter, ViewWillLeave 
     public isPortraitMode: boolean;
     public hideFormButton: boolean;
     public currentHeaderMode: HeaderMode;
-    public currentToggleOption: SecondaryMode = SecondaryMode.KIOSQUE;
 
-    public tabConfig: TabConfig[] = [
+    //Logo selection field
+    public readonly logoSelectionFieldName = 'Logo*';
+    public readonly logoSelectionFieldLogo = '/assets/img/LogoGT.png'; //TODO replace with value from storage
+
+    //update user info field
+    public readonly updateUserInfoFieldName = 'Identifiant & Mot de passe*';
+
+    //Kiosk message field settings
+    public readonly kioskMessageFieldName = 'Message accueil Kiosque';
+    public readonly kioskMessageFieldMaxLength = 25;
+    public readonly kioskMessageFieldSize: FormSize = FormSize.MEDIUM;
+
+    //Kiosk communication field settings
+    public readonly communicationMessageFieldName = 'Message communication';
+    public readonly communicationMessageFieldMaxLength = 150;
+    public readonly communicationMessageFieldSize: FormSize = FormSize.LARGE;
+
+    //Secondary mode toggle field settings
+    public readonly secondaryModeToggleFieldName = 'Mode*';
+    public currentToggleOption: SecondaryMode = SecondaryMode.KIOSQUE;
+    public readonly tabConfig: TabConfig[] = [
         {label: 'Kiosque', key: SecondaryMode.KIOSQUE},
         {label: 'Background', key: SecondaryMode.BACKGROUND},
     ];
+
+    //volume range field settings
+    public readonly volumeRangeFieldName = 'Volume bip';
 
     private windowSizeSubscription: Subscription;
     private keyboardShowSubscription: Subscription;
@@ -82,6 +105,10 @@ export class GlobalSettingsPage implements OnInit, ViewWillEnter, ViewWillLeave 
     }
 
     ngOnInit() {
+    }
+
+    public formSubmitted(): void {
+        console.log('submit');
     }
 
     public backButtonAction() {

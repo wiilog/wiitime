@@ -1,0 +1,11 @@
+<ion-item class="actionable normal-field">
+    <ion-label>
+        {{fieldName}}
+    </ion-label>
+    <ion-img *ngIf="imagePath"
+             [src]="imagePath">
+    </ion-img>
+    <ion-icon src="/assets/icon/modifier.svg"
+              (click)="iconClicked()">
+    </ion-icon>
+</ion-item>

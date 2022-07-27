@@ -1,0 +1,18 @@
+@import "src/theme/global";
+
+.text-field {
+    --padding-start: 1rem;
+    margin-bottom: 0.5rem;
+    @include form-box-shadow;
+
+    ion-label {
+        text-align: left;
+        transform: scale(1.0) translateY(50%);
+        @include text(body-grey)
+    }
+
+    .text-input {
+        text-align: left;
+        @include text();
+    }
+}

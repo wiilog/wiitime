@@ -44,3 +44,17 @@ html {
 ion-content {
     --background: #{$background};
 }
+
+form {
+    .normal-field {
+        --min-height: #{$normal-field-height};
+    }
+
+    .medium-field {
+        --min-height: #{$medium-field-height};
+    }
+
+    .large-field {
+        --min-height: #{$large-field-height};
+    }
+}

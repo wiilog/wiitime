@@ -1,17 +1,10 @@
-@import "src/theme/global";
+@import "../../../../theme/global";
 
 ion-button {
     --border-radius: 0;
 
-
-    &:not(.stickToBottom) {
-        flex: 1;
-        margin: 0.2rem 0 1rem 0;
-    }
-
-    .stickToBottom {
-
-    }
+    flex: 1;
+    margin: 0.2rem 0 1rem 0;
 
     .limitedWidth {
         max-width: 55rem;

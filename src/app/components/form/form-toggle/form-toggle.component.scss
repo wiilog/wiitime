@@ -1,0 +1,18 @@
+@import "src/theme/global";
+
+.toggle-field {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+
+    ion-label {
+        margin: auto auto auto 1rem;
+        @include text(body-grey);
+    }
+
+    .toggle {
+        flex: 1;
+        margin: 0.5rem 1rem 0.5rem auto;
+    }
+}

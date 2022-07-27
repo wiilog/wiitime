@@ -17,9 +17,6 @@ export class FormButtonComponent implements OnInit {
     public isLarge: boolean;
 
     @Input()
-    public stickToBottom: boolean;
-
-    @Input()
     public fillScreenWidth: boolean;
 
     @Output()

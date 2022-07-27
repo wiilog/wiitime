@@ -1,0 +1,20 @@
+<ion-item [class.normal-field]="size === formSizeEnum.NORMAL"
+          [class.medium-field]="size === formSizeEnum.MEDIUM"
+          [class.large-field]="size === formSizeEnum.LARGE"
+          class="text-field">
+    <ion-label position="stacked">{{fieldName}}</ion-label>
+    <div *ngIf="maxLength < 30 then input else textArea"></div>
+
+    <ng-template #input>
+        <ion-input class="text-input"
+                   [maxlength]="maxLength">
+        </ion-input>
+    </ng-template>
+
+    <ng-template #textArea>
+        <ion-textarea class="text-input"
+                      inputmode="text"
+                      [maxlength]="maxLength">
+        </ion-textarea>
+    </ng-template>
+</ion-item>

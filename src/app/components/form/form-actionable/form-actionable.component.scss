@@ -1,0 +1,26 @@
+@import "src/theme/global";
+
+.actionable {
+    --border-width: 0.1rem;
+    --inner-padding-end: 0;
+    --padding-start: 0;
+
+    display: flex;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+
+    ion-label {
+        margin: auto auto auto 1rem;
+        @include text(body-grey);
+    }
+
+    ion-img {
+        height: $normal-field-height * 0.8;
+        margin: auto 1rem auto 1rem;
+    }
+
+    ion-icon {
+        margin: auto 1rem auto 1rem;
+        height: $normal-field-height * 0.6;
+    }
+}

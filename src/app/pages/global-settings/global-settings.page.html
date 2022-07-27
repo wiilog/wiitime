@@ -5,47 +5,32 @@
     </div>
 
     <form>
-        <ion-item class="image normal-field">
-            <ion-label>
-                Logo*
-            </ion-label>
-            <ion-img src="/assets/img/LogoGT.png"></ion-img>
-            <ion-icon src="/assets/icon/modifier.svg" (click)="test1()"></ion-icon>
-        </ion-item>
+        <app-form-actionable [fieldName]="logoSelectionFieldName"
+                             [imagePath]="logoSelectionFieldLogo"
+                             (fieldActioned)="test1()">
+        </app-form-actionable>
 
-        <ion-item class="image normal-field">
-            <ion-label>
-                Identifiant & Mot de passe*
-            </ion-label>
-            <ion-img *ngIf="false" src="/assets/img/LogoGT.png"></ion-img>
-            <ion-icon src="/assets/icon/modifier.svg" (click)="test1()"></ion-icon>
-        </ion-item>
+        <app-form-actionable [fieldName]="updateUserInfoFieldName"
+                             (fieldActioned)="test1()">
+        </app-form-actionable>
 
-        <ion-item class="medium-field text-field">
-            <ion-label position="stacked">Message accueil Kiosque</ion-label>
-            <ion-input maxlength="25"></ion-input>
-        </ion-item>
+        <app-form-text-area [fieldName]="kioskMessageFieldName"
+                            [maxLength]="kioskMessageFieldMaxLength"
+                            [size]="kioskMessageFieldSize">
+        </app-form-text-area>
 
-        <ion-item class="large-field text-field">
-            <ion-label position="stacked">Message communication</ion-label>
-            <ion-textarea inputmode="text" maxlength="150"></ion-textarea>
-        </ion-item>
+        <app-form-text-area [fieldName]="communicationMessageFieldName"
+                            [maxLength]="communicationMessageFieldMaxLength"
+                            [size]="communicationMessageFieldSize">
+        </app-form-text-area>
 
-        <ion-item class="medium-field toggle-field">
-            <ion-label>
-                Mode*
-            </ion-label>
-            <app-tab class="toggle"
-                     [(activeKey)]="currentToggleOption"
-                     (activeKeyChange)="test1()"
-                     [config]="tabConfig">
+        <app-form-toggle [fieldName]="secondaryModeToggleFieldName"
+                         [currentToggleOption]="currentToggleOption"
+                         [tabConfig]="tabConfig">
+        </app-form-toggle>
 
-            </app-tab>
-        </ion-item>
-
-        <ion-range class="medium-field range-field">
-            <ion-label slot="start">Volume bip</ion-label>
-        </ion-range>
+        <app-form-range [fieldName]="volumeRangeFieldName">
+        </app-form-range>
     </form>
     <div [hidden]="hideFormButton"
          slot="fixed"
@@ -53,7 +38,8 @@
         <app-form-button class="bottom-button"
                          buttonText="Valider"
                          iconPath="/assets/icon/tick-blanc.svg"
-                         isLarge="true">
+                         isLarge="true"
+                         (buttonClickedEvent)="formSubmitted()">
         </app-form-button>
     </div>
 </ion-content>
