@@ -1,48 +1,35 @@
 import {Injectable} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {NFC} from '@ionic-native/nfc/ngx';
+import {from, Observable} from 'rxjs';
+import {NFC, NfcTag} from '@ionic-native/nfc/ngx';
+import {mergeMap, tap} from "rxjs/operators";
 
 @Injectable({
-    providedIn:'root'
+    providedIn: 'root'
 })
 export class NfcService {
-    private reader$: Subscription;
 
-    public constructor(private nfc: NFC) {
+    public constructor(private nfc: NFC) {}
+
+    public get nfcTags$(): Observable<NfcTag> {
+        const flags = this.nfc.FLAG_READER_NFC_A
+            | this.nfc.FLAG_READER_NFC_V
+            | this.nfc.FLAG_READER_NFC_B
+            | this.nfc.FLAG_READER_NFC_F
+            | this.nfc.FLAG_READER_NO_PLATFORM_SOUNDS;
+
+        return from(this.nfc.enabled())
+            .pipe(
+                tap(
+                    () => {},
+                    () => {
+                        console.error('NFC is not enable on this device : activate it if your want the app to work properly');
+                    }
+                ),
+                mergeMap(() => this.nfc.readerMode(flags))
+            );
     }
 
-    public async openParameters(): Promise<void> {
-        try {
-            await this.nfc.showSettings();
-        } catch (error) {
-            console.error('could not open the device parameters');
-        }
-    }
-
-    public async activateReaderMode(): Promise<boolean> {
-        try {
-            await this.nfc.enabled();
-        } catch (error) {
-            console.error('NFC is not enable on this device : activate it if your want the app to work properly');
-            return false;
-        }
-
-        const flags = this.nfc.FLAG_READER_NFC_A | this.nfc.FLAG_READER_NFC_V
-                    | this.nfc.FLAG_READER_NFC_B | this.nfc.FLAG_READER_NFC_F
-                    | this.nfc.FLAG_READER_NO_PLATFORM_SOUNDS;
-
-        this.reader$ = this.nfc.readerMode(flags).subscribe(
-            tag => console.log(tag),
-            err => console.log('Error reading tag', err)
-        );
-        return true;
-    }
-
-    public deactivateReaderMode(): boolean {
-        if(this.reader$.closed) {
-            return false;
-        }
-        this.reader$.unsubscribe();
-        return true;
+    public openParameters(): Observable<void> {
+        return from(this.nfc.showSettings());
     }
 }
