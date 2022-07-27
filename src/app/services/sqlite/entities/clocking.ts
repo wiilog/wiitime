@@ -1,8 +1,7 @@
 import {Entity} from '@app/services/sqlite/entities/entity';
 
-export class Clocking implements Entity {
-    public id: number;
-    public badgeNumber: string;
-    public clockingDate: string;
-    public isSynchronised: boolean;
+export interface Clocking extends Entity {
+    badge_number: string;
+    clocking_date: string;
+    is_synchronised: boolean;
 }

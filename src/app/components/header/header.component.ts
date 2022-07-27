@@ -6,15 +6,15 @@ import {HeaderMode} from '@app/components/header/header-mode.enum';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
     @Input()
-    public headerMode: HeaderMode;
+    public mode: HeaderMode;
 
     @Output()
     public backButtonClickedEvent: EventEmitter<any>;
 
-    public headerModeEnum = HeaderMode;
+    public readonly HeaderMode = HeaderMode;
 
     public appLogoPath = '/assets/img/Logo-HeRa.png';
 
@@ -25,11 +25,8 @@ export class HeaderComponent implements OnInit {
 
     public disconnectLogoPath = '/assets/icon/deconnexion.svg';
 
-    constructor() {
+    public constructor() {
         this.backButtonClickedEvent = new EventEmitter<any>();
-    }
-
-    ngOnInit() {
     }
 
     public backButtonClicked() {

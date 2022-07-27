@@ -1,6 +1,6 @@
 <ion-header>
     <div>
-        <div *ngIf="headerMode === headerModeEnum.PARAMETER_TAB; then leftDivLogoBlock else leftDivBlock"></div>
+        <ng-container *ngIf="mode === HeaderMode.PARAMETER_TAB; then leftDivLogoBlock else leftDivBlock"></ng-container>
         <ng-template #leftDivLogoBlock>
             <div class="left-div-logo">
                 <img [src]="defaultLogoPath">
@@ -9,30 +9,30 @@
         <ng-template #leftDivBlock>
             <div class="left-div">
                 <img
-                    *ngIf="headerMode === headerModeEnum.PARAMETER_MENU || headerMode === headerModeEnum.PARAMETER_FULL"
+                    *ngIf="mode === HeaderMode.PARAMETER_MENU || mode === HeaderMode.PARAMETER_FULL"
                     [src]="backButtonImagePath"
                     (click)="backButtonClicked()">
             </div>
         </ng-template>
 
-        <div *ngIf="headerMode === headerModeEnum.PARAMETER_TAB; then centerDivEmptyBlock else centerDivBlock"></div>
+        <ng-container *ngIf="mode === HeaderMode.PARAMETER_TAB; then centerDivEmptyBlock else centerDivBlock"></ng-container>
         <ng-template #centerDivEmptyBlock>
             <div class="center-div-empty">
             </div>
         </ng-template>
         <ng-template #centerDivBlock>
             <div class="center-div">
-                <img *ngIf="headerMode !== headerModeEnum.PARAMETER_MENU && headerMode !== headerModeEnum.PARAMETER_TAB"
+                <img *ngIf="mode !== HeaderMode.PARAMETER_MENU && mode !== HeaderMode.PARAMETER_TAB"
                      [src]="defaultLogoPath">
             </div>
         </ng-template>
 
         <div class="right-div">
-            <ion-img *ngIf="headerMode === headerModeEnum.KIOSK_MODE"
+            <ion-img *ngIf="mode === HeaderMode.KIOSK_MODE"
                      class="button"
                      [src]="disconnectLogoPath"
                      (click)="disconnectButtonClicked()"></ion-img>
-            <img *ngIf="headerMode === headerModeEnum.ACCOUNT_CREATION_PAGE" [src]="appLogoPath">
+            <img *ngIf="mode === HeaderMode.ACCOUNT_CREATION_PAGE" [src]="appLogoPath">
         </div>
     </div>
 </ion-header>
