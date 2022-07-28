@@ -6,9 +6,10 @@ import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {TableName} from '@app/services/sqlite/table-name';
-import {from, Subscription} from 'rxjs';
+import {from, Subscription, zip} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
+import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 
 @Component({
     selector: 'app-home',
@@ -21,8 +22,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     public footerMode: FooterMode = FooterMode.ACTIVE_MODE;
 
     private insertExampleSub: Subscription;
-    private getAdminPasswordSub: Subscription;
-    private getKioskModeCommunicationSub: Subscription;
+    private dataSubscription: Subscription;
 
     public constructor(private nfcService: NfcService,
                        private navService: NavService,
@@ -36,19 +36,28 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
                                                             clocking_date: '2022-07-12 13:25:03',
                                                             is_synchronised: 0
         })).subscribe(() => console.log('test insert finished'));
-        this.sqliteService.get(TableName.CLOCKING_RECORD).then(elems => {
-            elems.map(elem => console.log(elem));
+
+        this.dataSubscription = zip(
+            this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD),
+            this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION),
+        )
+            .subscribe(([adminPassword, kioskModeCommunication]) => {
+                console.log('adminPassword => ', adminPassword);
+                console.log('kioskModeCommunication => ', kioskModeCommunication);
+            });
+
+        this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD).subscribe((clockings: Array<ClockingRecord>) => {
+            console.log(clockings);
         });
-        this.getAdminPasswordSub = this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD)
-            .subscribe((oui: string|null) => console.log(oui));
-        this.getKioskModeCommunicationSub = this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION)
-            .subscribe((oui: string|null) => console.log(oui));
     }
 
     public async ionViewWillLeave(): Promise<any> {
         this.insertExampleSub.unsubscribe();
-        this.getAdminPasswordSub.unsubscribe();
-        this.getKioskModeCommunicationSub.unsubscribe();
+
+        if (this.dataSubscription && !this.dataSubscription.closed) {
+            this.dataSubscription.unsubscribe();
+            this.dataSubscription = undefined;
+        }
     }
 
     public openNfcParameters(): void {

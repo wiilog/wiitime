@@ -1,4 +1,3 @@
-/* eslint-disable */
 export enum StorageKeyEnum {
     ADMIN_USERNAME = 'adminUsername',
     ADMIN_PASSWORD = 'adminPassword',

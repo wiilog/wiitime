@@ -6,7 +6,6 @@ import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {Subscription} from 'rxjs';
 import {WindowSizeService} from "@app/services/window-size.service";
 import {environment} from "../../../environments/environment";
@@ -19,9 +18,9 @@ import {environment} from "../../../environments/environment";
 export class FooterComponent implements OnInit, OnDestroy {
 
     @Input()
-    public footerMode: FooterMode;
+    public mode: FooterMode;
 
-    public footerModeEnum = FooterMode;
+    public readonly FooterMode = FooterMode;
 
     public displayBorder: boolean;
 

@@ -5,12 +5,11 @@ import {SQLite, SQLiteObject} from '@ionic-native/sqlite/ngx';
 import {Platform} from '@ionic/angular';
 import {TABLES_DEFINITION} from '@app/services/sqlite/table-definitions';
 import {TableName} from '@app/services/sqlite/table-name';
-import {Entity} from "@app/services/sqlite/entities/entity";
+import {Entity} from '@app/services/sqlite/entities/entity';
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class SQLiteService {
 
     private static readonly DB_NAME: string = 'wiitime.db';
@@ -150,7 +149,7 @@ export class SQLiteService {
         return this.dropTable(table).pipe(mergeMap(() => this.createTable(table)));
     }
 
-    public async get<T extends Entity>(table: TableName, search: { [key: string]: any } = {}): Promise<Array<T>> {
+    public get<T extends Entity>(table: TableName, search: { [key: string]: any } = {}): Observable<Array<T>> {
         let query = `SELECT * FROM ${table}`;
 
         const values = [];
@@ -163,7 +162,7 @@ export class SQLiteService {
             }
         }
 
-        return await this.executeQuery(query, values).toPromise() as Array<T>;
+        return this.executeQuery(query, values);
     }
 
     public async insert<T extends Entity>(table: TableName, data: T | Array<T>, empty = false): Promise<void> {

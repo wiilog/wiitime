@@ -6,16 +6,11 @@ import {IonInput} from '@ionic/angular';
     templateUrl: './password-button.component.html',
     styleUrls: ['./password-button.component.scss'],
 })
-export class PasswordButtonComponent implements OnInit {
-    @ContentChild(IonInput) input: IonInput;
+export class PasswordButtonComponent {
+    @ContentChild(IonInput)
+    public input: IonInput;
 
     public showPassword = false;
-
-    constructor() {
-    }
-
-    ngOnInit() {
-    }
 
     public showButtonClicked(): void {
         this.showPassword = !this.showPassword;
