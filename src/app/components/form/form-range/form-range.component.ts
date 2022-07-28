@@ -10,9 +10,20 @@ export class FormRangeComponent implements OnInit {
     @Input()
     public fieldName: string;
 
-    constructor() {
-    }
+    @Input()
+    public defaultValue: number;
 
-    ngOnInit() {
+    @Input()
+    public min?: number;
+
+    @Input()
+    public max?: number;
+
+    public ngOnInit(): void {
+        if (!this.defaultValue && this.defaultValue !== 0) {
+            this.defaultValue = 0;
+        } else if (this.defaultValue >= this.min && this.defaultValue <= this.max) {
+            throw new Error('Form Range Component should have a default value between min and max');
+        }
     }
 }

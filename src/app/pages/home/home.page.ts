@@ -31,12 +31,12 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillEnter(): Promise<any> {
-        this.insertExampleSub = from(this.sqliteService.insert(TableName.clocking, {id: 5,
+        this.insertExampleSub = from(this.sqliteService.insert(TableName.CLOCKING_RECORD, {id: 5,
                                                             badge_number: '22222',
                                                             clocking_date: '2022-07-12 13:25:03',
                                                             is_synchronised: 0
         })).subscribe(() => console.log('test insert finished'));
-        this.sqliteService.get(TableName.clocking).then(elems => {
+        this.sqliteService.get(TableName.CLOCKING_RECORD).then(elems => {
             elems.map(elem => console.log(elem));
         });
         this.getAdminPasswordSub = this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD)

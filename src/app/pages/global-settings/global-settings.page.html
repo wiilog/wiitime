@@ -4,7 +4,7 @@
         Géneral
     </div>
 
-    <form>
+    <form [formGroup]="globalSettingsForm">
         <app-form-actionable [fieldName]="logoSelectionFieldName"
                              [imagePath]="logoSelectionFieldLogo"
                              (fieldActioned)="test1()">
@@ -14,14 +14,20 @@
                              (fieldActioned)="test1()">
         </app-form-actionable>
 
-        <app-form-text-area [fieldName]="kioskMessageFieldName"
+        <app-form-text-area ngDefaultControl
+                            [formControlName]="kioskMessageFormControlName"
+                            [fieldName]="kioskMessageFieldName"
                             [maxLength]="kioskMessageFieldMaxLength"
-                            [size]="kioskMessageFieldSize">
+                            [size]="kioskMessageFieldSize"
+                            [defaultValue]="kioskMessageDefaultValue">
         </app-form-text-area>
 
-        <app-form-text-area [fieldName]="communicationMessageFieldName"
-                            [maxLength]="communicationMessageFieldMaxLength"
-                            [size]="communicationMessageFieldSize">
+        <app-form-text-area ngDefaultControl
+                            [formControlName]="kioskCommunicationFormControlName"
+                            [fieldName]="kioskCommunicationFieldName"
+                            [maxLength]="kioskCommunicationFieldMaxLength"
+                            [size]="kioskCommunicationFieldSize"
+                            [defaultValue]="kioskCommunicationDefaultValue">
         </app-form-text-area>
 
         <app-form-toggle [fieldName]="secondaryModeToggleFieldName"
@@ -29,7 +35,8 @@
                          [tabConfig]="tabConfig">
         </app-form-toggle>
 
-        <app-form-range [fieldName]="volumeRangeFieldName">
+        <app-form-range [fieldName]="volumeRangeFieldName"
+                        [defaultValue]="volumeRangeFieldDefaultValue">
         </app-form-range>
     </form>
     <div [hidden]="hideFormButton"

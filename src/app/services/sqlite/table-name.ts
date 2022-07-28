@@ -7,6 +7,6 @@ export interface TableDefinition {
 }
 
 export enum TableName {
-    clocking = 'clocking',
+    CLOCKING_RECORD = 'clocking_record',
 }
 

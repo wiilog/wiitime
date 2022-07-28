@@ -8,6 +8,7 @@ import { GlobalSettingsPageRoutingModule } from './global-settings-routing.modul
 
 import { GlobalSettingsPage } from './global-settings.page';
 import {CommonModules} from '@app/common.modules';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import {CommonModules} from '@app/common.modules';
         FormsModule,
         IonicModule,
         GlobalSettingsPageRoutingModule,
-        CommonModules
+        CommonModules,
+        ReactiveFormsModule,
     ],
   declarations: [GlobalSettingsPage]
 })

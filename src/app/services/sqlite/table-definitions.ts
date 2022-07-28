@@ -2,7 +2,7 @@ import {TableDefinition, TableName} from '@app/services/sqlite/table-name';
 
 export const TABLES_DEFINITION: Array<TableDefinition> = [
     {
-        name: TableName.clocking,
+        name: TableName.CLOCKING_RECORD,
         attributes: {
             id: 'INTEGER PRIMARY KEY',
             // eslint-disable-next-line @typescript-eslint/naming-convention

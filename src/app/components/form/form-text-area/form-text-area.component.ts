@@ -17,12 +17,23 @@ export class FormTextAreaComponent implements OnInit {
     @Input()
     public size: FormSize;
 
+    @Input()
+    public defaultValue?: string;
+
     public formSizeEnum = FormSize;
 
-    constructor() {
+    public ngOnInit(): void {
+        if(!this.fieldName) {
+            throw new Error('Invalid field name for FormTextAreaComponent');
+        }
+        if(!this.maxLength) {
+            throw new Error('Invalid maxLength for FormTextAreaComponent');
+        }
+        if(!this.size) {
+            throw new Error('Invalid size for FormTextAreaComponent');
+        }
+        if(!this.defaultValue) {
+            this.defaultValue = '';
+        }
     }
-
-    ngOnInit() {
-    }
-
 }

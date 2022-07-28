@@ -11,7 +11,7 @@ import {zip} from 'rxjs';
     templateUrl: './account-form.component.html',
     styleUrls: ['./account-form.component.scss'],
 })
-export class AccountFormComponent implements OnInit {
+export class AccountFormComponent {
 
     @Output()
     public validSubmission: EventEmitter<any>;
@@ -26,7 +26,7 @@ export class AccountFormComponent implements OnInit {
 
     public readonly passwordMaxLength: number = 30;
 
-    constructor(public formBuilder: FormBuilder,
+    public constructor(public formBuilder: FormBuilder,
                 private storageService: StorageService,
                 private navService: NavService) {
 
@@ -42,9 +42,6 @@ export class AccountFormComponent implements OnInit {
 
     public get errorControl() {
         return this.accountForm.controls;
-    }
-
-    ngOnInit() {
     }
 
     public formSubmitted(): void {

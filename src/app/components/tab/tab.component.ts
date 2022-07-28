@@ -25,8 +25,6 @@ export class TabComponent implements OnInit {
         if(!this.config || this.config.length === 0) {
             throw new Error('Invalid config (null or length = 0');
         }
-        console.log('value = ' + this.activeKey);
-        console.log(this.config);
     }
 
     public onTabClicked(key: number): void {

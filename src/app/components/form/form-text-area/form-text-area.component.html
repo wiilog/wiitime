@@ -7,14 +7,16 @@
 
     <ng-template #input>
         <ion-input class="text-input"
-                   [maxlength]="maxLength">
+                   [maxlength]="maxLength"
+                   [value]="defaultValue">
         </ion-input>
     </ng-template>
 
     <ng-template #textArea>
         <ion-textarea class="text-input"
                       inputmode="text"
-                      [maxlength]="maxLength">
+                      [maxlength]="maxLength"
+                      [value]="defaultValue">
         </ion-textarea>
     </ng-template>
 </ion-item>

@@ -14,11 +14,11 @@ export class StorageService {
     private defaultParamValue = {
         [StorageKeyEnum.ADMIN_PASSWORD]: null,
         [StorageKeyEnum.ADMIN_USERNAME]: null,
-        [StorageKeyEnum.CURRENT_SECONDARY_MODE]: '0',
+        [StorageKeyEnum.CURRENT_SECONDARY_MODE]: '1',
         [StorageKeyEnum.LOGO_PATH]: null,
         [StorageKeyEnum.KIOSK_MODE_MODAL_DURATION]: '3', //seconds
         [StorageKeyEnum.KIOSK_MODE_MESSAGE]: 'oui',
-        [StorageKeyEnum.KIOSK_MODE_COMMUNICATION]: 'oui',
+        [StorageKeyEnum.KIOSK_MODE_COMMUNICATION]: 'non',
         [StorageKeyEnum.CLOCKING_SOUND_VOLUME]: '100', //percentage
         [StorageKeyEnum.CLOCKING_STORAGE_DURATION]: '7', //days
         [StorageKeyEnum.CLOCKING_DISPLAY_DURATION]: '12', //hours
