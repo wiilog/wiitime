@@ -5,12 +5,8 @@ export const TABLES_DEFINITION: Array<TableDefinition> = [
         name: TableName.clocking,
         attributes: {
             id: 'INTEGER PRIMARY KEY',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             badge_number: 'TEXT NOT NULL',
-            // date with format "YYYY-MM-DD HH:MM"
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            clocking_date: 'TEXT NOT NULL',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            clocking_date: 'TEXT NOT NULL', // date with format "YYYY-MM-DD HH:MM"
             is_synchronised: 'BOOLEAN NOT NULL CHECK (is_synchronised IN (0,1))'
         }
     },

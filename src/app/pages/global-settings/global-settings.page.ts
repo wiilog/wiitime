@@ -10,7 +10,7 @@ import {TabConfig} from '@app/components/tab/tab-config';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {mergeMap} from 'rxjs/operators';
-import {FormSize} from "@app/components/form/form-size-enum";
+import {FormSize} from '@app/components/form/form-size-enum';
 
 enum SecondaryMode {
     KIOSQUE = 1,
