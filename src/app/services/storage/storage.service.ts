@@ -15,7 +15,7 @@ export class StorageService {
         [StorageKeyEnum.ADMIN_PASSWORD]: null,
         [StorageKeyEnum.ADMIN_USERNAME]: null,
         [StorageKeyEnum.CURRENT_SECONDARY_MODE]: '1',
-        [StorageKeyEnum.LOGO_PATH]: null,
+        [StorageKeyEnum.LOGO_PATH]: '/assets/img/LogoGT.png',
         [StorageKeyEnum.KIOSK_MODE_MODAL_DURATION]: '3', //seconds
         [StorageKeyEnum.KIOSK_MODE_MESSAGE]: 'oui',
         [StorageKeyEnum.KIOSK_MODE_COMMUNICATION]: 'non',

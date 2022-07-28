@@ -7,27 +7,23 @@
     <form [formGroup]="globalSettingsForm">
         <app-form-actionable [fieldName]="logoSelectionFieldName"
                              [imagePath]="logoSelectionFieldLogo"
-                             (fieldActioned)="test1()">
+                             (fieldActioned)="updateLogoButtonClicked()">
         </app-form-actionable>
 
         <app-form-actionable [fieldName]="updateUserInfoFieldName"
-                             (fieldActioned)="test1()">
+                             (fieldActioned)="updateAdminInfoButtonClicked()">
         </app-form-actionable>
 
-        <app-form-text-area ngDefaultControl
-                            [formControlName]="kioskMessageFormControlName"
+        <app-form-text-area [formControlName]="kioskMessageFormControlName"
                             [fieldName]="kioskMessageFieldName"
                             [maxLength]="kioskMessageFieldMaxLength"
-                            [size]="kioskMessageFieldSize"
-                            [defaultValue]="kioskMessageDefaultValue">
+                            [size]="kioskMessageFieldSize">
         </app-form-text-area>
 
-        <app-form-text-area ngDefaultControl
-                            [formControlName]="kioskCommunicationFormControlName"
+        <app-form-text-area [formControlName]="kioskCommunicationFormControlName"
                             [fieldName]="kioskCommunicationFieldName"
                             [maxLength]="kioskCommunicationFieldMaxLength"
-                            [size]="kioskCommunicationFieldSize"
-                            [defaultValue]="kioskCommunicationDefaultValue">
+                            [size]="kioskCommunicationFieldSize">
         </app-form-text-area>
 
         <app-form-toggle [fieldName]="secondaryModeToggleFieldName"
@@ -35,8 +31,8 @@
                          [tabConfig]="tabConfig">
         </app-form-toggle>
 
-        <app-form-range [fieldName]="volumeRangeFieldName"
-                        [defaultValue]="volumeRangeFieldDefaultValue">
+        <app-form-range [formControlName]="volumeRangeFieldFormControlName"
+                        [fieldName]="volumeRangeFieldName">
         </app-form-range>
     </form>
     <div [hidden]="hideFormButton"

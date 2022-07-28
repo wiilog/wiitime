@@ -7,7 +7,7 @@ import {IonicModule} from '@ionic/angular';
 import {SettingsMenuPageRoutingModule} from './settings-menu-routing.module';
 
 import {SettingsMenuPage} from './settings-menu.page';
-import {CommonModules} from "@app/common.modules";
+import {CommonModules} from '@app/common.modules';
 
 @NgModule({
     imports: [

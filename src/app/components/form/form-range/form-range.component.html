@@ -1,4 +1,10 @@
-<ion-range class="medium-field range-field" [value]="defaultValue">
+<ion-range class="medium-field range-field"
+           [(ngModel)]="value"
+           (ngModelChange)="valueChanged($event)"
+           [disabled]="disabled"
+           (ionFocus)="markAsTouched()"
+           [min]="min"
+           [max]="max">
     <ion-label slot="start">
         {{fieldName}}
     </ion-label>

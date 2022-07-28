@@ -6,14 +6,14 @@ import {Subscription} from 'rxjs';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {WindowSizeService} from '@app/services/window-size.service';
-import {environment} from "../../../environments/environment";
+import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'app-settings-menu',
     templateUrl: './settings-menu.page.html',
     styleUrls: ['./settings-menu.page.scss'],
 })
-export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
+export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave {
 
     @ViewChild('menu', {read: IonMenu})
     public menu: IonMenu;
@@ -35,7 +35,7 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
                 private ngZone: NgZone) {
     }
 
-    ionViewWillEnter(): void {
+    public ionViewWillEnter(): void {
         this.updatePageAfterWindowSizeChanged();
         this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(() => {
             this.ngZone.run(() => {
@@ -61,17 +61,14 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
         this.menu.open();
     }
 
-    ionViewWillLeave(): void {
+    public ionViewWillLeave(): void {
         this.menuWillCloseSubscription.unsubscribe();
         this.menuWillOpenSubscription.unsubscribe();
         this.backButtonSubscription.unsubscribe();
         this.windowSizeSubscription.unsubscribe();
     }
 
-    ngOnInit() {
-    }
-
-    public backButtonAction() {
+    public backButtonAction(): void {
         if (this.isMenuOpen) {
             this.navService.pop();
         } else {
@@ -79,7 +76,7 @@ export class SettingsMenuPage implements OnInit, ViewWillEnter, ViewWillLeave {
         }
     }
 
-    private updatePageAfterWindowSizeChanged() {
+    private updatePageAfterWindowSizeChanged(): void {
         if(this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu
             || this.screenOrientationService.isPortraitMode()) {
             this.headerMode = HeaderMode.PARAMETER_FULL;
