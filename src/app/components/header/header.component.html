@@ -3,7 +3,7 @@
         <ng-container *ngIf="mode === HeaderMode.PARAMETER_TAB; then leftDivLogoBlock else leftDivBlock"></ng-container>
         <ng-template #leftDivLogoBlock>
             <div class="left-div-logo">
-                <img [src]="defaultLogoPath">
+                <img [src]="logo">
             </div>
         </ng-template>
         <ng-template #leftDivBlock>
@@ -23,7 +23,7 @@
         <ng-template #centerDivBlock>
             <div class="center-div">
                 <img *ngIf="mode !== HeaderMode.PARAMETER_MENU && mode !== HeaderMode.PARAMETER_TAB"
-                     [src]="defaultLogoPath">
+                     [src]="logo">
             </div>
         </ng-template>
 

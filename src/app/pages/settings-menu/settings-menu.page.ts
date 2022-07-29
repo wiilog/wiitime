@@ -2,7 +2,7 @@ import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {IonMenu, Platform, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {NavService} from '@app/services/nav/nav.service';
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {WindowSizeService} from '@app/services/window-size.service';
@@ -13,12 +13,13 @@ import {environment} from '../../../environments/environment';
     templateUrl: './settings-menu.page.html',
     styleUrls: ['./settings-menu.page.scss'],
 })
-export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave {
+export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     @ViewChild('menu', {read: IonMenu})
     public menu: IonMenu;
 
     public headerMode: HeaderMode = HeaderMode.PARAMETER_MENU;
+    public refreshHeader$: Subject<any>;
     public footerMode: FooterMode = FooterMode.PARAMETER_MENU;
 
     private backButtonSubscription: Subscription;
@@ -35,6 +36,11 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave {
                 private ngZone: NgZone) {
     }
 
+
+    public ngOnInit(): void {
+        this.refreshHeader$ = new Subject<string>();
+    }
+
     public ionViewWillEnter(): void {
         this.updatePageAfterWindowSizeChanged();
         this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(() => {
@@ -45,6 +51,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave {
 
         this.menuWillOpenSubscription = this.menu.ionWillOpen.subscribe(() => {
             this.isMenuOpen = true;
+            this.refreshHeader$.next();
             this.headerMode = HeaderMode.PARAMETER_FULL;
         });
 

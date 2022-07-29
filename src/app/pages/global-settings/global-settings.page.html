@@ -1,10 +1,14 @@
-<app-header [mode]="currentHeaderMode" (backButtonClickedEvent)="backButtonAction()"></app-header>
+<app-header [mode]="currentHeaderMode"
+            [refreshHeader$]="refreshHeader$"
+            (backButtonClickedEvent)="backButtonAction()">
+</app-header>
 <ion-content>
     <div class="page-title" *ngIf="isPortraitMode">
         Géneral
     </div>
 
     <form [formGroup]="globalSettingsForm">
+        <input #inputImage hidden="true" type="file" name="TOTO" (change)="updateLogo($event)">
         <app-form-actionable [fieldName]="logoSelectionFieldName"
                              [imagePath]="logoSelectionFieldLogo"
                              (fieldActioned)="updateLogoButtonClicked()">

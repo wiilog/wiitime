@@ -1472,6 +1472,13 @@
   dependencies:
     "@types/cordova" latest
 
+"@ionic-native/splash-screen@^5.36.0":
+  version "5.36.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-5.36.0.tgz#70852eaa34aa3bbe283313f82d9d974f755ec7d6"
+  integrity sha512-BfNknY1rrGE8JRnCdKfL5wz8yFLhpPU5FRr8/LA3L+EncvPvcb9LGidePoeH3gVLMkolm2DI2a/rCelNrJ1Sxw==
+  dependencies:
+    "@types/cordova" latest
+
 "@ionic-native/sqlite@^5.36.0":
   version "5.36.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/sqlite/-/sqlite-5.36.0.tgz#6ac937a7cd8600579dcda997987da4c496e501fb"
@@ -3331,6 +3338,11 @@ copy-webpack-plugin@10.2.4:
 "cordova-plugin-screen-orientation@https://github.com/apache/cordova-plugin-screen-orientation":
   version "3.0.3-dev"
   resolved "https://github.com/apache/cordova-plugin-screen-orientation#7a4087cc8d72e21d452c196b759e367c5307c9cf"
+
+cordova-plugin-splashscreen@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-6.0.2.tgz#2151ee7256fbd64f07a84951854687855c56856f"
+  integrity sha512-7JiUfnInir+SCOEgTJ+5/cHF3UFl69jp6cAQfHtJaaQt9Pli8D8yTJjU0HGlJCvryvsVs4Xlc7/sEJM7vLJgvg==
 
 cordova-sqlite-storage-dependencies@4.0.0:
   version "4.0.0"

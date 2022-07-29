@@ -2,6 +2,7 @@
 
     <ion-menu #menu contentId="settings-menu-main" [swipeGesture]="false">
         <app-header [mode]="headerMode"
+                    [refreshHeader$]="refreshHeader$"
                     (backButtonClickedEvent)="backButtonAction()">
         </app-header>
 

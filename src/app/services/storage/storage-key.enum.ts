@@ -3,7 +3,7 @@ export enum StorageKeyEnum {
     ADMIN_PASSWORD = 'adminPassword',
 
     CURRENT_SECONDARY_MODE = 'currentSecondaryMode',
-    LOGO_PATH = 'logoPath',
+    LOGO = 'logo',
 
     KIOSK_MODE_MODAL_DURATION = 'kioskModeModalDuration',
     KIOSK_MODE_MESSAGE = 'kioskModeMessage',

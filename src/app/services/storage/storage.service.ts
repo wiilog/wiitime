@@ -1,21 +1,22 @@
 import {Injectable} from '@angular/core';
-import {GetResult, Storage} from '@capacitor/storage';
-import {from, Observable, zip} from 'rxjs';
+import {Storage} from '@capacitor/storage';
+import {from, Observable, Subject, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
-import {map} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 export class StorageService {
 
-    // @ts-ignore
+    private defaultLogoPath = '/assets/img/LogoGT.png';
+
     private defaultParamValue = {
         [StorageKeyEnum.ADMIN_PASSWORD]: null,
         [StorageKeyEnum.ADMIN_USERNAME]: null,
         [StorageKeyEnum.CURRENT_SECONDARY_MODE]: '1',
-        [StorageKeyEnum.LOGO_PATH]: '/assets/img/LogoGT.png',
         [StorageKeyEnum.KIOSK_MODE_MODAL_DURATION]: '3', //seconds
         [StorageKeyEnum.KIOSK_MODE_MESSAGE]: 'oui',
         [StorageKeyEnum.KIOSK_MODE_COMMUNICATION]: 'non',
@@ -35,12 +36,38 @@ export class StorageService {
         [StorageKeyEnum.LAST_SFTP_STATUS]: SfpStatus.OFFLINE
     };
 
+    public constructor(private http: HttpClient) {
+    }
+
     public initStorage(): Observable<void> {
-        return zip(...Object.keys(StorageKeyEnum).map((key: string) => {
-            const elem: StorageKeyEnum = StorageKeyEnum[key];
-            return this.setValue(elem, this.defaultParamValue[elem]);
-        }))
-            .pipe(map(() => undefined));
+        return this.getFileData(this.defaultLogoPath)
+            .pipe(
+                mergeMap((base64Logo) => (
+                    zip(
+                        ...Object.keys(StorageKeyEnum).map((key: string) => {
+                            const elem: StorageKeyEnum = StorageKeyEnum[key];
+                            return this.setValue(elem, this.defaultParamValue[elem]);
+                        }),
+                        this.setValue(StorageKeyEnum.LOGO, base64Logo)
+                    )
+                )),
+                map(() => undefined)
+        );
+    }
+
+    public getFileData(path: string): Observable<string> {
+        return this.http.get(path, {responseType: 'blob'})
+            .pipe(
+                mergeMap((res) => {
+                    const base64$ = new Subject<string>();
+                    const reader = new FileReader();
+                    reader.readAsDataURL(res);
+                    reader.onloadend = () => {
+                        base64$.next(reader.result.toString());
+                    };
+                    return base64$;
+                }),
+            );
     }
 
     public setValue(key: StorageKeyEnum, value: any): Observable<void> {

@@ -1,17 +1,18 @@
-import {Component, NgZone} from '@angular/core';
+import {Component, ElementRef, EventEmitter, NgZone, OnInit, ViewChild} from '@angular/core';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {SettingsMenuPage} from '@app/pages/settings-menu/settings-menu.page';
-import {Subscription, zip} from 'rxjs';
+import {Subject, Subscription, zip} from 'rxjs';
 import {Platform, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {environment} from '../../../environments/environment';
 import {WindowSizeService} from '@app/services/window-size.service';
 import {TabConfig} from '@app/components/tab/tab-config';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {mergeMap} from 'rxjs/operators';
+import {mergeMap, tap} from 'rxjs/operators';
 import {FormSize} from '@app/components/form/form-size-enum';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {LoadingService} from "@app/services/loading.service";
 
 enum SecondaryMode {
     KIOSK = 1,
@@ -23,11 +24,15 @@ enum SecondaryMode {
     templateUrl: './global-settings.page.html',
     styleUrls: ['./global-settings.page.scss'],
 })
-export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
+export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit {
+
+    @ViewChild('inputImage', {read: ElementRef})
+    public inputImage: ElementRef;
 
     public isPortraitMode: boolean;
     public hideFormButton: boolean;
     public currentHeaderMode: HeaderMode;
+    public refreshHeader$: Subject<string>;
 
     public globalSettingsForm: FormGroup;
     public isSubmitted = false;
@@ -71,10 +76,12 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
     private keyboardShowSubscription: Subscription;
     private keyboardHideSubscription: Subscription;
     private valueSetterSubscription: Subscription;
+    private saveSubscription: Subscription;
 
     public constructor(private screenOrientationService: ScreenOrientationService,
                        private windowSizeService: WindowSizeService,
                        private storageService: StorageService,
+                       private loadingService: LoadingService,
                        private _settingMenuPage: SettingsMenuPage,
                        private formBuilder: FormBuilder,
                        private ngZone: NgZone,
@@ -94,7 +101,13 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
         return this.globalSettingsForm.controls;
     }
 
+    public ngOnInit(): void {
+        this.refreshHeader$ = new Subject<string>();
+    }
+
     public ionViewWillEnter(): void {
+        this.hideFormButton = false;
+
         this.updatePageAfterWindowSizeChanged();
         this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
             () => {
@@ -104,7 +117,6 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
             }
         );
 
-        this.hideFormButton = false;
         this.keyboardShowSubscription = this.platform.keyboardDidShow.subscribe(() => {
             this.ngZone.run(() => {
                 this.hideFormButton = true;
@@ -117,7 +129,7 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
             });
         });
 
-        //TODO delete this thing -> storage init should not be done here
+        //TODO delete this thing (used for test) -> storage init should not be done here
         this.ngZone.run(() => {
             this.storageService.initStorage().pipe(
                 mergeMap(() => this.storageService.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)),
@@ -132,7 +144,7 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
                 this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION),
                 this.storageService.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE),
                 this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME),
-                this.storageService.getValue(StorageKeyEnum.LOGO_PATH),
+                this.storageService.getValue(StorageKeyEnum.LOGO),
                 this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
                 this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD),
             )
@@ -140,7 +152,7 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
                                 communication,
                                 currentSecondaryMode,
                                 clockingSoundVolume,
-                                logoPath,
+                                logo,
                                 adminUsername,
                                 adminPassword]) => {
                     if (!message) {
@@ -155,20 +167,20 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
                     if (!clockingSoundVolume) {
                         throw new Error('clocking sound volume should not be null');
                     }
-                    if (!logoPath) {
-                        throw new Error('logo path should not be null');
+                    if (!logo) {
+                        throw new Error('logo should not be null');
                     }
                     if (!adminUsername) {
-                        //throw new Error('admin username should not be null'); Todo uncomment
+                        //throw new Error('admin username should not be null'); Todo uncomment for test
                     }
                     if (!adminPassword) {
-                        //throw new Error('admin password should not be null'); Todo uncomment
+                        //throw new Error('admin password should not be null'); Todo uncomment for test
                     }
                     this.globalSettingsForm.controls.kioskMessage.setValue(message);
                     this.globalSettingsForm.controls.kioskCommunication.setValue(communication);
                     this.currentToggleOption = (Number(currentSecondaryMode) === 0) ? SecondaryMode.KIOSK : SecondaryMode.BACKGROUND;
                     this.globalSettingsForm.controls.clockingVolume.setValue(Number(clockingSoundVolume));
-                    this.logoSelectionFieldLogo = logoPath;
+                    this.logoSelectionFieldLogo = logo;
                     this.adminUsername = adminUsername;
                     this.adminPassword = adminPassword;
                 });
@@ -183,6 +195,10 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
         if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
             this.valueSetterSubscription.unsubscribe();
         }
+
+        if (this.saveSubscription && !this.saveSubscription.closed) {
+            this.saveSubscription.unsubscribe();
+        }
     }
 
     public formSubmitted(): void {
@@ -191,19 +207,23 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
             console.log('Invalid form content !');
             return;
         }
-        zip(this.storageService.setValue(StorageKeyEnum.LOGO_PATH, this.logoSelectionFieldLogo),
-            this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.adminUsername),
-            this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.adminPassword),
-            this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_MESSAGE, this.globalSettingsForm.value.kioskMessage),
-            this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION, this.globalSettingsForm.value.kioskCommunication),
-            this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE,
-                this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
-            this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.globalSettingsForm.value.clockingVolume),
-
-        ).subscribe(() => {
-            console.log('save done');
-            //Todo spawn a cool toast
-        });
+        this.saveSubscription = this.loadingService.presentLoadingWhile({
+            message: 'sauvegarde en cours...',
+            event: () => zip(this.storageService.setValue(StorageKeyEnum.LOGO, this.logoSelectionFieldLogo),
+                this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.adminUsername),
+                this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.adminPassword),
+                this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_MESSAGE, this.globalSettingsForm.value.kioskMessage),
+                this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION, this.globalSettingsForm.value.kioskCommunication),
+                this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE,
+                    this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
+                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.globalSettingsForm.value.clockingVolume),
+            )
+        })
+            .subscribe(() => {
+                this.refreshHeader$.next(this.logoSelectionFieldLogo);
+                console.log('save done');
+                //Todo spawn a cool toast
+            });
     }
 
     public backButtonAction() {
@@ -220,10 +240,24 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave {
     }
 
     public updateLogoButtonClicked(): void {
-        //Todo
+        //trigger input image OnClick event to open the file browser
+        this.inputImage.nativeElement.click();
     }
 
     public updateAdminInfoButtonClicked(): void {
-        //Todo
+        //Todo connect update admin settings modal
+    }
+
+    public updateLogo(result: any) {
+        if (result.target.files.length > 0) {
+            console.log(result);
+            console.log(result.target.value);
+            const reader = new FileReader();
+            reader.readAsDataURL(result.target.files[0]);
+            reader.onload = () => {
+                console.log(reader.result);
+                this.logoSelectionFieldLogo = reader.result.toString();
+            };
+        }
     }
 }

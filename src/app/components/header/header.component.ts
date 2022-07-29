@@ -1,15 +1,21 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
+import {StorageService} from '@app/services/storage/storage.service';
+import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy{
 
     @Input()
     public mode: HeaderMode;
+
+    @Input()
+    public refreshHeader$?: Observable<string>;
 
     @Output()
     public backButtonClickedEvent: EventEmitter<any>;
@@ -18,14 +24,15 @@ export class HeaderComponent {
 
     public appLogoPath = '/assets/img/Logo-HeRa.png';
 
-    //TODO replace with storage value when implemented in param
-    public defaultLogoPath = '/assets/img/LogoGT.png';
+    public logo: string;
 
     public backButtonImagePath = '/assets/icon/fleche-gauche.svg';
 
     public disconnectLogoPath = '/assets/icon/deconnexion.svg';
 
-    public constructor() {
+    private refreshHeaderSubscription;
+
+    public constructor(private storageService: StorageService) {
         this.backButtonClickedEvent = new EventEmitter<any>();
     }
 
@@ -36,5 +43,37 @@ export class HeaderComponent {
 
     public disconnectButtonClicked() {
         //Todo open the password check modal and act depending on result
+    }
+
+    public ngOnInit(): void {
+        this.loadLogo();
+    }
+
+    public ngAfterViewInit(): void {
+        if(this.refreshHeader$) {
+            this.refreshHeaderSubscription = this.refreshHeader$.subscribe((logo) => {
+                if(logo) {
+                    this.logo = logo;
+                } else {
+                    this.loadLogo();
+                }
+            });
+        }
+    }
+
+    public ngOnDestroy() {
+        if(this.refreshHeaderSubscription && !this.refreshHeaderSubscription.closed) {
+            this.refreshHeaderSubscription.unsubscribe();
+        }
+    }
+
+    private loadLogo(): void {
+        this.storageService.getValue(StorageKeyEnum.LOGO)
+            .subscribe((logo: string) => {
+                if(!logo) {
+                    throw new Error('logo should not be null');
+                }
+                this.logo = logo;
+            });
     }
 }

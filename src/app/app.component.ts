@@ -5,6 +5,7 @@ import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {mergeMap} from 'rxjs/operators';
+import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 
 @Component({
     selector: 'app-root',
@@ -17,11 +18,13 @@ export class AppComponent {
 
     constructor(private platform: Platform,
                 private storageService: StorageService,
-                private sqliteService: SQLiteService) {
+                private sqliteService: SQLiteService,
+                private splashScreen: SplashScreen) {
         this.initializeApp();
     }
 
     public initializeApp(): void {
+        this.splashScreen.show();
         from(this.platform.ready()).
             pipe(
                 mergeMap(() => this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME)),

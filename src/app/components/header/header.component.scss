@@ -25,12 +25,20 @@ ion-header > div {
     display: flex;
     justify-content: center;
     flex: 2;
+
+    img {
+        margin: 0.5rem auto 0.5rem auto;
+    }
 }
 
 .center-div {
     display: flex;
     justify-content: center;
     flex: 1;
+
+    img {
+        margin: 0.5rem auto 0.5rem auto;
+    }
 }
 
 .center-div-empty {
