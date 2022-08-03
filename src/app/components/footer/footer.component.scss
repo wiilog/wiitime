@@ -5,11 +5,8 @@
     height: $footer-height;
 }
 
-.right-border {
-    border-right: 0.1rem solid $black;
-}
-
 ion-footer {
+    background-color: $white;
     height: 100%;
 
     ion-tabs {

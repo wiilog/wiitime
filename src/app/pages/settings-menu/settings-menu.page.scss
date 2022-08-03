@@ -1,53 +1,67 @@
 @import "src/theme/global";
 
-ion-split-pane {
-    --side-min-width: 33%;
-    --side-max-width: 33%;
+.active-link {
+    color: $light-blue !important;
 }
 
-ion-title {
-    @include title(2.1rem);
-}
-
-.text {
-    @include text(body-big);
-}
-
-.split-pane-visible > .split-pane-side {
-    border-right: none !important;
-}
-
-.show-menu {
-    --min-width: 100%;
-    --max-width: 100%;
-}
-
-.menu-pane-visible > ion-content {
-    border-right: 0.1rem solid $black;
+.content-side-mode {
+    width: 100%;
+    display: flex;
 }
 
 ion-content {
     color: $background;
+    overflow: hidden;
 
-    ion-menu-toggle {
+    .button-container {
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        min-height: 100%;
 
-        ion-item {
-            --border-color: #{$border};
-            --inner-padding-end: 0;
-            --inner-padding-start:0;
+        .div-button {
+            @include form-box-shadow;
+
+            position: relative;
             display: flex;
             height: 6rem;
-            margin: auto 1rem auto 1rem;
+
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            margin: 1rem 1rem 0 1rem;
+            background: $white;
 
             ion-label {
                 margin: auto auto auto 1rem;
-                @include title(2rem);
+                @include title(1.8rem);
             }
 
             ion-icon {
                 width: 2.8rem;
+                height: 6rem;
             }
         }
+
+        app-footer {
+            position: sticky;
+            top: 100%;
+        }
+    }
+
+    .container-side-mode {
+        width: $side-menu-width;
+        border-right: 0.1rem solid $black;
+        float: left;
+    }
+
+    .settings-content {
+        display: flex;
+        overflow: scroll;
+        margin-bottom: $large-button-height + 1rem;
+    }
+
+    .expend {
+        width: 100 - $side-menu-width;
+        float: right;
     }
 }

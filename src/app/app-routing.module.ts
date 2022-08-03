@@ -3,11 +3,6 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 
 const routes: Routes = [
     {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
-    },
-    {
         path: 'home',
         loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
     },
@@ -18,6 +13,11 @@ const routes: Routes = [
     {
         path: 'settings-menu',
         loadChildren: () => import('./pages/settings-menu/settings-menu.module').then(m => m.SettingsMenuPageModule)
+    },
+    {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
     },
 ];
 

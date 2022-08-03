@@ -1,4 +1,4 @@
-<ion-footer [class.right-border]="mode === FooterMode.PARAMETER_MENU && displayBorder">
+<ion-footer>
     <ng-container *ngIf="mode === FooterMode.ACTIVE_MODE; then navBarFooter else iconFooter"></ng-container>
     <ng-template #navBarFooter>
         <ion-tabs>

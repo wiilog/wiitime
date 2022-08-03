@@ -1,18 +1,27 @@
-import {Component, ElementRef, EventEmitter, NgZone, OnInit, ViewChild} from '@angular/core';
-import {HeaderMode} from '@app/components/header/header-mode.enum';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {SettingsMenuPage} from '@app/pages/settings-menu/settings-menu.page';
-import {Subject, Subscription, zip} from 'rxjs';
-import {Platform, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
-import {environment} from '../../../environments/environment';
-import {WindowSizeService} from '@app/services/window-size.service';
-import {TabConfig} from '@app/components/tab/tab-config';
-import {StorageService} from '@app/services/storage/storage.service';
-import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {mergeMap, tap} from 'rxjs/operators';
-import {FormSize} from '@app/components/form/form-size-enum';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
+import {Observable, Subscription, zip} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoadingService} from "@app/services/loading.service";
+import {FormSize} from '@app/components/form/form-size-enum';
+import {TabConfig} from '@app/components/tab/tab-config';
+import {ScreenOrientationService} from '@app/services/screen-orientation.service';
+import {WindowSizeService} from '@app/services/window-size.service';
+import {StorageService} from '@app/services/storage/storage.service';
+import {LoadingService} from '@app/services/loading.service';
+import {mergeMap} from 'rxjs/operators';
+import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
+import {environment} from '../../../../environments/environment';
+import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 
 enum SecondaryMode {
     KIOSK = 1,
@@ -21,21 +30,13 @@ enum SecondaryMode {
 
 @Component({
     selector: 'app-global-settings',
-    templateUrl: './global-settings.page.html',
-    styleUrls: ['./global-settings.page.scss'],
+    templateUrl: './global-settings.component.html',
+    styleUrls: ['./global-settings.component.scss'],
 })
-export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit {
+export class GlobalSettingsComponent extends SettingsMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('inputImage', {read: ElementRef})
     public inputImage: ElementRef;
-
-    public isPortraitMode: boolean;
-    public hideFormButton: boolean;
-    public currentHeaderMode: HeaderMode;
-    public refreshHeader$: Subject<string>;
-
-    public globalSettingsForm: FormGroup;
-    public isSubmitted = false;
 
     //Logo selection field
     public readonly logoSelectionFieldName = 'Logo*';
@@ -72,21 +73,17 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit 
     public readonly volumeRangeFieldName = 'Volume bip';
     public readonly volumeRangeFieldFormControlName = 'clockingVolume';
 
-    private windowSizeSubscription: Subscription;
-    private keyboardShowSubscription: Subscription;
-    private keyboardHideSubscription: Subscription;
     private valueSetterSubscription: Subscription;
     private saveSubscription: Subscription;
 
-    public constructor(private screenOrientationService: ScreenOrientationService,
-                       private windowSizeService: WindowSizeService,
+    public constructor(protected screenOrientationService: ScreenOrientationService,
+                       protected windowSizeService: WindowSizeService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
-                       private _settingMenuPage: SettingsMenuPage,
                        private formBuilder: FormBuilder,
-                       private ngZone: NgZone,
-                       private platform: Platform) {
-        this.globalSettingsForm = this.formBuilder.group({
+                       private ngZone: NgZone) {
+        super(screenOrientationService, windowSizeService);
+        this.form = this.formBuilder.group({
             kioskMessage: ['', [Validators.required,
                 Validators.maxLength(this.kioskMessageFieldMaxLength)
             ]],
@@ -97,48 +94,53 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit 
         });
     }
 
-    public get errorControl() {
-        return this.globalSettingsForm.controls;
-    }
-
     public ngOnInit(): void {
-        this.refreshHeader$ = new Subject<string>();
-    }
-
-    public ionViewWillEnter(): void {
-        this.hideFormButton = false;
-
-        this.updatePageAfterWindowSizeChanged();
-        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
-            () => {
-                this.ngZone.run(() => {
-                    this.updatePageAfterWindowSizeChanged();
-                });
-            }
-        );
-
-        this.keyboardShowSubscription = this.platform.keyboardDidShow.subscribe(() => {
-            this.ngZone.run(() => {
-                this.hideFormButton = true;
-            });
-        });
-
-        this.keyboardHideSubscription = this.platform.keyboardDidHide.subscribe(() => {
-            this.ngZone.run(() => {
-                this.hideFormButton = false;
-            });
-        });
-
         //TODO delete this thing (used for test) -> storage init should not be done here
         this.ngZone.run(() => {
             this.storageService.initStorage().pipe(
                 mergeMap(() => this.storageService.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)),
             ).subscribe((result: string | null) => {
-                console.log('good');
+                console.log(result);
                 //this.currentToggleOption = Number(result as unknown as SecondaryMode) || SecondaryMode.KIOSK;
             });
         });
 
+        this.isSubmitted = false;
+
+        this.updateViewAfterWindowSizeChanged();
+        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
+            () => {
+                this.ngZone.run(() => {
+                    this.updateViewAfterWindowSizeChanged();
+                });
+            }
+        );
+        this.initContent();
+    }
+
+    public ngAfterViewInit(): void {
+        this.submitFormSubscription = this.submitForm$.subscribe(() => {
+            this.formSubmitted();
+        });
+    }
+
+    public ngOnDestroy(): void {
+        this.windowSizeSubscription.unsubscribe();
+
+        if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
+            this.valueSetterSubscription.unsubscribe();
+        }
+
+        if (this.saveSubscription && !this.saveSubscription.closed) {
+            this.saveSubscription.unsubscribe();
+        }
+
+        if (this.submitFormSubscription && !this.submitFormSubscription.closed) {
+            this.submitFormSubscription.unsubscribe();
+        }
+    }
+
+    public initContent(): void {
         this.ngZone.run(() => {
             this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_MESSAGE),
                 this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION),
@@ -176,10 +178,10 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit 
                     if (!adminPassword) {
                         //throw new Error('admin password should not be null'); Todo uncomment for test
                     }
-                    this.globalSettingsForm.controls.kioskMessage.setValue(message);
-                    this.globalSettingsForm.controls.kioskCommunication.setValue(communication);
+                    this.form.controls.kioskMessage.setValue(message);
+                    this.form.controls.kioskCommunication.setValue(communication);
                     this.currentToggleOption = (Number(currentSecondaryMode) === 0) ? SecondaryMode.KIOSK : SecondaryMode.BACKGROUND;
-                    this.globalSettingsForm.controls.clockingVolume.setValue(Number(clockingSoundVolume));
+                    this.form.controls.clockingVolume.setValue(Number(clockingSoundVolume));
                     this.logoSelectionFieldLogo = logo;
                     this.adminUsername = adminUsername;
                     this.adminPassword = adminPassword;
@@ -187,23 +189,9 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit 
         });
     }
 
-    public ionViewWillLeave(): void {
-        this.windowSizeSubscription.unsubscribe();
-        this.keyboardShowSubscription.unsubscribe();
-        this.keyboardHideSubscription.unsubscribe();
-
-        if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
-            this.valueSetterSubscription.unsubscribe();
-        }
-
-        if (this.saveSubscription && !this.saveSubscription.closed) {
-            this.saveSubscription.unsubscribe();
-        }
-    }
-
     public formSubmitted(): void {
         this.isSubmitted = true;
-        if (!this.globalSettingsForm.valid) {
+        if (!this.form.valid) {
             console.log('Invalid form content !');
             return;
         }
@@ -212,31 +200,16 @@ export class GlobalSettingsPage implements ViewWillEnter, ViewWillLeave, OnInit 
             event: () => zip(this.storageService.setValue(StorageKeyEnum.LOGO, this.logoSelectionFieldLogo),
                 this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.adminUsername),
                 this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.adminPassword),
-                this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_MESSAGE, this.globalSettingsForm.value.kioskMessage),
-                this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION, this.globalSettingsForm.value.kioskCommunication),
+                this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_MESSAGE, this.form.value.kioskMessage),
+                this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION, this.form.value.kioskCommunication),
                 this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE,
                     this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
-                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.globalSettingsForm.value.clockingVolume),
+                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.form.value.clockingVolume),
             )
         })
             .subscribe(() => {
-                this.refreshHeader$.next(this.logoSelectionFieldLogo);
-                console.log('save done');
-                //Todo spawn a cool toast
+                this.validFormSubmittedEvent.emit(this.logoSelectionFieldLogo);
             });
-    }
-
-    public backButtonAction() {
-        this._settingMenuPage.menu.open();
-    }
-
-    public updatePageAfterWindowSizeChanged(): void {
-        this.isPortraitMode = this.screenOrientationService.isPortraitMode();
-        if (this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu || this.isPortraitMode) {
-            this.currentHeaderMode = HeaderMode.PARAMETER_FULL;
-        } else {
-            this.currentHeaderMode = HeaderMode.PARAMETER_TAB;
-        }
     }
 
     public updateLogoButtonClicked(): void {

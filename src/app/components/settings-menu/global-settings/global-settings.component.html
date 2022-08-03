@@ -1,13 +1,9 @@
-<app-header [mode]="currentHeaderMode"
-            [refreshHeader$]="refreshHeader$"
-            (backButtonClickedEvent)="backButtonAction()">
-</app-header>
-<ion-content>
-    <div class="page-title" *ngIf="isPortraitMode">
+<div class="global-settings-container">
+    <div class="setting-title" *ngIf="showTitle">
         Géneral
     </div>
 
-    <form [formGroup]="globalSettingsForm">
+    <form [formGroup]="form">
         <input #inputImage hidden="true" type="file" name="TOTO" (change)="updateLogo($event)">
         <app-form-actionable [fieldName]="logoSelectionFieldName"
                              [imagePath]="logoSelectionFieldLogo"
@@ -39,14 +35,4 @@
                         [fieldName]="volumeRangeFieldName">
         </app-form-range>
     </form>
-    <div [hidden]="hideFormButton"
-         slot="fixed"
-         class="fixed-at-bottom">
-        <app-form-button class="bottom-button"
-                         buttonText="Valider"
-                         iconPath="/assets/icon/tick-blanc.svg"
-                         isLarge="true"
-                         (buttonClickedEvent)="formSubmitted()">
-        </app-form-button>
-    </div>
-</ion-content>
+</div>

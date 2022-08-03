@@ -45,6 +45,12 @@ ion-content {
     --background: #{$background};
 }
 
+.setting-title {
+    text-align: center;
+    margin: 1rem auto 1rem auto;
+    @include title(2rem);
+}
+
 form {
     .normal-field {
         --min-height: #{$normal-field-height};
@@ -56,5 +62,21 @@ form {
 
     .large-field {
         --min-height: #{$large-field-height};
+    }
+}
+
+.setting-fixed-at-bottom {
+    background: $background;
+    position: sticky;
+    top: 100%;
+    z-index: 1;
+    display: flex;
+
+    .bottom-button {
+        flex: 1;
+        margin: 0 1rem auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }

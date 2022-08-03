@@ -1,0 +1,20 @@
+<div class="clocking-settings-container">
+    <div class="setting-title" *ngIf="showTitle">
+        Traitement du badgeage
+    </div>
+
+    <form [formGroup]="form">
+        <ion-item>
+            <ion-label slot="start" position="fixed"
+                       class="input-start-label">
+                Durée d'archivage*
+            </ion-label>
+            <ion-input type="number">
+            </ion-input>
+            <ion-label slot="end" position="fixed"
+                       class="input-end-label">
+                jours
+            </ion-label>
+        </ion-item>
+    </form>
+</div>

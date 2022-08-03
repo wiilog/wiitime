@@ -6,19 +6,8 @@ import {SettingsMenuPage} from './settings-menu.page';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'global-settings',
-        pathMatch: 'full'
+        component: SettingsMenuPage
     },
-    {
-        path: '',
-        component: SettingsMenuPage,
-        children: [
-            {
-                path: 'global-settings',
-                loadChildren: () => import('@app/pages/global-settings/global-settings.module').then(m => m.GlobalSettingsPageModule)
-            },
-        ]
-    }
 ];
 
 @NgModule({

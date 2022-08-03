@@ -7,8 +7,8 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {Subscription} from 'rxjs';
-import {WindowSizeService} from "@app/services/window-size.service";
-import {environment} from "../../../environments/environment";
+import {WindowSizeService} from '@app/services/window-size.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'app-footer',
@@ -22,37 +22,17 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public readonly FooterMode = FooterMode;
 
-    public displayBorder: boolean;
-
     public currentVersionNumber: string; //TODO get value from storage instead
 
-    private widowSizeSubscription: Subscription;
-
     constructor(private navService: NavService,
-                private storage: StorageService,
-                private screenOrientationService: ScreenOrientationService,
-                private windowSizeService: WindowSizeService,
-                private ngZone: NgZone) {
+                private storage: StorageService,) {
         this.currentVersionNumber = '0.0.42';
     }
 
-    ngOnInit() {
-        this.updateFooterModeAfterWindowSizeChanged();
-        this.widowSizeSubscription = this.windowSizeService.getWindowResizedObservable()
-            .subscribe(() => {
-                this.ngZone.run(() => {
-                    this.updateFooterModeAfterWindowSizeChanged();
-                });
-            });
+    public ngOnInit(): void {
     }
 
-    ngOnDestroy() {
-        this.widowSizeSubscription.unsubscribe();
-    }
-
-    public updateFooterModeAfterWindowSizeChanged() {
-        this.displayBorder = (!this.screenOrientationService.isPortraitMode())
-            && this.windowSizeService.getWindowWidth() >= environment.minWindowWidthForSideMenu;
+    public ngOnDestroy(): void {
     }
 
     public quitApplicationButtonClicked() {

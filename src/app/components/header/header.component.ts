@@ -2,7 +2,7 @@ import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {Observable} from "rxjs";
+import {Observable} from 'rxjs';
 
 @Component({
     selector: 'app-header',

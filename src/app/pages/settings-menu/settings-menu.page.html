@@ -1,27 +1,71 @@
-<ion-split-pane when="md" contentId="settings-menu-main">
+<app-header [mode]="headerMode"
+            [refreshHeader$]="refreshHeader$"
+            (backButtonClickedEvent)="backButtonAction()">
+</app-header>
+<ion-content>
+    <div *ngIf="(!isPortraitMode && !hideSideMenu) || !isMenuOpen"
+         [class.container-side-mode]="!isPortraitMode && isMenuOpen"
+         class="button-container" slot="fixed">
 
-    <ion-menu #menu contentId="settings-menu-main" [swipeGesture]="false">
-        <app-header [mode]="headerMode"
-                    [refreshHeader$]="refreshHeader$"
-                    (backButtonClickedEvent)="backButtonAction()">
-        </app-header>
+        <div class="div-button ion-activatable"
+             (click)="swapMenu(possibleMenu.GENERAL)">
+            <ion-label class="text">
+                {{possibleMenu.GENERAL}}
+            </ion-label>
+            <ion-icon [src]="rightArrowIconPath">
+            </ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
+        </div>
 
-        <ion-content>
-            <ion-menu-toggle autoHide="false">
-                <ion-item [routerLink]="['global-settings']"
-                          routerDirection="root"
-                          routerLinkActive="active-link">
-                    <ion-label class="text">
-                        Général
-                    </ion-label>
-                    <ion-icon src="/assets/icon/fleche-droite.svg">
-                    </ion-icon>
-                </ion-item>
-            </ion-menu-toggle>
-        </ion-content>
-        <app-footer [mode]="footerMode"></app-footer>
-    </ion-menu>
+        <div class="div-button ion-activatable"
+             (click)="swapMenu(possibleMenu.CLOCKING)">
+            <ion-label class="text">
+                {{possibleMenu.CLOCKING}}
+            </ion-label>
+            <ion-icon [src]="rightArrowIconPath">
+            </ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
+        </div>
 
-    <ion-router-outlet id="settings-menu-main"></ion-router-outlet>
+        <div class="div-button ion-activatable"
+             (click)="swapMenu(possibleMenu.SFTP)">
+            <ion-label class="text">
+                {{possibleMenu.SFTP}}
+            </ion-label>
+            <ion-icon [src]="rightArrowIconPath">
+            </ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
+        </div>
 
-</ion-split-pane>
+        <app-footer [hidden]="hideSubmitButton" [mode]="footerMode"></app-footer>
+    </div>
+
+    <div *ngIf="(!isPortraitMode && !hideSideMenu) || isMenuOpen"
+         class="settings-content"
+         [class.expend]="!isPortraitMode && !hideSideMenu">
+
+        <app-global-settings
+            *ngIf="currentMenu === possibleMenu.GENERAL"
+            [submitForm$]="submitButtonClicked$"
+            (validFormSubmittedEvent)="refreshPageAfterSubmission($event)">
+        </app-global-settings>
+
+        <app-clocking-settings
+            *ngIf="currentMenu === possibleMenu.CLOCKING"
+            [submitForm$]="submitButtonClicked$"
+            (validFormSubmittedEvent)="refreshPageAfterSubmission($event)">
+        </app-clocking-settings>
+    </div>
+    <div *ngIf="(!isPortraitMode && !hideSideMenu) || isMenuOpen"
+         [class.expend]="!isPortraitMode && !hideSideMenu"
+         [hidden]="hideSubmitButton"
+         slot="fixed"
+         class="setting-fixed-at-bottom">
+        <app-form-button class="bottom-button"
+                         buttonText="Valider"
+                         iconPath="/assets/icon/tick-blanc.svg"
+                         isLarge="true"
+                         (buttonClickedEvent)="submitButtonClicked()">
+        </app-form-button>
+    </div>
+</ion-content>

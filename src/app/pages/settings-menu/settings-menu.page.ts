@@ -8,6 +8,12 @@ import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {WindowSizeService} from '@app/services/window-size.service';
 import {environment} from '../../../environments/environment';
 
+enum SettingsMenu {
+    GENERAL = 'Général',
+    CLOCKING = 'Traitement du badgeage',
+    SFTP = 'Paramétrage SFTP',
+}
+
 @Component({
     selector: 'app-settings-menu',
     templateUrl: './settings-menu.page.html',
@@ -18,16 +24,26 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     @ViewChild('menu', {read: IonMenu})
     public menu: IonMenu;
 
+    public readonly rightArrowIconPath = '/assets/icon/fleche-droite.svg';
+
     public headerMode: HeaderMode = HeaderMode.PARAMETER_MENU;
     public refreshHeader$: Subject<any>;
     public footerMode: FooterMode = FooterMode.PARAMETER_MENU;
 
+    public isPortraitMode: boolean;
+    public isMenuOpen: boolean;
+    public hideSideMenu: boolean;
+
+    public currentMenu: SettingsMenu;
+    public possibleMenu = SettingsMenu;
+
+    public submitButtonClicked$: Subject<any>;
+    public hideSubmitButton: boolean;
+
     private backButtonSubscription: Subscription;
     private windowSizeSubscription: Subscription;
-    private menuWillOpenSubscription: Subscription;
-    private menuWillCloseSubscription: Subscription;
-
-    private isMenuOpen: boolean;
+    private keyboardShowSubscription: Subscription;
+    private keyboardHideSubscription: Subscription;
 
     constructor(private platform: Platform,
                 private navService: NavService,
@@ -36,12 +52,17 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
                 private ngZone: NgZone) {
     }
 
-
     public ngOnInit(): void {
         this.refreshHeader$ = new Subject<string>();
+        this.submitButtonClicked$ = new Subject<any>();
     }
 
     public ionViewWillEnter(): void {
+        this.isMenuOpen = false;
+        this.headerMode = HeaderMode.PARAMETER_FULL;
+        this.currentMenu = SettingsMenu.GENERAL;
+        this.hideSubmitButton = false;
+
         this.updatePageAfterWindowSizeChanged();
         this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(() => {
             this.ngZone.run(() => {
@@ -49,48 +70,63 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
             });
         });
 
-        this.menuWillOpenSubscription = this.menu.ionWillOpen.subscribe(() => {
-            this.isMenuOpen = true;
-            this.refreshHeader$.next();
-            this.headerMode = HeaderMode.PARAMETER_FULL;
-        });
-
-        this.menuWillCloseSubscription = this.menu.ionWillClose.subscribe(() => {
-            this.isMenuOpen = false;
-            this.headerMode = HeaderMode.PARAMETER_MENU;
-        });
-
         this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(100, () => {
             this.backButtonAction();
         });
 
-        this.isMenuOpen = true;
-        this.menu.open();
+        this.keyboardShowSubscription = this.platform.keyboardDidShow.subscribe(() => {
+            this.ngZone.run(() => {
+                this.hideSubmitButton = true;
+            });
+        });
+
+        this.keyboardHideSubscription = this.platform.keyboardDidHide.subscribe(() => {
+            this.ngZone.run(() => {
+                this.hideSubmitButton = false;
+            });
+        });
     }
 
     public ionViewWillLeave(): void {
-        this.menuWillCloseSubscription.unsubscribe();
-        this.menuWillOpenSubscription.unsubscribe();
         this.backButtonSubscription.unsubscribe();
         this.windowSizeSubscription.unsubscribe();
+        this.keyboardShowSubscription.unsubscribe();
+        this.keyboardHideSubscription.unsubscribe();
     }
 
     public backButtonAction(): void {
-        if (this.isMenuOpen) {
+        if (!this.isMenuOpen || (!this.isPortraitMode && this.isMenuOpen && !this.hideSideMenu)) {
             this.navService.pop();
+            console.log('leave page');
         } else {
-            this.menu.open();
+            this.isMenuOpen = false;
+            console.log('back to list');
         }
     }
 
-    private updatePageAfterWindowSizeChanged(): void {
-        if(this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu
-            || this.screenOrientationService.isPortraitMode()) {
-            this.headerMode = HeaderMode.PARAMETER_FULL;
-            this.isMenuOpen = false;
-        } else {
-            this.headerMode = HeaderMode.PARAMETER_MENU;
+    public swapMenu(menu: SettingsMenu): void {
+        if (menu !== this.currentMenu) {
             this.isMenuOpen = true;
+            this.currentMenu = menu;
+        }
+    }
+
+    public submitButtonClicked() {
+        this.submitButtonClicked$.next();
+    }
+
+    public refreshPageAfterSubmission(logo: string): void {
+        this.refreshHeader$.next(logo);
+        console.log('save done');
+        //Todo spawn a cool toast
+    }
+
+    private updatePageAfterWindowSizeChanged(): void {
+        this.isPortraitMode = this.screenOrientationService.isPortraitMode();
+        this.hideSideMenu = this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu;
+
+        if (!this.isMenuOpen) {
+            this.isMenuOpen = (!this.isPortraitMode && !this.hideSideMenu);
         }
     }
 }
