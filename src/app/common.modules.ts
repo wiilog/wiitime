@@ -13,6 +13,7 @@ import {FormTextAreaComponent} from '@app/components/form/form-text-area/form-te
 import {FormActionableComponent} from '@app/components/form/form-actionable/form-actionable.component';
 import {FormToggleComponent} from '@app/components/form/form-toggle/form-toggle.component';
 import {FormRangeComponent} from '@app/components/form/form-range/form-range.component';
+import {FormInputComponent} from '@app/components/form/form-input/form-input.component';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import {FormRangeComponent} from '@app/components/form/form-range/form-range.com
         FormActionableComponent,
         FormToggleComponent,
         FormRangeComponent,
+        FormInputComponent,
     ],
     imports: [
         AngularCommonModule,
@@ -42,6 +44,7 @@ import {FormRangeComponent} from '@app/components/form/form-range/form-range.com
         FormActionableComponent,
         FormToggleComponent,
         FormRangeComponent,
+        FormInputComponent,
     ]
 })
 export class CommonModules {

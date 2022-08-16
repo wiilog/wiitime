@@ -4,11 +4,8 @@ ion-button {
     --border-radius: 0;
 
     flex: 1;
+    display: flex;
     margin: 0.2rem 0 1rem 0;
-
-    .limitedWidth {
-        max-width: 55rem;
-    }
 
     ion-icon {
         margin: 0 0.5rem;
@@ -37,5 +34,17 @@ ion-button {
             font-size: 1.6rem;
         }
     }
+}
+
+.limitedWidth {
+    --max-width: 55rem;
+}
+
+.swapColor {
+    --background: #{$white};
+    @include text(body-bold);
+    border: solid 0.3rem $dark-blue;
+    color: $dark-blue;
+    text-transform: none;
 }
 

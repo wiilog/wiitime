@@ -1,0 +1,50 @@
+@import "src/theme/global";
+
+.form-input {
+    --padding-start: 1rem;
+    --padding-end: 1.5rem;
+    --inner-padding-end: 0;
+
+    @include form-box-shadow;
+    margin-bottom: 0.5rem;
+
+    .input-start-label {
+        flex: 1;
+        max-width: unset;
+        margin-right: 0.5rem;
+        margin-left: 0;
+        text-align: left;
+        @include text(body-grey);
+    }
+
+    @media (max-width: 950px) {
+        .input-start-label {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (min-width: 951px) {
+        .input-start-label {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    }
+
+    ion-input {
+        --padding-left: 0;
+        margin: auto 0 auto 0;
+        min-width: 5rem;
+        max-width: 7rem;
+        text-align: right;
+        @include text();
+    }
+
+    .input-end-label {
+        margin: auto 0 auto 0;
+        min-width: 6rem;
+        max-width: 8rem;
+        text-align: right;
+        @include text(body-grey)
+    }
+}

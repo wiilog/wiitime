@@ -4,17 +4,29 @@
     </div>
 
     <form [formGroup]="form">
-        <ion-item>
-            <ion-label slot="start" position="fixed"
-                       class="input-start-label">
-                Durée d'archivage*
-            </ion-label>
-            <ion-input type="number">
-            </ion-input>
-            <ion-label slot="end" position="fixed"
-                       class="input-end-label">
-                jours
-            </ion-label>
-        </ion-item>
+        <app-form-input [formControlName]="storageDurationFormControlName"
+                        [inputName]="storageDurationFieldName"
+                        [endText]="storageDurationEndText">
+        </app-form-input>
+
+        <app-form-button fillScreenWidth="true"
+                         swapColor="true"
+                         buttonText="Export des données">
+        </app-form-button>
+
+        <app-form-input [formControlName]="displayClockingFromFromControlName"
+                        [inputName]="displayClockingFromFieldName"
+                        [endText]="displayClockingFromEndText">
+        </app-form-input>
+
+        <app-form-input [formControlName]="delayBetweenTwoClockingFormControlName"
+                        [inputName]="delayBetweenTwoClockingFieldName"
+                        [endText]="delayBetweenTwoClockingEndText">
+        </app-form-input>
+
+        <app-form-input [formControlName]="popupDisplayDurationFormControlName"
+                        [inputName]="popupDisplayDurationFieldName"
+                        [endText]="popupDisplayDurationEndText">
+        </app-form-input>
     </form>
 </div>

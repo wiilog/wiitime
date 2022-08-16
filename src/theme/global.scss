@@ -54,6 +54,7 @@ ion-content {
 form {
     .normal-field {
         --min-height: #{$normal-field-height};
+        min-height: $normal-field-height;
     }
 
     .medium-field {

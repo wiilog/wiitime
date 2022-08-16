@@ -25,7 +25,6 @@ export class FormTextAreaComponent implements OnInit, ControlValueAccessor {
     @Input()
     public size: FormSize;
 
-    @Input()
     public content: string;
 
     public formSizeEnum = FormSize;
@@ -44,13 +43,13 @@ export class FormTextAreaComponent implements OnInit, ControlValueAccessor {
     }
 
     public ngOnInit(): void {
-        if(!this.fieldName) {
+        if (!this.fieldName) {
             throw new Error('Invalid field name for FormTextAreaComponent');
         }
-        if(!this.maxLength) {
+        if (!this.maxLength) {
             throw new Error('Invalid maxLength for FormTextAreaComponent');
         }
-        if(!this.size) {
+        if (!this.size) {
             throw new Error('Invalid size for FormTextAreaComponent');
         }
     }
@@ -75,7 +74,7 @@ export class FormTextAreaComponent implements OnInit, ControlValueAccessor {
     }
 
     public writeValue(newText: string): void {
-        if(newText.length > this.maxLength) {
+        if (newText.length > this.maxLength) {
             throw new Error('Form Text Area Component => tried to write a value whose length is above the field max length');
         }
         this.content = newText;

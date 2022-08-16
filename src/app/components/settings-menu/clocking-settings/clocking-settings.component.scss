@@ -14,34 +14,6 @@
         flex: 1;
         flex-direction: column;
         margin: 1rem 1rem ($large-button-height + 1.2rem) 1rem;
-
-        ion-item {
-            --padding-start: 1rem;
-            --padding-end: 1rem;
-            --inner-padding-end: 0;
-
-            @include form-box-shadow;
-            margin-bottom: 0.5rem;
-
-            .input-start-label {
-                min-width: 20rem;
-                max-width: 30rem;
-                text-align: left;
-                @include text(body-grey)
-            }
-
-            ion-input {
-                text-align: right;
-                @include text();
-            }
-
-            .input-end-label {
-                margin: auto 0 auto 0;
-                min-width: 8rem;
-                max-width: 15rem;
-                text-align: right;
-                @include text(body-grey)
-            }
-        }
     }
+
 }

@@ -19,15 +19,20 @@ export class FormButtonComponent implements OnInit {
     @Input()
     public fillScreenWidth: boolean;
 
+    @Input()
+    public swapColor?: boolean;
+
     @Output()
     public buttonClickedEvent: EventEmitter<any>;
 
-    constructor() {
+    public constructor() {
         this.buttonClickedEvent = new EventEmitter<any>();
-        //How do i set default value ?
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
+        if (!this.swapColor) {
+            this.swapColor = false;
+        }
     }
 
     public buttonClicked() {

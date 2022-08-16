@@ -60,7 +60,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     public ionViewWillEnter(): void {
         this.isMenuOpen = false;
         this.headerMode = HeaderMode.PARAMETER_FULL;
-        this.currentMenu = SettingsMenu.GENERAL;
+        this.currentMenu = SettingsMenu.CLOCKING; //Todo put back to general
         this.hideSubmitButton = false;
 
         this.updatePageAfterWindowSizeChanged();
@@ -105,7 +105,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     }
 
     public swapMenu(menu: SettingsMenu): void {
-        if (menu !== this.currentMenu) {
+        if (menu !== this.currentMenu || !this.isMenuOpen) {
             this.isMenuOpen = true;
             this.currentMenu = menu;
         }
@@ -116,7 +116,9 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     }
 
     public refreshPageAfterSubmission(logo: string): void {
-        this.refreshHeader$.next(logo);
+        if(logo) {
+            this.refreshHeader$.next(logo);
+        }
         console.log('save done');
         //Todo spawn a cool toast
     }

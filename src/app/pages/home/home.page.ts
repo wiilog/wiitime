@@ -31,11 +31,13 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillEnter(): Promise<any> {
+        /*
         this.insertExampleSub = from(this.sqliteService.insert(TableName.CLOCKING_RECORD, {id: 5,
                                                             badge_number: '22222',
                                                             clocking_date: '2022-07-12 13:25:03',
                                                             is_synchronised: 0
         })).subscribe(() => console.log('test insert finished'));
+        */
 
         this.dataSubscription = zip(
             this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD),
@@ -52,7 +54,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillLeave(): Promise<any> {
-        this.insertExampleSub.unsubscribe();
+        //this.insertExampleSub.unsubscribe();
 
         if (this.dataSubscription && !this.dataSubscription.closed) {
             this.dataSubscription.unsubscribe();

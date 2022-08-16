@@ -2,25 +2,20 @@ import {
     AfterViewInit,
     Component,
     ElementRef,
-    EventEmitter,
-    Input,
     NgZone,
     OnDestroy,
     OnInit,
-    Output,
     ViewChild
 } from '@angular/core';
-import {Observable, Subscription, zip} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription, zip} from 'rxjs';
+import {FormBuilder, Validators} from '@angular/forms';
 import {FormSize} from '@app/components/form/form-size-enum';
 import {TabConfig} from '@app/components/tab/tab-config';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {WindowSizeService} from '@app/services/window-size.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {LoadingService} from '@app/services/loading.service';
-import {mergeMap} from 'rxjs/operators';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {environment} from '../../../../environments/environment';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 
 enum SecondaryMode {
@@ -95,16 +90,6 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     }
 
     public ngOnInit(): void {
-        //TODO delete this thing (used for test) -> storage init should not be done here
-        this.ngZone.run(() => {
-            this.storageService.initStorage().pipe(
-                mergeMap(() => this.storageService.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)),
-            ).subscribe((result: string | null) => {
-                console.log(result);
-                //this.currentToggleOption = Number(result as unknown as SecondaryMode) || SecondaryMode.KIOSK;
-            });
-        });
-
         this.isSubmitted = false;
 
         this.updateViewAfterWindowSizeChanged();
@@ -204,7 +189,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                 this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION, this.form.value.kioskCommunication),
                 this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE,
                     this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
-                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.form.value.clockingVolume),
+                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.form.value.clockingVolume.toString()),
             )
         })
             .subscribe(() => {

@@ -22,7 +22,8 @@ export class StorageService {
         [StorageKeyEnum.KIOSK_MODE_COMMUNICATION]: 'non',
         [StorageKeyEnum.CLOCKING_SOUND_VOLUME]: '100', //percentage
         [StorageKeyEnum.CLOCKING_STORAGE_DURATION]: '7', //days
-        [StorageKeyEnum.CLOCKING_DISPLAY_DURATION]: '12', //hours
+        [StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL]: '12', //hour
+        [StorageKeyEnum.CLOCKING_POPUP_DISPLAY_DURATION]: '12', //second
         [StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING]: '2', //minutes
         [StorageKeyEnum.SFTP_SERVER_NAME]: null,
         [StorageKeyEnum.SFTP_PORT]: null,

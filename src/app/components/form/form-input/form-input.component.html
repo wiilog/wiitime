@@ -1,0 +1,19 @@
+<ion-item class="form-input normal-field">
+    <ion-label position="fixed"
+               text-wrap
+               class="input-start-label item-text-wrap">
+        {{inputName}}
+    </ion-label>
+    <ion-input [ngModel]="value"
+               (ngModelChange)="valueChange($event)"
+               (ionFocus)="markAsTouched()"
+               type="number"
+               slot="end">
+    </ion-input>
+    <ion-label *ngIf="endText"
+               slot="end"
+               position="fixed"
+               class="input-end-label">
+        {{endText}}
+    </ion-label>
+</ion-item>
