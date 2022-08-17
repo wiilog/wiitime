@@ -39,7 +39,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
 
     //server password field settings
     public readonly serverPasswordFormControlName = 'serverPassword';
-    public readonly serverPasswordFieldName = 'Mot de passe*';
+    public readonly serverPasswordFieldName = 'Mot de passe';
     public readonly serverPasswordMaxLength = 30;
     public readonly serverPasswordSize: FormSize = FormSize.MEDIUM;
 
@@ -95,35 +95,46 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
     }
 
     protected initContent(): void {
-        this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.SFTP_SERVER_ADDRESS),
+        this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
+            this.storageService.getValue(StorageKeyEnum.SFTP_SERVER_ADDRESS),
             this.storageService.getValue(StorageKeyEnum.SFTP_PORT),
             this.storageService.getValue(StorageKeyEnum.SFTP_USERNAME),
             this.storageService.getValue(StorageKeyEnum.SFTP_PASSWORD),
             this.storageService.getValue(StorageKeyEnum.SFTP_SAVE_PATH),
             this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY),
             this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME))
-            .subscribe(([serverAddress,
+            .subscribe(([sftpSetup,
+                            serverAddress,
                             serverPort,
                             serverUsername,
                             serverPassword,
                             serverPath,
                             syncFrequency,
                             syncBeginTime]) => {
-                if (!serverAddress) {
-                    throw new Error('server address should not be null');
+                if (Number(sftpSetup)) {
+                    if (!serverAddress) {
+                        throw new Error('server address should not be null');
+                    }
+                    if (!serverPort) {
+                        throw new Error('server port should not be null');
+                    }
+                    if (!serverUsername) {
+                        throw new Error('server username should not be null');
+                    }
+                    if (!serverPassword) {
+                        serverPassword = '';
+                    }
+                    if (!serverPath) {
+                        throw new Error('server path should not be null');
+                    }
+
+                    this.form.controls.serverAddress.setValue(serverAddress);
+                    this.form.controls.serverPort.setValue(serverPort);
+                    this.form.controls.serverUsername.setValue(serverUsername);
+                    this.form.controls.serverPassword.setValue(serverPassword);
+                    this.form.controls.serverPath.setValue(serverPath);
                 }
-                if (!serverPort) {
-                    throw new Error('server port should not be null');
-                }
-                if (!serverUsername) {
-                    throw new Error('server username should not be null');
-                }
-                if (!serverPassword) {
-                    throw new Error('server password should not be null');
-                }
-                if (!serverPath) {
-                    throw new Error('server path should not be null');
-                }
+
                 if (!syncFrequency) {
                     throw new Error('synchronisation frequency should not be null');
                 }
@@ -131,11 +142,6 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                     throw new Error('synchronisation begin time should not be null');
                 }
 
-                this.form.controls.serverAddress.setValue(serverAddress);
-                this.form.controls.serverPort.setValue(serverPort);
-                this.form.controls.serverUsername.setValue(serverUsername);
-                this.form.controls.serverPassword.setValue(serverPassword);
-                this.form.controls.serverPath.setValue(serverPath);
                 this.form.controls.syncFrequency.setValue(syncFrequency);
                 this.form.controls.syncBeginTime.setValue(syncBeginTime);
             });
@@ -155,10 +161,12 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                     this.storageService.setValue(StorageKeyEnum.SFTP_PASSWORD, this.form.value.serverPassword),
                     this.storageService.setValue(StorageKeyEnum.SFTP_SAVE_PATH, this.form.value.serverPath),
                     this.storageService.setValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY, this.form.value.syncFrequency.toString()),
-                    this.storageService.setValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME, this.form.value.syncBeginTime.toString())
+                    this.storageService.setValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME, this.form.value.syncBeginTime.toString()),
+                    this.storageService.setValue(StorageKeyEnum.SFTP_SETUP, '1')
                 )
             }
         ).subscribe(() => {
+            this.isSubmitted = false;
             this.validFormSubmittedEvent.emit();
         });
     }

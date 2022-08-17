@@ -21,6 +21,8 @@ export enum StorageKeyEnum {
     SFTP_PASSWORD = 'sftpPassword',
     SFTP_SAVE_PATH = 'sftpSavePath',
 
+    SFTP_SETUP = 'sftpSetup',
+
     SYNCHRONISATION_FREQUENCY = 'synchronisationFrequency',
     SYNCHRONISATION_BEGIN_TIME = 'synchronisationBeginTime',
     LAST_SYNCHRONISATION_DATETIME = 'lastSynchronisationDatetime',

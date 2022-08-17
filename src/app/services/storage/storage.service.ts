@@ -25,16 +25,17 @@ export class StorageService {
         [StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL]: '12', //hour
         [StorageKeyEnum.CLOCKING_POPUP_DISPLAY_DURATION]: '12', //second
         [StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING]: '2', //minutes
-        [StorageKeyEnum.SFTP_SERVER_ADDRESS]: '?',
-        [StorageKeyEnum.SFTP_PORT]: '0',
-        [StorageKeyEnum.SFTP_USERNAME]: '?',
-        [StorageKeyEnum.SFTP_PASSWORD]: '?',
-        [StorageKeyEnum.SFTP_SAVE_PATH]: '?',
+        [StorageKeyEnum.SFTP_SERVER_ADDRESS]: '',
+        [StorageKeyEnum.SFTP_PORT]: '',
+        [StorageKeyEnum.SFTP_USERNAME]: '',
+        [StorageKeyEnum.SFTP_PASSWORD]: '',
+        [StorageKeyEnum.SFTP_SAVE_PATH]: '',
         [StorageKeyEnum.SYNCHRONISATION_FREQUENCY]: '12', //hours
         [StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME]: '13:30', //TIME
         [StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME]: null, //Date
         [StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME]: null, //Datetime
-        [StorageKeyEnum.LAST_SFTP_STATUS]: SfpStatus.OFFLINE
+        [StorageKeyEnum.LAST_SFTP_STATUS]: SfpStatus.OFFLINE,
+        [StorageKeyEnum.SFTP_SETUP]: '0', //boolean
     };
 
     public constructor(private http: HttpClient) {

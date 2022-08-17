@@ -8,6 +8,15 @@
                         [inputName]="storageDurationFieldName"
                         [endText]="storageDurationEndText">
         </app-form-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().storageDuration.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().storageDuration.errors?.max">
+                ce champ ne peut être supérieur à {{storageDurationMaxValue}}
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().storageDuration.errors?.min">
+                Ce champ ne peut être infèrieur à {{storageDurationMinValue}}
+        </span>
 
         <app-form-button fillScreenWidth="true"
                          swapColor="true"
@@ -18,15 +27,42 @@
                         [inputName]="displayClockingFromFieldName"
                         [endText]="displayClockingFromEndText">
         </app-form-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().displayClockingFrom.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().displayClockingFrom.errors?.max">
+                ce champ ne peut être supérieur à {{displayClockingFromMaxValue}}
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().displayClockingFrom.errors?.min">
+                Ce champ ne peut être infèrieur à {{displayClockingFromMinValue}}
+        </span>
 
         <app-form-input [formControlName]="delayBetweenTwoClockingFormControlName"
                         [inputName]="delayBetweenTwoClockingFieldName"
                         [endText]="delayBetweenTwoClockingEndText">
         </app-form-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().delayBetweenTwoClocking.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().delayBetweenTwoClocking.errors?.max">
+                ce champ ne peut être supérieur à {{delayBetweenTwoClockingMaxValue}}
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().delayBetweenTwoClocking.errors?.min">
+                Ce champ ne peut être infèrieur à {{delayBetweenTwoClockingMinValue}}
+        </span>
 
         <app-form-input [formControlName]="popupDisplayDurationFormControlName"
                         [inputName]="popupDisplayDurationFieldName"
                         [endText]="popupDisplayDurationEndText">
         </app-form-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().popupDisplayDuration.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().popupDisplayDuration.errors?.max">
+                ce champ ne peut être supérieur à {{popupDisplayDurationMaxValue}}
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().displayClockingFrom.errors?.min">
+                Ce champ ne peut être infèrieur à {{popupDisplayDurationMinValue}}
+        </span>
     </form>
 </div>

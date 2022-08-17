@@ -52,7 +52,8 @@ ion-content {
 }
 
 .error {
-    @include text(form-error)
+    @include text(form-error);
+    margin: 0 0.5rem 1rem 0.5rem;
 }
 
 .formSubmitted {

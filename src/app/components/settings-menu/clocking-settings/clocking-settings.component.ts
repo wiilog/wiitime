@@ -19,21 +19,29 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     public readonly storageDurationFormControlName = 'storageDuration';
     public readonly storageDurationFieldName = 'Durée d\'archivage*';
     public readonly storageDurationEndText = 'jours';
+    public readonly storageDurationMinValue = 1;
+    public readonly storageDurationMaxValue = 365;
 
     //display clocking from field settings
     public readonly displayClockingFromFromControlName = 'displayClockingFrom';
     public readonly displayClockingFromFieldName = 'Affichage des badgeages sur*';
     public readonly displayClockingFromEndText = 'heures';
+    public readonly displayClockingFromMinValue = 1;
+    public readonly displayClockingFromMaxValue = 168;
 
     //delay between two clocking field settings
     public readonly delayBetweenTwoClockingFormControlName = 'delayBetweenTwoClocking';
     public readonly delayBetweenTwoClockingFieldName = 'Délai entre 2 badgeages*';
     public readonly delayBetweenTwoClockingEndText = 'minutes';
+    public readonly delayBetweenTwoClockingMinValue = 1;
+    public readonly delayBetweenTwoClockingMaxValue = 60;
 
     //pop-up display duration field settings
     public readonly popupDisplayDurationFormControlName = 'popupDisplayDuration';
     public readonly popupDisplayDurationFieldName = 'Durée d\'affichage pop-up mode kiosk*';
     public readonly popupDisplayDurationEndText = 'secondes';
+    public readonly popupDisplayDurationMinValue = 0;
+    public readonly popupDisplayDurationMaxValue = 120;
 
     public constructor(protected screenOrientationService: ScreenOrientationService,
                        protected windowSizeService: WindowSizeService,
@@ -44,10 +52,18 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
         super(screenOrientationService,
             windowSizeService, ngZone);
         this.form = this.formBuilder.group({
-            storageDuration: ['', [Validators.required, Validators.min(0), Validators.max(365), Validators.maxLength(3)]],
-            displayClockingFrom: ['', [Validators.required, Validators.min(1), Validators.max(168)]],
-            delayBetweenTwoClocking: ['', [Validators.required, Validators.min(0), Validators.max(60)]],
-            popupDisplayDuration: ['', [Validators.required, Validators.min(0), Validators.max(120)]],
+            storageDuration: ['', [Validators.required,
+                Validators.min(this.storageDurationMinValue),
+                Validators.max(this.storageDurationMaxValue)]],
+            displayClockingFrom: ['', [Validators.required,
+                Validators.min(this.displayClockingFromMinValue),
+                Validators.max(this.displayClockingFromMaxValue)]],
+            delayBetweenTwoClocking: ['', [Validators.required,
+                Validators.min(this.delayBetweenTwoClockingMinValue),
+                Validators.max(this.delayBetweenTwoClockingMaxValue)]],
+            popupDisplayDuration: ['', [Validators.required,
+                Validators.min(this.popupDisplayDurationMinValue),
+                Validators.max(this.popupDisplayDurationMaxValue)]],
         });
     }
 
@@ -108,6 +124,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
             }
         ).subscribe(() => {
             this.validFormSubmittedEvent.emit();
+            this.isSubmitted = false;
         });
     }
 }

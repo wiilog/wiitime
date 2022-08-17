@@ -76,11 +76,9 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                        protected ngZone: NgZone) {
         super(screenOrientationService, windowSizeService, ngZone);
         this.form = this.formBuilder.group({
-            kioskMessage: ['', [Validators.required,
-                Validators.maxLength(this.kioskMessageMaxLength)
+            kioskMessage: ['', [Validators.maxLength(this.kioskMessageMaxLength)
             ]],
-            kioskCommunication: ['', [Validators.required,
-                Validators.maxLength(this.kioskCommunicationMaxLength)
+            kioskCommunication: ['', [Validators.maxLength(this.kioskCommunicationMaxLength)
             ]],
             clockingVolume: ['', []],
         });
@@ -188,6 +186,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
             )
         })
             .subscribe(() => {
+                this.isSubmitted = false;
                 this.validFormSubmittedEvent.emit(this.logoSelectionFieldLogo);
             });
     }
