@@ -1,0 +1,23 @@
+@import "src/theme/global";
+
+:host {
+    flex: 1;
+}
+
+.sftp-settings-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    form {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        margin: 1rem 1rem 1rem 1rem;
+
+        .error {
+            margin: 0 0.5rem 1rem 0.5rem;
+        }
+    }
+
+}

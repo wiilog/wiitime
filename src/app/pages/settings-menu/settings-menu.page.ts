@@ -60,7 +60,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     public ionViewWillEnter(): void {
         this.isMenuOpen = false;
         this.headerMode = HeaderMode.PARAMETER_FULL;
-        this.currentMenu = SettingsMenu.CLOCKING; //Todo put back to general
+        this.currentMenu = SettingsMenu.SFTP; //Todo put back to general
         this.hideSubmitButton = false;
 
         this.updatePageAfterWindowSizeChanged();

@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type.enum';
 
 @Component({
     selector: 'app-form-input',
@@ -15,11 +16,19 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 })
 export class FormInputComponent implements OnInit, ControlValueAccessor {
 
+    @ViewChild('inputField', {read: ElementRef})
+    public inputField: ElementRef;
+
     @Input()
     public inputName: string;
 
     @Input()
+    public inputType?: FormInputTypeEnum;
+
+    @Input()
     public endText?: string;
+
+    public readonly formInputTypeEnum = FormInputTypeEnum;
 
     public value: number;
 
@@ -31,7 +40,7 @@ export class FormInputComponent implements OnInit, ControlValueAccessor {
 
     private onTouched: () => void;
 
-    constructor() {
+    public constructor() {
         this.touched = false;
         this.disabled = false;
     }
@@ -39,6 +48,9 @@ export class FormInputComponent implements OnInit, ControlValueAccessor {
     public ngOnInit(): void {
         if (!this.inputName) {
             throw new Error('invalid value for inputName property of FormInputComponent');
+        }
+        if (!this.inputType) {
+            this.inputType = FormInputTypeEnum.NUMBER;
         }
     }
 

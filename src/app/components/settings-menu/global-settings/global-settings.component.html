@@ -16,22 +16,22 @@
 
         <app-form-text-area [formControlName]="kioskMessageFormControlName"
                             [fieldName]="kioskMessageFieldName"
-                            [maxLength]="kioskMessageFieldMaxLength"
-                            [size]="kioskMessageFieldSize">
+                            [maxLength]="kioskMessageMaxLength"
+                            [size]="kioskMessageSize">
         </app-form-text-area>
 
         <app-form-text-area [formControlName]="kioskCommunicationFormControlName"
                             [fieldName]="kioskCommunicationFieldName"
-                            [maxLength]="kioskCommunicationFieldMaxLength"
-                            [size]="kioskCommunicationFieldSize">
+                            [maxLength]="kioskCommunicationMaxLength"
+                            [size]="kioskCommunicationSize">
         </app-form-text-area>
 
-        <app-form-toggle [fieldName]="secondaryModeToggleFieldName"
+        <app-form-toggle [fieldName]="secondaryModeToggleName"
                          [currentToggleOption]="currentToggleOption"
                          [tabConfig]="tabConfig">
         </app-form-toggle>
 
-        <app-form-range [formControlName]="volumeRangeFieldFormControlName"
+        <app-form-range [formControlName]="volumeRangeFormControlName"
                         [fieldName]="volumeRangeFieldName">
         </app-form-range>
     </form>

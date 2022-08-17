@@ -1,4 +1,4 @@
-import {EventEmitter, Input, Output} from '@angular/core';
+import {EventEmitter, Input, NgZone, Output} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
@@ -19,9 +19,12 @@ export abstract class SettingsMenuComponent {
 
     protected windowSizeSubscription: Subscription;
     protected submitFormSubscription: Subscription;
+    protected valueSetterSubscription: Subscription;
+    protected saveSubscription: Subscription;
 
     protected constructor(protected screenOrientationService: ScreenOrientationService,
-                          protected windowSizeService: WindowSizeService,) {
+                          protected windowSizeService: WindowSizeService,
+                          protected ngZone: NgZone,) {
         this.validFormSubmittedEvent = new EventEmitter<any>();
     }
 
@@ -34,6 +37,47 @@ export abstract class SettingsMenuComponent {
         return this.form.controls;
     }
 
-    public abstract formSubmitted(): void;
+    //Call in ngOnInit
+    protected initSettingsMenu() {
+        this.isSubmitted = false;
+        this.updateViewAfterWindowSizeChanged();
+        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
+            () => {
+                this.ngZone.run(() => {
+                    this.updateViewAfterWindowSizeChanged();
+                });
+            }
+        );
+
+        this.initContent();
+    }
+
+    //Call in ngAfterViewInit()
+    protected initSubmitFormSubscription() {
+        this.submitFormSubscription = this.submitForm$.subscribe(() => {
+            this.formSubmitted();
+        });
+    }
+
+    //Call in ngOnDestroy
+    protected clearSubscriptionOnDestroy() {
+        this.windowSizeSubscription.unsubscribe();
+
+        if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
+            this.valueSetterSubscription.unsubscribe();
+        }
+
+        if (this.saveSubscription && !this.saveSubscription.closed) {
+            this.saveSubscription.unsubscribe();
+        }
+
+        if (this.submitFormSubscription && !this.submitFormSubscription.closed) {
+            this.submitFormSubscription.unsubscribe();
+        }
+    }
+
+    protected abstract formSubmitted(): void;
+
+    protected abstract initContent(): void;
 }
 

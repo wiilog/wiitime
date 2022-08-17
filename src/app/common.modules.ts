@@ -14,6 +14,7 @@ import {FormActionableComponent} from '@app/components/form/form-actionable/form
 import {FormToggleComponent} from '@app/components/form/form-toggle/form-toggle.component';
 import {FormRangeComponent} from '@app/components/form/form-range/form-range.component';
 import {FormInputComponent} from '@app/components/form/form-input/form-input.component';
+import {FormPasswordInputComponent} from '@app/components/form/form-password-input/form-password-input.component';
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import {FormInputComponent} from '@app/components/form/form-input/form-input.com
         FormToggleComponent,
         FormRangeComponent,
         FormInputComponent,
+        FormPasswordInputComponent,
     ],
     imports: [
         AngularCommonModule,
@@ -45,6 +47,7 @@ import {FormInputComponent} from '@app/components/form/form-input/form-input.com
         FormToggleComponent,
         FormRangeComponent,
         FormInputComponent,
+        FormPasswordInputComponent,
     ]
 })
 export class CommonModules {

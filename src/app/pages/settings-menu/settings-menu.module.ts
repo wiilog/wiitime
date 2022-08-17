@@ -10,6 +10,7 @@ import {SettingsMenuPage} from './settings-menu.page';
 import {CommonModules} from '@app/common.modules';
 import {GlobalSettingsComponent} from '@app/components/settings-menu/global-settings/global-settings.component';
 import {ClockingSettingsComponent} from '@app/components/settings-menu/clocking-settings/clocking-settings.component';
+import {SftpSettingsComponent} from '@app/components/settings-menu/sftp-settings/sftp-settings.component';
 
 @NgModule({
     imports: [
@@ -20,7 +21,7 @@ import {ClockingSettingsComponent} from '@app/components/settings-menu/clocking-
         CommonModules,
         ReactiveFormsModule,
     ],
-    declarations: [SettingsMenuPage, GlobalSettingsComponent, ClockingSettingsComponent]
+    declarations: [SettingsMenuPage, GlobalSettingsComponent, ClockingSettingsComponent, SftpSettingsComponent]
 })
 export class SettingsMenuPageModule {
 }

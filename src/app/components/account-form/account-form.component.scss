@@ -50,10 +50,6 @@
             }
         }
 
-        .error {
-            @include text(form-error)
-        }
-
         .connexion-button {
             margin-top: auto;
             padding-top: 1rem;

@@ -1,11 +1,10 @@
 import {AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
-import {Platform} from '@ionic/angular';
 import {FormBuilder, Validators} from '@angular/forms';
 import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {WindowSizeService} from '@app/services/window-size.service';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {StorageService} from '@app/services/storage/storage.service';
-import {Subscription, zip} from 'rxjs';
+import {zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {LoadingService} from '@app/services/loading.service';
 
@@ -17,37 +16,33 @@ import {LoadingService} from '@app/services/loading.service';
 export class ClockingSettingsComponent extends SettingsMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
     //storage duration field settings
-    public storageDurationFormControlName = 'storageDuration';
-    public storageDurationFieldName = 'Durée d\'archivage*';
-    public storageDurationEndText = 'jours';
+    public readonly storageDurationFormControlName = 'storageDuration';
+    public readonly storageDurationFieldName = 'Durée d\'archivage*';
+    public readonly storageDurationEndText = 'jours';
 
     //display clocking from field settings
-    public displayClockingFromFromControlName = 'displayClockingFrom';
-    public displayClockingFromFieldName = 'Affichage des badgeages sur*';
-    public displayClockingFromEndText = 'heures';
+    public readonly displayClockingFromFromControlName = 'displayClockingFrom';
+    public readonly displayClockingFromFieldName = 'Affichage des badgeages sur*';
+    public readonly displayClockingFromEndText = 'heures';
 
     //delay between two clocking field settings
-    public delayBetweenTwoClockingFormControlName = 'delayBetweenTwoClocking';
-    public delayBetweenTwoClockingFieldName = 'Délai entre 2 badgeages*';
-    public delayBetweenTwoClockingEndText = 'minutes';
+    public readonly delayBetweenTwoClockingFormControlName = 'delayBetweenTwoClocking';
+    public readonly delayBetweenTwoClockingFieldName = 'Délai entre 2 badgeages*';
+    public readonly delayBetweenTwoClockingEndText = 'minutes';
 
     //pop-up display duration field settings
-    public popupDisplayDurationFormControlName = 'popupDisplayDuration';
-    public popupDisplayDurationFieldName = 'Durée d\'affichage pop-up mode kiosk*';
-    public popupDisplayDurationEndText = 'secondes';
-
-    private valueSetterSubscription: Subscription;
-    private saveSubscription: Subscription;
+    public readonly popupDisplayDurationFormControlName = 'popupDisplayDuration';
+    public readonly popupDisplayDurationFieldName = 'Durée d\'affichage pop-up mode kiosk*';
+    public readonly popupDisplayDurationEndText = 'secondes';
 
     public constructor(protected screenOrientationService: ScreenOrientationService,
                        protected windowSizeService: WindowSizeService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private formBuilder: FormBuilder,
-                       private platform: Platform,
-                       private ngZone: NgZone,) {
+                       protected ngZone: NgZone,) {
         super(screenOrientationService,
-            windowSizeService);
+            windowSizeService, ngZone);
         this.form = this.formBuilder.group({
             storageDuration: ['', [Validators.required, Validators.min(0), Validators.max(365), Validators.maxLength(3)]],
             displayClockingFrom: ['', [Validators.required, Validators.min(1), Validators.max(168)]],
@@ -57,16 +52,18 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     }
 
     public ngOnInit(): void {
-        this.isSubmitted = false;
-        this.updateViewAfterWindowSizeChanged();
-        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
-            () => {
-                this.ngZone.run(() => {
-                    this.updateViewAfterWindowSizeChanged();
-                });
-            }
-        );
+        this.initSettingsMenu();
+    }
 
+    public ngAfterViewInit(): void {
+        this.initSubmitFormSubscription();
+    }
+
+    public ngOnDestroy(): void {
+        this.clearSubscriptionOnDestroy();
+    }
+
+    protected initContent() {
         this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION),
             this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL),
             this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING),
@@ -95,30 +92,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
             });
     }
 
-    public ngAfterViewInit(): void {
-        this.submitFormSubscription = this.submitForm$.subscribe(() => {
-            this.formSubmitted();
-        });
-    }
-
-    public ngOnDestroy(): void {
-        this.windowSizeSubscription.unsubscribe();
-
-        if (this.submitFormSubscription && !this.submitFormSubscription.closed) {
-            this.submitFormSubscription.unsubscribe();
-        }
-
-        if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
-            this.valueSetterSubscription.unsubscribe();
-        }
-
-        if (this.saveSubscription && !this.saveSubscription.closed) {
-            this.saveSubscription.unsubscribe();
-        }
-        console.log('leave clocking settings');
-    }
-
-    public formSubmitted(): void {
+    protected formSubmitted(): void {
         this.isSubmitted = true;
         if (!this.form.valid) {
             console.log('Invalid form content !');

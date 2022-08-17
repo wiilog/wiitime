@@ -7,7 +7,7 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import {Subscription, zip} from 'rxjs';
+import {zip} from 'rxjs';
 import {FormBuilder, Validators} from '@angular/forms';
 import {FormSize} from '@app/components/form/form-size-enum';
 import {TabConfig} from '@app/components/tab/tab-config';
@@ -33,7 +33,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     @ViewChild('inputImage', {read: ElementRef})
     public inputImage: ElementRef;
 
-    //Logo selection field
+    //Logo selection field settings
     public readonly logoSelectionFieldName = 'Logo*';
     public logoSelectionFieldLogo: string;
 
@@ -41,23 +41,23 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public adminUsername: string;
     public adminPassword: string;
 
-    //update user info field
+    //update user info field settings
     public readonly updateUserInfoFieldName = 'Identifiant & Mot de passe*';
 
     //Kiosk message field settings
     public readonly kioskMessageFormControlName = 'kioskMessage';
     public readonly kioskMessageFieldName = 'Message accueil Kiosque';
-    public readonly kioskMessageFieldMaxLength = 25;
-    public readonly kioskMessageFieldSize: FormSize = FormSize.MEDIUM;
+    public readonly kioskMessageMaxLength = 25;
+    public readonly kioskMessageSize: FormSize = FormSize.MEDIUM;
 
     //Kiosk communication field settings
     public readonly kioskCommunicationFormControlName = 'kioskCommunication';
     public readonly kioskCommunicationFieldName = 'Message communication';
-    public readonly kioskCommunicationFieldMaxLength = 150;
-    public readonly kioskCommunicationFieldSize: FormSize = FormSize.LARGE;
+    public readonly kioskCommunicationMaxLength = 150;
+    public readonly kioskCommunicationSize: FormSize = FormSize.LARGE;
 
     //Secondary mode toggle field settings
-    public readonly secondaryModeToggleFieldName = 'Mode*';
+    public readonly secondaryModeToggleName = 'Mode*';
     public currentToggleOption: SecondaryMode;
     public readonly tabConfig: TabConfig[] = [
         {label: 'Kiosque', key: SecondaryMode.KIOSK},
@@ -65,67 +65,62 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     ];
 
     //volume range field settings
+    public readonly volumeRangeFormControlName = 'clockingVolume';
     public readonly volumeRangeFieldName = 'Volume bip';
-    public readonly volumeRangeFieldFormControlName = 'clockingVolume';
-
-    private valueSetterSubscription: Subscription;
-    private saveSubscription: Subscription;
 
     public constructor(protected screenOrientationService: ScreenOrientationService,
                        protected windowSizeService: WindowSizeService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private formBuilder: FormBuilder,
-                       private ngZone: NgZone) {
-        super(screenOrientationService, windowSizeService);
+                       protected ngZone: NgZone) {
+        super(screenOrientationService, windowSizeService, ngZone);
         this.form = this.formBuilder.group({
             kioskMessage: ['', [Validators.required,
-                Validators.maxLength(this.kioskMessageFieldMaxLength)
+                Validators.maxLength(this.kioskMessageMaxLength)
             ]],
             kioskCommunication: ['', [Validators.required,
-                Validators.maxLength(this.kioskCommunicationFieldMaxLength)
+                Validators.maxLength(this.kioskCommunicationMaxLength)
             ]],
             clockingVolume: ['', []],
         });
     }
 
     public ngOnInit(): void {
-        this.isSubmitted = false;
-
-        this.updateViewAfterWindowSizeChanged();
-        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
-            () => {
-                this.ngZone.run(() => {
-                    this.updateViewAfterWindowSizeChanged();
-                });
-            }
-        );
-        this.initContent();
+        this.initSettingsMenu();
     }
 
     public ngAfterViewInit(): void {
-        this.submitFormSubscription = this.submitForm$.subscribe(() => {
-            this.formSubmitted();
-        });
+        this.initSubmitFormSubscription();
     }
 
     public ngOnDestroy(): void {
-        this.windowSizeSubscription.unsubscribe();
+        this.clearSubscriptionOnDestroy();
+    }
 
-        if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
-            this.valueSetterSubscription.unsubscribe();
-        }
+    public updateLogoButtonClicked(): void {
+        //trigger input image OnClick event to open the file browser
+        this.inputImage.nativeElement.click();
+    }
 
-        if (this.saveSubscription && !this.saveSubscription.closed) {
-            this.saveSubscription.unsubscribe();
-        }
+    public updateAdminInfoButtonClicked(): void {
+        //Todo connect update admin settings modal
+    }
 
-        if (this.submitFormSubscription && !this.submitFormSubscription.closed) {
-            this.submitFormSubscription.unsubscribe();
+    public updateLogo(result: any) {
+        if (result.target.files.length > 0) {
+            console.log(result);
+            console.log(result.target.value);
+            const reader = new FileReader();
+            reader.readAsDataURL(result.target.files[0]);
+            reader.onload = () => {
+                console.log(reader.result);
+                this.logoSelectionFieldLogo = reader.result.toString();
+            };
         }
     }
 
-    public initContent(): void {
+    protected initContent(): void {
         this.ngZone.run(() => {
             this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_MESSAGE),
                 this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION),
@@ -174,7 +169,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         });
     }
 
-    public formSubmitted(): void {
+    protected formSubmitted(): void {
         this.isSubmitted = true;
         if (!this.form.valid) {
             console.log('Invalid form content !');
@@ -195,27 +190,5 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
             .subscribe(() => {
                 this.validFormSubmittedEvent.emit(this.logoSelectionFieldLogo);
             });
-    }
-
-    public updateLogoButtonClicked(): void {
-        //trigger input image OnClick event to open the file browser
-        this.inputImage.nativeElement.click();
-    }
-
-    public updateAdminInfoButtonClicked(): void {
-        //Todo connect update admin settings modal
-    }
-
-    public updateLogo(result: any) {
-        if (result.target.files.length > 0) {
-            console.log(result);
-            console.log(result.target.value);
-            const reader = new FileReader();
-            reader.readAsDataURL(result.target.files[0]);
-            reader.onload = () => {
-                console.log(reader.result);
-                this.logoSelectionFieldLogo = reader.result.toString();
-            };
-        }
     }
 }

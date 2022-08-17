@@ -1,5 +1,5 @@
 export enum FormSize {
-    NORMAL,
-    MEDIUM,
-    LARGE,
+    NORMAL ='normal',
+    MEDIUM = 'medium',
+    LARGE = 'large',
 }

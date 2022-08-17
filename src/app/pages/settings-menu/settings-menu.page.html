@@ -55,6 +55,12 @@
             [submitForm$]="submitButtonClicked$"
             (validFormSubmittedEvent)="refreshPageAfterSubmission($event)">
         </app-clocking-settings>
+
+        <app-sftp-settings
+            *ngIf="currentMenu === possibleMenu.SFTP"
+            [submitForm$]="submitButtonClicked$"
+            (validFormSubmittedEvent)="refreshPageAfterSubmission($event)">
+        </app-sftp-settings>
     </div>
     <div *ngIf="(!isPortraitMode && !hideSideMenu) || isMenuOpen"
          [class.expend]="!isPortraitMode && !hideSideMenu"

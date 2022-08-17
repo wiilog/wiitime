@@ -51,6 +51,19 @@ ion-content {
     @include title(2rem);
 }
 
+.error {
+    @include text(form-error)
+}
+
+.formSubmitted {
+    .ng-invalid {
+        .field-wrapper {
+            --border-color: #{$red};
+            --highlight-background: #{$red}
+        }
+    }
+}
+
 form {
     .normal-field {
         --min-height: #{$normal-field-height};

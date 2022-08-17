@@ -15,7 +15,7 @@ export enum StorageKeyEnum {
     CLOCKING_POPUP_DISPLAY_DURATION = 'clockingPopupDisplayDuration',
     DELAY_BETWEEN_TWO_CLOCKING = 'delayBetweenTwoClocking',
 
-    SFTP_SERVER_NAME = 'sftpServerName',
+    SFTP_SERVER_ADDRESS = 'sftpServerAddress',
     SFTP_PORT = 'sftpPort',
     SFTP_USERNAME = 'sftpUsername',
     SFTP_PASSWORD = 'sftpPassword',

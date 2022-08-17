@@ -1,5 +1,10 @@
 @import "src/theme/global";
 
+.noHighlight {
+    --border-color: transparent;
+    --highlight-background: transparent !important;
+}
+
 .form-input {
     --padding-start: 1rem;
     --padding-end: 1.5rem;
@@ -46,5 +51,9 @@
         max-width: 8rem;
         text-align: right;
         @include text(body-grey)
+    }
+
+    .timeInput {
+        max-width: 8rem;
     }
 }

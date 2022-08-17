@@ -25,11 +25,11 @@ export class StorageService {
         [StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL]: '12', //hour
         [StorageKeyEnum.CLOCKING_POPUP_DISPLAY_DURATION]: '12', //second
         [StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING]: '2', //minutes
-        [StorageKeyEnum.SFTP_SERVER_NAME]: null,
-        [StorageKeyEnum.SFTP_PORT]: null,
-        [StorageKeyEnum.SFTP_USERNAME]: null,
-        [StorageKeyEnum.SFTP_PASSWORD]: null,
-        [StorageKeyEnum.SFTP_SAVE_PATH]: null,
+        [StorageKeyEnum.SFTP_SERVER_ADDRESS]: '?',
+        [StorageKeyEnum.SFTP_PORT]: '0',
+        [StorageKeyEnum.SFTP_USERNAME]: '?',
+        [StorageKeyEnum.SFTP_PASSWORD]: '?',
+        [StorageKeyEnum.SFTP_SAVE_PATH]: '?',
         [StorageKeyEnum.SYNCHRONISATION_FREQUENCY]: '12', //hours
         [StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME]: '13:30', //TIME
         [StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME]: null, //Date

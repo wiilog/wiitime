@@ -1,3 +1,98 @@
-<p>
-  sftp-settings works!
-</p>
+<div class="sftp-settings-container">
+    <div class="setting-title" *ngIf="showTitle">
+        Paramétrage SFTP
+    </div>
+
+    <form [formGroup]="form" [class.formSubmitted]="isSubmitted">
+        <app-form-text-area [formControlName]="serverAddressFormControlName"
+                            [fieldName]="serverAddressName"
+                            [maxLength]="serverAddressMaxLength"
+                            [size]="serverAddressSize">
+        </app-form-text-area>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverAddress.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverAddress.errors?.maxLength">
+                Ce champ est limité à {{serverAddressMaxLength}} caractères
+        </span>
+
+        <app-form-input [formControlName]="serverPortFromControlName"
+                        [inputName]="serverPortFieldName"
+                        [inputType]="formInputTypeEnum.NUMBER">
+        </app-form-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPort.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPort.errors?.max">
+                ce champ ne peut être supérieur à {{serverPortMaxValue}}
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPort.errors?.min">
+                Ce champ ne peut être infèrieur à {{serverPortMinValue}}
+        </span>
+
+        <app-form-text-area [formControlName]="serverUsernameFormControlName"
+                            [fieldName]="serverUsernameFieldName"
+                            [maxLength]="serverUsernameMaxLength"
+                            [size]="serverUsernameSize">
+        </app-form-text-area>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverUsername.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverUsername.errors?.maxLength">
+                Ce champ est limité à {{serverUsernameMaxLength}} caractères
+        </span>
+
+        <app-form-password-input [formControlName]="serverPasswordFormControlName"
+                                 [fieldName]="serverPasswordFieldName"
+                                 [maxLength]="serverPasswordMaxLength"
+                                 [size]="serverPasswordSize">
+        </app-form-password-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPassword.errors?.maxLength">
+                Ce champ est limité à {{serverPasswordMaxLength}} caractères
+        </span>
+
+        <app-form-text-area [formControlName]="serverPathFormControlName"
+                            [fieldName]="serverPathFieldName"
+                            [maxLength]="serverPathMaxLength"
+                            [size]="serverPathSize">
+        </app-form-text-area>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.maxLength">
+                Ce champ est limité à {{serverPathMaxLength}} caractères
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.pattern">
+            chemin non valide
+        </span>
+
+        <app-form-button fillScreenWidth="true"
+                         swapColor="true"
+                         buttonText="Test connection">
+        </app-form-button>
+
+        <div class="setting-title">
+            Fréquence de synchronisation
+        </div>
+
+        <app-form-input [formControlName]="syncFrequencyFormControlName"
+                        [inputName]="syncFrequencyFieldName"
+                        [inputType]="formInputTypeEnum.NUMBER"
+                        [endText]="syncFrequencyEndText">
+        </app-form-input>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().syncFrequency.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().syncFrequency.errors?.max">
+                ce champ ne peut être supérieur à {{syncFrequencyMaxValue}}
+        </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().syncFrequency.errors?.min">
+                Ce champ ne peut être infèrieur à {{syncFrequencyMinValue}}
+        </span>
+
+        <app-form-input [formControlName]="syncBeginTimeFormControlName"
+                        [inputType]="formInputTypeEnum.TIME"
+                        [inputName]="syncBeginTimeFieldName">
+        </app-form-input>
+    </form>
+</div>
