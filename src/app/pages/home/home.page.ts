@@ -6,7 +6,7 @@ import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {TableName} from '@app/services/sqlite/table-name';
-import {from, Subscription, zip} from 'rxjs';
+import {Subscription, zip} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
@@ -23,6 +23,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
 
     private insertExampleSub: Subscription;
     private dataSubscription: Subscription;
+    private nfcSubscription: Subscription;
 
     public constructor(private nfcService: NfcService,
                        private navService: NavService,
@@ -37,7 +38,6 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
                                                             clocking_date: '2022-07-12 13:25:03',
                                                             is_synchronised: 0
         })).subscribe(() => console.log('test insert finished'));
-        */
 
         this.dataSubscription = zip(
             this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD),
@@ -51,10 +51,15 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
         this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD).subscribe((clockings: Array<ClockingRecord>) => {
             console.log(clockings);
         });
+        */
+
+        this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
+            (data) => this.sqliteService.registerClocking(this.nfcService.convertIdToHex(data)));
     }
 
     public async ionViewWillLeave(): Promise<any> {
-        //this.insertExampleSub.unsubscribe();
+        this.insertExampleSub.unsubscribe();
+        this.nfcSubscription.unsubscribe();
 
         if (this.dataSubscription && !this.dataSubscription.closed) {
             this.dataSubscription.unsubscribe();
@@ -79,13 +84,3 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
         this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME).subscribe((ff) => {console.log(typeof ff);});
     })
 */
-
-/* Piece of home whichS where deleted
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Je suis un lémurien des grande plaines gelée de l'alaska
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
- */

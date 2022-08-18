@@ -119,6 +119,9 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
         if(logo) {
             this.refreshHeader$.next(logo);
         }
+        if((!this.isPortraitMode && this.hideSideMenu) || this.isPortraitMode) {
+            this.isMenuOpen = false;
+        }
         console.log('save done');
         //Todo spawn a cool toast
     }

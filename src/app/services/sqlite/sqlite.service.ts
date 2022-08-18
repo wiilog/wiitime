@@ -6,6 +6,9 @@ import {Platform} from '@ionic/angular';
 import {TABLES_DEFINITION} from '@app/services/sqlite/table-definitions';
 import {TableName} from '@app/services/sqlite/table-name';
 import {Entity} from '@app/services/sqlite/entities/entity';
+import {StorageService} from '@app/services/storage/storage.service';
+import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
+import {NfcTag} from "@ionic-native/nfc/ngx";
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +20,8 @@ export class SQLiteService {
     private sqliteObject$: Subject<SQLiteObject>;
 
     public constructor(private sqlite: SQLite,
-                       private platform: Platform) {
+                       private platform: Platform,
+                       private storageService: StorageService) {
         this.sqliteObject$ = new ReplaySubject<SQLiteObject>(1);
     }
 
@@ -189,5 +193,23 @@ export class SQLiteService {
             await this.executeQuery(`INSERT INTO ${table}(${commaColumns})
                                  VALUES (${questionMarks})`, values).toPromise();
         }
+    }
+
+    public deleteOldClocking(): Observable<void>{
+        const table = TableName.CLOCKING_RECORD;
+        return this.storageService.getValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION)
+            .pipe(
+                mergeMap((storageDuration: string) => from(
+                    this.executeQuery(`DELETE FROM ${table} WHERE DATETIME(clocking_date, '+${storageDuration} day') < DATETIME('now')`))
+                ));
+    }
+
+    public registerClocking(badgeId: string): void {
+        from(this.insert(TableName.CLOCKING_RECORD, {
+            id: null,
+            badge_number: badgeId,
+            clocking_date: new Date().toISOString(),
+            is_synchronised: '0'
+        })).pipe(mergeMap(() => this.deleteOldClocking()));
     }
 }
