@@ -26,6 +26,9 @@ export class FormPasswordInputComponent implements OnInit , ControlValueAccessor
     @Input()
     public size: FormSize;
 
+    @Input()
+    public titleOnTop?: boolean;
+
     public content: string;
 
     public formSizeEnum = FormSize;

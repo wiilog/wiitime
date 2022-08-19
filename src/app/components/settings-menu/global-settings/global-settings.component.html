@@ -19,7 +19,7 @@
                             [maxLength]="kioskMessageMaxLength"
                             [size]="kioskMessageSize">
         </app-form-text-area>
-        <span class="error" *ngIf="isSubmitted && getErrorControl().kioskMessage.errors?.maxLength">
+        <span class="error" *ngIf="isSubmitted && getErrorControl().kioskMessage.errors?.maxlength">
                 Ce champ est limité à {{kioskMessageMaxLength}} caractères
         </span>
 
@@ -28,7 +28,7 @@
                             [maxLength]="kioskCommunicationMaxLength"
                             [size]="kioskCommunicationSize">
         </app-form-text-area>
-        <span class="error" *ngIf="isSubmitted && getErrorControl().kioskCommunication.errors?.maxLength">
+        <span class="error" *ngIf="isSubmitted && getErrorControl().kioskCommunication.errors?.maxlength">
                 Ce champ est limité à {{kioskCommunicationMaxLength}} caractères
         </span>
 

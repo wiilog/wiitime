@@ -6,6 +6,9 @@ export const environment = {
     production: false,
     //should be changed if the 'when' value of the ion-split-pane in the settings-menu-page component html file is changed.
     minWindowWidthForSideMenu: 768,
+    adminUsernameMaxLength: 20,
+    adminPasswordMinLength: 4,
+    adminPasswordMaxLength: 30,
 };
 
 /*

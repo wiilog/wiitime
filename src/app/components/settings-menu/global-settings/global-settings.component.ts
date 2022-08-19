@@ -17,6 +17,8 @@ import {StorageService} from '@app/services/storage/storage.service';
 import {LoadingService} from '@app/services/loading.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
+import {ModalController} from '@ionic/angular';
+import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
 
 enum SecondaryMode {
     KIOSK = 1,
@@ -73,6 +75,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private formBuilder: FormBuilder,
+                       private modalCtrl: ModalController,
                        protected ngZone: NgZone) {
         super(screenOrientationService, windowSizeService, ngZone);
         this.form = this.formBuilder.group({
@@ -101,8 +104,27 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         this.inputImage.nativeElement.click();
     }
 
-    public updateAdminInfoButtonClicked(): void {
-        //Todo connect update admin settings modal
+    public async updateAdminInfoButtonClicked(): Promise<void> {
+        const modal = await this.modalCtrl.create({
+            component: FormModalComponent,
+            keyboardClose: true,
+            componentProps: {
+                modalTitle: 'Modifier l\'identifiant et le mot de passe',
+                adminUsername: this.adminUsername,
+                adminPassword: this.adminPassword,
+            },
+            cssClass: 'auto-height',
+            backdropDismiss: false,
+        });
+        await modal.present();
+
+        const {data, role} = await modal.onWillDismiss();
+        if (role === 'confirm') {
+            console.log(data);
+            this.adminUsername = data.username;
+            this.adminPassword = data.password;
+            console.log(this.adminUsername, ' ', this.adminPassword);
+        }
     }
 
     public updateLogo(result: any) {

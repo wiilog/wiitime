@@ -29,9 +29,20 @@
 @import "fonts";
 @import "mixins";
 
-@for $i from 1 through 5 {
+@for $i from 1 through 6 {
+    //mt = margin-top
     .mt-#{$i} {
         margin-top: #{$i * 0.5}rem !important;
+    }
+
+    //ml = margin-left
+    .ml-#{$i} {
+        margin-left: #{$i * 0.5}rem !important;
+    }
+
+    //mr = margin-right
+    .mr-#{$i} {
+        margin-right: #{$i * 0.5}rem !important;
     }
 }
 
@@ -39,6 +50,26 @@ html {
     //default font size is 16px. By multiplying it by 0.625 we change it's value to 10 which is way easier to as
     // base value for all size.
     font-size: 62.5%;
+}
+
+ion-modal {
+
+    &.auto-height {
+        --height: auto;
+        --max-width: 95%;
+
+        .ion-page {
+            position: relative;
+            display: block;
+            contain: content;
+
+            .inner-content {
+                max-height: 50rem;
+                overflow: auto;
+                padding: 1rem;
+            }
+        }
+    }
 }
 
 ion-content {

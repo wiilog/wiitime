@@ -1,5 +1,10 @@
 @import "src/theme/global";
 
+.field-name {
+    margin-left: 0.5rem;
+    @include text(body-grey)
+}
+
 .text-field {
     --padding-start: 1rem;
     margin-bottom: 0.5rem;

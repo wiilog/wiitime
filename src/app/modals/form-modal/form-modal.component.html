@@ -1,0 +1,51 @@
+<div class="inner-content">
+    <div class="modal-title">
+        {{modalTitle}}
+    </div>
+    <form [formGroup]="form">
+        <app-form-text-area [formControlName]="usernameFormControlName"
+                            [fieldName]="usernameFieldName"
+                            [maxLength]="usernameMaxLength"
+                            [size]="usernameFieldSize"
+                            titleOnTop="true">
+        </app-form-text-area>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().username.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+            </span>
+        <span class="error" *ngIf="isSubmitted && getErrorControl().username.errors?.maxlength">
+                Ce champ est limité à {{usernameMaxLength}} caractères
+            </span>
+
+        <div class="mt-4">
+            <app-form-password-input [formControlName]="passwordFormControlName"
+                                     [fieldName]="passwordFieldName"
+                                     [maxLength]="passwordMaxLength"
+                                     [size]="passwordFieldSize"
+                                     titleOnTop="true">
+            </app-form-password-input>
+            <span class="error" *ngIf="isSubmitted && getErrorControl().password.errors?.required">
+                Ce champ doit être renseigné pour sauvegarder
+            </span>
+            <span class="error" *ngIf="isSubmitted && getErrorControl().password.errors?.minlength">
+                Ce champ doit faire au moins {{passwordMinLength}} caractères
+            </span>
+            <span class="error" *ngIf="isSubmitted && getErrorControl().password.errors?.maxlength">
+                Ce champ est limité à {{passwordMaxLength}} caractères
+            </span>
+        </div>
+    </form>
+    <div class="mt-4 buttons-wrapper">
+        <app-form-button buttonText="Annuler"
+                         [swapColor]="true"
+                         [isLarge]="false"
+                         (buttonClickedEvent)="cancelButtonClicked()"
+                         class="mr-1">
+
+        </app-form-button>
+        <app-form-button buttonText="Valider"
+                         [isLarge]="false"
+                         (buttonClickedEvent)="confirmButtonClicked()">
+
+        </app-form-button>
+    </div>
+</div>

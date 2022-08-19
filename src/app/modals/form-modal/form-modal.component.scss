@@ -1,0 +1,24 @@
+@import "src/theme/global";
+
+:host {
+    background: $background;
+}
+
+.modal-title {
+    margin: 2rem 0 3rem 0;
+    text-align: center;
+    @include title(2rem);
+}
+
+form {
+    margin: 1rem 1rem 1rem 1rem;
+}
+
+.buttons-wrapper {
+    display: flex;
+
+    app-form-button {
+        flex: 1;
+    }
+}
+

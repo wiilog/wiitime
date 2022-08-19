@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     public disconnectButtonClicked() {
-        //Todo open the password check modal and act depending on result
+        //Todo open the password check modals and act depending on result
     }
 
     public ngOnInit(): void {

@@ -12,7 +12,7 @@
         <span class="error" *ngIf="isSubmitted && getErrorControl().serverAddress.errors?.required">
                 Ce champ doit être renseigné pour sauvegarder
         </span>
-        <span class="error" *ngIf="isSubmitted && getErrorControl().serverAddress.errors?.maxLength">
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverAddress.errors?.maxlength">
                 Ce champ est limité à {{serverAddressMaxLength}} caractères
         </span>
 
@@ -38,7 +38,7 @@
         <span class="error" *ngIf="isSubmitted && getErrorControl().serverUsername.errors?.required">
                 Ce champ doit être renseigné pour sauvegarder
         </span>
-        <span class="error" *ngIf="isSubmitted && getErrorControl().serverUsername.errors?.maxLength">
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverUsername.errors?.maxlength">
                 Ce champ est limité à {{serverUsernameMaxLength}} caractères
         </span>
 
@@ -47,7 +47,7 @@
                                  [maxLength]="serverPasswordMaxLength"
                                  [size]="serverPasswordSize">
         </app-form-password-input>
-        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPassword.errors?.maxLength">
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPassword.errors?.maxlength">
                 Ce champ est limité à {{serverPasswordMaxLength}} caractères
         </span>
 
@@ -59,7 +59,7 @@
         <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.required">
                 Ce champ doit être renseigné pour sauvegarder
         </span>
-        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.maxLength">
+        <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.maxlength">
                 Ce champ est limité à {{serverPathMaxLength}} caractères
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().serverPath.errors?.pattern">

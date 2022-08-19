@@ -1,26 +1,36 @@
-<ion-item [class.normal-field]="size === formSizeEnum.NORMAL"
-          [class.medium-field]="size === formSizeEnum.MEDIUM"
-          [class.large-field]="size === formSizeEnum.LARGE"
-          class="text-field field-wrapper">
-    <ion-label position="stacked" [class.higherText]="size === formSizeEnum.NORMAL">{{fieldName}}</ion-label>
-    <ng-container *ngIf="maxLength <= 30 then input else textArea"></ng-container>
+<div>
+    <ion-label *ngIf="titleOnTop"
+               class="field-name">
+        {{fieldName}}
+    </ion-label>
+    <ion-item [class.normal-field]="size === formSizeEnum.NORMAL"
+              [class.medium-field]="size === formSizeEnum.MEDIUM"
+              [class.large-field]="size === formSizeEnum.LARGE"
+              class="text-field field-wrapper">
+        <ion-label *ngIf="!titleOnTop"
+                   position="stacked"
+                   [class.higherText]="size === formSizeEnum.NORMAL">
+            {{fieldName}}
+        </ion-label>
+        <ng-container *ngIf="maxLength <= 30 then input else textArea"></ng-container>
 
-    <ng-template #input>
-        <ion-input class="text-input"
-                   [(ngModel)]="content"
-                   (ngModelChange)="textChanged($event)"
-                   [maxlength]="maxLength"
-                   (ionFocus)="markAsTouched()">
-        </ion-input>
-    </ng-template>
+        <ng-template #input>
+            <ion-input class="text-input"
+                       [(ngModel)]="content"
+                       (ngModelChange)="textChanged($event)"
+                       [maxlength]="maxLength"
+                       (ionFocus)="markAsTouched()">
+            </ion-input>
+        </ng-template>
 
-    <ng-template #textArea>
-        <ion-textarea class="text-input"
-                      inputmode="text"
-                      [(ngModel)]="content"
-                      (ngModelChange)="textChanged($event)"
-                      [maxlength]="maxLength"
-                      (ionFocus)="markAsTouched()">
-        </ion-textarea>
-    </ng-template>
-</ion-item>
+        <ng-template #textArea>
+            <ion-textarea class="text-input"
+                          inputmode="text"
+                          [(ngModel)]="content"
+                          (ngModelChange)="textChanged($event)"
+                          [maxlength]="maxLength"
+                          (ionFocus)="markAsTouched()">
+            </ion-textarea>
+        </ng-template>
+    </ion-item>
+</div>

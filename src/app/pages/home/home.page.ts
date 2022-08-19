@@ -58,7 +58,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillLeave(): Promise<any> {
-        this.insertExampleSub.unsubscribe();
+        //this.insertExampleSub.unsubscribe();
         this.nfcSubscription.unsubscribe();
 
         if (this.dataSubscription && !this.dataSubscription.closed) {
