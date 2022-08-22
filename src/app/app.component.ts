@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {from, of} from 'rxjs';
 import {Platform} from '@ionic/angular';
 import {StorageService} from '@app/services/storage/storage.service';

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Storage} from '@capacitor/storage';
+import {Preferences} from '@capacitor/preferences';
 import {from, Observable, Subject, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
@@ -73,11 +73,11 @@ export class StorageService {
     }
 
     public setValue(key: StorageKeyEnum, value: any): Observable<void> {
-        return from(Storage.set({key, value}));
+        return from(Preferences.set({key, value}));
     }
 
     public getValue(key: StorageKeyEnum): Observable<string | null> {
-        return from(Storage.get({key}))
+        return from(Preferences.get({key}))
             .pipe(
                 map(({value}) => value)
             );
