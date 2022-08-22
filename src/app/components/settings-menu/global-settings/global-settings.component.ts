@@ -157,10 +157,10 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                                 logo,
                                 adminUsername,
                                 adminPassword]) => {
-                    if (!message) {
+                    if (!message && message !== '') {
                         throw new Error('Kiosk mode message should not be null');
                     }
-                    if (!communication) {
+                    if (!communication && communication !== '') {
                         throw new Error('Kiosk mode communication should not be null');
                     }
                     if (!currentSecondaryMode) {
@@ -173,10 +173,10 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                         throw new Error('logo should not be null');
                     }
                     if (!adminUsername) {
-                        //throw new Error('admin username should not be null'); Todo uncomment for test
+                        throw new Error('admin username should not be null');
                     }
                     if (!adminPassword) {
-                        //throw new Error('admin password should not be null'); Todo uncomment for test
+                        throw new Error('admin password should not be null');
                     }
                     this.form.controls.kioskMessage.setValue(message);
                     this.form.controls.kioskCommunication.setValue(communication);

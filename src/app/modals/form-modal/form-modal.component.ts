@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
-import {ModalController} from '@ionic/angular';
+import {ModalController, Platform} from '@ionic/angular';
 import {environment} from '../../../environments/environment';
 import {FormSize} from '@app/components/form/form-size-enum';
 
@@ -38,9 +38,11 @@ export class FormModalComponent implements OnInit, OnDestroy {
     public readonly passwordMaxLength: number = environment.adminPasswordMaxLength;
 
     private valueSetterSubscription: Subscription;
+    private backButtonSubscription: Subscription;
 
     public constructor(private modalController: ModalController,
-                       private formBuilder: FormBuilder) {
+                       private formBuilder: FormBuilder,
+                       private platform: Platform) {
         this.form = this.formBuilder.group({
             username: ['', [Validators.required,
                 Validators.maxLength(this.usernameMaxLength)]],
@@ -54,11 +56,18 @@ export class FormModalComponent implements OnInit, OnDestroy {
         this.isSubmitted = false;
         this.form.controls.username.setValue(this.adminUsername);
         this.form.controls.password.setValue(this.adminPassword);
+
+        this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(100, () =>
+            this.cancelButtonClicked()
+        );
     }
 
     public ngOnDestroy(): void {
         if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
             this.valueSetterSubscription.unsubscribe();
+        }
+        if(this.backButtonSubscription && !this.backButtonSubscription.closed) {
+            this.backButtonSubscription.unsubscribe();
         }
     }
 

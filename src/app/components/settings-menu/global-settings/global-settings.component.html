@@ -3,7 +3,7 @@
         Géneral
     </div>
 
-    <form [formGroup]="form">
+    <form [formGroup]="form" [class.formSubmitted]="isSubmitted">
         <input #inputImage hidden="true" type="file" name="TOTO" (change)="updateLogo($event)">
         <app-form-actionable [fieldName]="logoSelectionFieldName"
                              [imagePath]="logoSelectionFieldLogo"

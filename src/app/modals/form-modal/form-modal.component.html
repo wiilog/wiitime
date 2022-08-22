@@ -2,7 +2,7 @@
     <div class="modal-title">
         {{modalTitle}}
     </div>
-    <form [formGroup]="form">
+    <form [formGroup]="form" [class.formSubmitted]="isSubmitted">
         <app-form-text-area [formControlName]="usernameFormControlName"
                             [fieldName]="usernameFieldName"
                             [maxLength]="usernameMaxLength"

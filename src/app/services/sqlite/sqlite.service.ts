@@ -8,7 +8,6 @@ import {TableName} from '@app/services/sqlite/table-name';
 import {Entity} from '@app/services/sqlite/entities/entity';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {NfcTag} from "@ionic-native/nfc/ngx";
 
 @Injectable({
     providedIn: 'root'
@@ -205,6 +204,7 @@ export class SQLiteService {
     }
 
     public registerClocking(badgeId: string): void {
+        console.log('bip boup');
         from(this.insert(TableName.CLOCKING_RECORD, {
             id: null,
             badge_number: badgeId,

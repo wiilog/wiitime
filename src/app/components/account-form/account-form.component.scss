@@ -27,29 +27,6 @@
             width: 100%;
         }
 
-        .field-name {
-            margin-top: 1rem;
-            @include text(body-grey)
-        }
-
-        &:not(.ng-submitted) ion-item {
-            --border-color: transparent;
-            --highlight-background: transparent !important;
-        }
-
-        &.ng-submitted ion-item.ion-invalid {
-            --border-color: #{$red};
-        }
-
-        .account-creation-form-field {
-            box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
-
-            ion-input {
-                text-align: left;
-                @include text();
-            }
-        }
-
         .connexion-button {
             margin-top: auto;
             padding-top: 1rem;

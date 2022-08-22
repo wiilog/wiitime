@@ -41,15 +41,14 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public changeModeButtonClicked() {
-        //Todo connect to the kiosk or background mode depending on mode
         this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE).subscribe((isActive) => {
             if (isActive != null) {
                 const numberValue: number = parseInt(isActive.toString(), 10);
                 if (numberValue) {
-                    // Todo connect to background mode
+                    // Todo connect to background mode when created
                     this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
                 } else {
-                    // Todo connect to kiosk mode
+                    // Todo connect to kiosk mode page when created
                     this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
                 }
             } else {

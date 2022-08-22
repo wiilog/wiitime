@@ -3,13 +3,11 @@ import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {NavService} from '@app/services/nav/nav.service';
 import {NfcService} from '@app/services/nfc.service';
 import {StorageService} from '@app/services/storage/storage.service';
-import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {TableName} from '@app/services/sqlite/table-name';
-import {Subscription, zip} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
+import {PagePath} from '@app/services/nav/page-path.enum';
 
 @Component({
     selector: 'app-home',
@@ -32,6 +30,15 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillEnter(): Promise<any> {
+        if (this.navService.params()) {
+            if (this.navService.param<boolean>('redirectToParams')) {
+                this.navService.push(PagePath.SETTINGS_MENU);
+            } else {
+                this.initPage();
+            }
+        } else {
+            this.initPage();
+        }
         /*
         this.insertExampleSub = from(this.sqliteService.insert(TableName.CLOCKING_RECORD, {id: 5,
                                                             badge_number: '22222',
@@ -52,14 +59,18 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
             console.log(clockings);
         });
         */
+    }
 
+    public initPage(): void {
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
             (data) => this.sqliteService.registerClocking(this.nfcService.convertIdToHex(data)));
     }
 
     public async ionViewWillLeave(): Promise<any> {
         //this.insertExampleSub.unsubscribe();
-        this.nfcSubscription.unsubscribe();
+        if(this.nfcSubscription && !this.nfcSubscription.closed) {
+            this.nfcSubscription.unsubscribe();
+        }
 
         if (this.dataSubscription && !this.dataSubscription.closed) {
             this.dataSubscription.unsubscribe();

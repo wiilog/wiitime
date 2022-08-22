@@ -76,7 +76,7 @@ export class NavService {
         this.removeLoaders();
 
         this.justNavigated = true;
-        this.paramStack = [params];
+        this.paramStack = [{route, params}];
 
         return from(this.navController.navigateRoot(route));
     }

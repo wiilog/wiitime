@@ -1,4 +1,6 @@
 <app-header [mode]="headerMode"></app-header>
 <ion-content>
-    <app-account-form></app-account-form>
+    <app-account-form (validFormSubmittedEvent)="loadParameterMenu()">
+
+    </app-account-form>
 </ion-content>

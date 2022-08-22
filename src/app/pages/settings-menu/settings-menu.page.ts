@@ -7,6 +7,7 @@ import {ScreenOrientationService} from '@app/services/screen-orientation.service
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {WindowSizeService} from '@app/services/window-size.service';
 import {environment} from '../../../environments/environment';
+import {PagePath} from '@app/services/nav/page-path.enum';
 
 enum SettingsMenu {
     GENERAL = 'Général',
@@ -96,7 +97,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     public backButtonAction(): void {
         if (!this.isMenuOpen || (!this.isPortraitMode && this.isMenuOpen && !this.hideSideMenu)) {
-            this.navService.pop();
+            this.navService.pop(PagePath.HOME, {redirectToParams: false}); //Todo change to active mode page when created
             console.log('leave page');
         } else {
             this.isMenuOpen = false;

@@ -1,11 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {from, of} from 'rxjs';
 import {Platform} from '@ionic/angular';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {mergeMap} from 'rxjs/operators';
-import {SplashScreen} from '@ionic-native/splash-screen/ngx';
+import {NavService} from '@app/services/nav/nav.service';
+import {PagePath} from '@app/services/nav/page-path.enum';
 
 @Component({
     selector: 'app-root',
@@ -14,27 +15,30 @@ import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 })
 export class AppComponent {
 
-    private requireDatabaseCreation = false;
+    private isFirstApplicationLaunch = false;
 
     constructor(private platform: Platform,
                 private storageService: StorageService,
                 private sqliteService: SQLiteService,
-                private splashScreen: SplashScreen) {
+                private navService: NavService) {
         this.initializeApp();
     }
 
     public initializeApp(): void {
-        this.splashScreen.show();
-        from(this.platform.ready()).
-            pipe(
-                mergeMap(() => this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME)),
-                mergeMap( (adminUsername) => {
-                    this.requireDatabaseCreation = adminUsername == null; //TODO is there a better way to achieve this ?
-                    return adminUsername ? of() : this.storageService.initStorage();
-                }),
-                mergeMap(() => this.sqliteService.initialiseDatabase(this.requireDatabaseCreation)),
-            ).subscribe(() => {
-                console.log('initialisation complete');
-        });
+        from(this.platform.ready()).pipe(
+            mergeMap(() => this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME)),
+            mergeMap((adminUsername) => {
+                this.isFirstApplicationLaunch = adminUsername == null;
+                return adminUsername ? of(null) : this.storageService.initStorage();
+            }),
+            mergeMap(() => this.sqliteService.initialiseDatabase(this.isFirstApplicationLaunch)),
+            mergeMap(() => {
+                if (this.isFirstApplicationLaunch) {
+                    return this.navService.setRoot(PagePath.ACCOUNT_CREATION);
+                } else {
+                    return this.navService.setRoot(PagePath.HOME); //TODO change to active mode page when created
+                }
+            }),
+        ).subscribe(() => console.log('init over'));
     }
 }

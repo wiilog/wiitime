@@ -37,7 +37,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy{
     }
 
     public backButtonClicked() {
-        //Todo maybe something to do to ensure we go back to the right page since it's not always a pop
         this.backButtonClickedEvent.emit();
     }
 

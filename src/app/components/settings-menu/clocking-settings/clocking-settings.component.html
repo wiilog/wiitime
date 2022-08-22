@@ -3,7 +3,7 @@
         Traitement du badgeage
     </div>
 
-    <form [formGroup]="form">
+    <form [formGroup]="form" [class.formSubmitted]="isSubmitted">
         <app-form-input [formControlName]="storageDurationFormControlName"
                         [inputName]="storageDurationFieldName"
                         [endText]="storageDurationEndText">

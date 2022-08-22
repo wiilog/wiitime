@@ -1,65 +1,73 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {NavService} from '@app/services/nav/nav.service';
-import {PagePath} from '@app/services/nav/page-path.enum';
-import {zip} from 'rxjs';
+import {Subscription, zip} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import {FormSize} from '@app/components/form/form-size-enum';
 
 @Component({
     selector: 'app-account-form',
     templateUrl: './account-form.component.html',
     styleUrls: ['./account-form.component.scss'],
 })
-export class AccountFormComponent {
+export class AccountFormComponent implements OnInit, OnDestroy {
 
     @Output()
-    public validSubmission: EventEmitter<any>;
+    public validFormSubmittedEvent: EventEmitter<string>;
 
-    public accountForm: FormGroup;
+    public form: FormGroup;
+    public isSubmitted: boolean;
 
-    public isSubmitted = false;
-
+    // username field settings
+    public readonly usernameFormControlName = 'username';
+    public readonly usernameFieldName = 'Nom d\'utilisateur';
+    public readonly usernameFieldSize = FormSize.NORMAL;
     public readonly usernameMaxLength: number = environment.adminUsernameMaxLength;
 
+    // password field settings
+    public readonly passwordFormControlName = 'password';
+    public readonly passwordFieldName = 'Mot de passe';
+    public readonly passwordFieldSize = FormSize.NORMAL;
     public readonly passwordMinLength: number = environment.adminPasswordMinLength;
     public readonly passwordMaxLength: number = environment.adminPasswordMaxLength;
 
-    public constructor(public formBuilder: FormBuilder,
-                       private storageService: StorageService,
-                       private navService: NavService) {
+    protected saveSubscription: Subscription;
 
-        this.validSubmission = new EventEmitter<any>();
-        this.accountForm = this.formBuilder.group({
+    public constructor(private storageService: StorageService,
+                       private formBuilder: FormBuilder) {
+        this.form = this.formBuilder.group({
             username: ['', [Validators.required,
                 Validators.maxLength(this.usernameMaxLength)]],
             password: ['', [Validators.required,
                 Validators.minLength(this.passwordMinLength),
-                Validators.maxLength(this.passwordMaxLength)]
-            ],
+                Validators.maxLength(this.passwordMaxLength)]],
         });
+        this.validFormSubmittedEvent = new EventEmitter<any>();
     }
 
-    public get errorControl() {
-        return this.accountForm.controls;
+    public ngOnInit(): void {
+        this.isSubmitted = false;
+    }
+
+    public ngOnDestroy(): void {
+        if (this.saveSubscription && !this.saveSubscription.closed) {
+            this.saveSubscription.unsubscribe();
+        }
+    }
+
+    public getErrorControl() {
+        return this.form.controls;
     }
 
     public formSubmitted(): void {
         this.isSubmitted = true;
-        if (!this.accountForm.valid) {
+        if (!this.form.valid) {
             console.log('form is invalid, respect all the constraints');
             return;
         }
-        zip(this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.accountForm.value.username),
-            this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.accountForm.value.password))
-            .subscribe(() => this.navService.setRoot(PagePath.SETTINGS_MENU));
+        this.saveSubscription = zip(this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.form.value.username),
+            this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.form.value.password))
+            .subscribe(() => this.validFormSubmittedEvent.emit());
     }
 }
-
-/* TODO Could be used to factorise the form creation
-        const a: FormControl = new FormControl();
-        a.setValidators([Validators.max(2), Validators.required]);
-        this.accountForm.addControl('a', a);
-        this.accountForm.addControl('bg', ['', [Validators.required]]);
-*/
