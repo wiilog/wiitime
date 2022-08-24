@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {from, Observable, of, ReplaySubject, Subject, zip} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
-import {SQLite, SQLiteObject} from '@ionic-native/sqlite/ngx';
+import {SQLite, SQLiteObject} from '@awesome-cordova-plugins/sqlite/ngx';
 import {Platform} from '@ionic/angular';
 import {TABLES_DEFINITION} from '@app/services/sqlite/table-definitions';
 import {TableName} from '@app/services/sqlite/table-name';
@@ -54,7 +54,10 @@ export class SQLiteService {
                 .keys(attributes)
                 .map((attr) => (`\`${attr}\` ${attributes[attr]}`))
                 .join(', ');
-            return `CREATE TABLE IF NOT EXISTS \`${name}\` (${attributesStr})`;
+            return `CREATE TABLE IF NOT EXISTS \`${name}\`
+                    (
+                        ${attributesStr}
+                    )`;
         });
         return SQLiteService.executeQueryFlatMap(db, createDatabaseRequests);
     }
@@ -77,7 +80,7 @@ export class SQLiteService {
 
     // only use this function once platform.ready is true
     public async initialiseDatabase(requireCreation: boolean): Promise<void> {
-        if(requireCreation) {
+        if (requireCreation) {
             await this.createDatabase();
         } else {
             await this.openDatabase();
@@ -126,7 +129,8 @@ export class SQLiteService {
             mergeMap((db) => SQLiteService.executeQueryStatic(db, query, params)),
             map((res) => SQLiteService.multiSelectQueryMapper(res)),
             tap(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.error(query, params, error);
                 }
@@ -145,7 +149,10 @@ export class SQLiteService {
             .keys(attributes)
             .map((attr) => (`\`${attr}\` ${attributes[attr]}`))
             .join(', ');
-        return this.executeQuery(`CREATE TABLE IF NOT EXISTS \`${table}\` (${attributesStr})`);
+        return this.executeQuery(`CREATE TABLE IF NOT EXISTS \`${table}\`
+                                  (
+                                      ${attributesStr}
+                                  )`);
     }
 
     public resetTable(table: TableName): Observable<any> {
@@ -153,7 +160,8 @@ export class SQLiteService {
     }
 
     public get<T extends Entity>(table: TableName, search: { [key: string]: any } = {}): Observable<Array<T>> {
-        let query = `SELECT * FROM ${table}`;
+        let query = `SELECT *
+                     FROM ${table}`;
 
         const values = [];
 
@@ -174,7 +182,8 @@ export class SQLiteService {
         }
 
         if (empty) {
-            await this.executeQuery(`DELETE FROM ${table}`).toPromise();
+            await this.executeQuery(`DELETE
+                                     FROM ${table}`).toPromise();
         }
 
         const tableDefinition = TABLES_DEFINITION.find(({name}) => name === table);
@@ -190,26 +199,35 @@ export class SQLiteService {
                 .map(([_, value]) => value);
 
             await this.executeQuery(`INSERT INTO ${table}(${commaColumns})
-                                 VALUES (${questionMarks})`, values).toPromise();
+                                     VALUES (${questionMarks})`, values).toPromise();
         }
     }
 
-    public deleteOldClocking(): Observable<void>{
+    public deleteOldClocking(): Observable<void> {
         const table = TableName.CLOCKING_RECORD;
         return this.storageService.getValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION)
             .pipe(
                 mergeMap((storageDuration: string) => from(
-                    this.executeQuery(`DELETE FROM ${table} WHERE DATETIME(clocking_date, '+${storageDuration} day') < DATETIME('now')`))
+                    this.executeQuery(`DELETE
+                                       FROM ${table}
+                                       WHERE DATETIME(clocking_date, '+${storageDuration} day') < DATETIME('now')`))
                 ));
     }
 
+    public updateClockingSynchronisation(resultIds: Array<number>): Observable<any> {
+        return this.executeQuery(`UPDATE ${TableName.CLOCKING_RECORD}
+                                  SET is_synchronised = 0
+                                  WHERE id in (${resultIds})`);
+        //Todo change is_synchronised = 0 back to = 1 when test are over
+    }
+
     public registerClocking(badgeId: string): void {
-        console.log('bip boup');
         from(this.insert(TableName.CLOCKING_RECORD, {
             id: null,
             badge_number: badgeId,
             clocking_date: new Date().toISOString(),
             is_synchronised: '0'
-        })).pipe(mergeMap(() => this.deleteOldClocking()));
+        })).pipe(mergeMap(() => this.deleteOldClocking()))
+            .subscribe(() => console.log('clocking registered'));
     }
 }

@@ -4,10 +4,11 @@ import {NavService} from '@app/services/nav/nav.service';
 import {NfcService} from '@app/services/nfc.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {Subscription} from 'rxjs';
+import {from, Subscription} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {PagePath} from '@app/services/nav/page-path.enum';
+import {SftpServices} from '@app/services/sftp.services';
 
 @Component({
     selector: 'app-home',
@@ -26,6 +27,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     public constructor(private nfcService: NfcService,
                        private navService: NavService,
                        private storageService: StorageService,
+                       private sftpService: SftpServices,
                        private sqliteService: SQLiteService) {
     }
 
@@ -62,13 +64,17 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public initPage(): void {
+        /*
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
             (data) => this.sqliteService.registerClocking(this.nfcService.convertIdToHex(data)));
+        */
+        this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
+            (data) => this.sftpService.synchronizeClocking());
     }
 
     public async ionViewWillLeave(): Promise<any> {
         //this.insertExampleSub.unsubscribe();
-        if(this.nfcSubscription && !this.nfcSubscription.closed) {
+        if (this.nfcSubscription && !this.nfcSubscription.closed) {
             this.nfcSubscription.unsubscribe();
         }
 

@@ -5,6 +5,7 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
 import {map, mergeMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
+import {FileService} from "@app/services/file.service";
 
 @Injectable({
     providedIn: 'root'
@@ -38,11 +39,11 @@ export class StorageService {
         [StorageKeyEnum.SFTP_SETUP]: '0', //boolean
     };
 
-    public constructor(private http: HttpClient) {
+    public constructor(private fileService: FileService) {
     }
 
     public initStorage(): Observable<void> {
-        return this.getFileData(this.defaultLogoPath)
+        return this.fileService.getFileData(this.defaultLogoPath)
             .pipe(
                 mergeMap((base64Logo) => (
                     zip(
@@ -55,21 +56,6 @@ export class StorageService {
                 )),
                 map(() => undefined)
         );
-    }
-
-    public getFileData(path: string): Observable<string> {
-        return this.http.get(path, {responseType: 'blob'})
-            .pipe(
-                mergeMap((res) => {
-                    const base64$ = new Subject<string>();
-                    const reader = new FileReader();
-                    reader.readAsDataURL(res);
-                    reader.onloadend = () => {
-                        base64$.next(reader.result.toString());
-                    };
-                    return base64$;
-                }),
-            );
     }
 
     public setValue(key: StorageKeyEnum, value: any): Observable<void> {

@@ -1,9 +1,7 @@
 import {Injectable} from '@angular/core';
 import {from, Observable} from 'rxjs';
-import {NFC, NfcTag} from '@ionic-native/nfc/ngx';
+import {NFC, NfcTag} from '@awesome-cordova-plugins/nfc/ngx';
 import {mergeMap, tap} from 'rxjs/operators';
-import {TableName} from '@app/services/sqlite/table-name';
-import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 
 @Injectable({
     providedIn: 'root'
