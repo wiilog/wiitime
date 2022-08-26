@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Preferences} from '@capacitor/preferences';
-import {from, Observable, Subject, zip} from 'rxjs';
+import {from, Observable, of, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
 import {map, mergeMap} from 'rxjs/operators';
-import {HttpClient} from '@angular/common/http';
-import {FileService} from "@app/services/file.service";
+import {FileService} from '@app/services/file.service';
+import {DateService} from '@app/services/date.service';
 
 @Injectable({
     providedIn: 'root'
@@ -32,14 +32,15 @@ export class StorageService {
         [StorageKeyEnum.SFTP_PASSWORD]: '',
         [StorageKeyEnum.SFTP_SAVE_PATH]: '',
         [StorageKeyEnum.SYNCHRONISATION_FREQUENCY]: '12', //hours
-        [StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME]: '13:30', //TIME
+        [StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME]: this.dateService.setDateTime(new Date(), 13, 30), //TIME
         [StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME]: null, //Date
         [StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME]: null, //Datetime
         [StorageKeyEnum.LAST_SFTP_STATUS]: SfpStatus.OFFLINE,
         [StorageKeyEnum.SFTP_SETUP]: '0', //boolean
     };
 
-    public constructor(private fileService: FileService) {
+    public constructor(private fileService: FileService,
+                       private dateService: DateService) {
     }
 
     public initStorage(): Observable<void> {
@@ -55,7 +56,7 @@ export class StorageService {
                     )
                 )),
                 map(() => undefined)
-        );
+            );
     }
 
     public setValue(key: StorageKeyEnum, value: any): Observable<void> {
@@ -67,5 +68,65 @@ export class StorageService {
             .pipe(
                 map(({value}) => value)
             );
+    }
+
+    public updateSynchronisationValues(initBeginTime: Date,
+                                       newBeginTime: string,
+                                       initSyncFrequency: number,
+                                       newSyncFrequency: number): Observable<any> {
+        let pickedDate = this.dateService.setDateTime(new Date(initBeginTime),
+            Number(newBeginTime.slice(0, 2)),
+            Number(newBeginTime.substring(3)));
+        let newNextSyncDatetime: Date;
+
+        return this.getValue(StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME).pipe(
+            mergeMap((lastSyncDatetime) => {
+                if (initSyncFrequency !== newSyncFrequency) {
+                    if(lastSyncDatetime) {
+                        if(initBeginTime <= new Date(lastSyncDatetime)) {
+                            newNextSyncDatetime = new Date();
+                            newNextSyncDatetime.setMinutes(60 * newSyncFrequency + newNextSyncDatetime.getMinutes());
+                        }
+                    } else {
+                        newNextSyncDatetime = new Date();
+                        newNextSyncDatetime.setMinutes(60 * newSyncFrequency + newNextSyncDatetime.getMinutes());
+                    }
+                }
+                if (initBeginTime.toISOString() !== pickedDate.toISOString()) {
+                    const now = new Date();
+                    pickedDate = this.dateService.setDateTime(new Date(),
+                        Number(newBeginTime.slice(0, 2)),
+                        Number(newBeginTime.substring(3)));
+                    if (now.getTime() > pickedDate.getTime()) {
+                        pickedDate.setDate(pickedDate.getDate() + 1);
+                    }
+                    newNextSyncDatetime = pickedDate;
+                }
+                return zip(this.setValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY, newSyncFrequency.toString()),
+                    this.setValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME, pickedDate.toISOString()),
+                    this.updateNextSyncValue(newNextSyncDatetime));
+            }),
+        );
+    }
+
+    public updateStorageAfterSync(newLastSyncDatetime: Date, newNextSyncDatetime: Date): Observable<any> {
+        return zip(this.updateLastSyncValue(newLastSyncDatetime),
+            this.updateNextSyncValue(newNextSyncDatetime));
+    }
+
+    private updateLastSyncValue(newLastSyncDatetime): Observable<any> {
+        if (newLastSyncDatetime) {
+            console.log('last synchro was', newLastSyncDatetime.toString());
+            return this.setValue(StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME, newLastSyncDatetime.toISOString());
+        }
+        return of(null);
+    }
+
+    private updateNextSyncValue(newNextSyncDatetime: Date): Observable<any> {
+        if (newNextSyncDatetime) {
+            console.log('next synchro is', newNextSyncDatetime);
+            return this.setValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME, newNextSyncDatetime.toISOString());
+        }
+        return of(null);
     }
 }

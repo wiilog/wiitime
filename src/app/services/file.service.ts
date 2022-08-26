@@ -4,6 +4,7 @@ import {from, Observable, Subject} from 'rxjs';
 import {Directory, Encoding, Filesystem, WriteFileResult} from '@capacitor/filesystem';
 import {mergeMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
+import {DateService} from "@app/services/date.service";
 
 @Injectable({
     providedIn: 'root'
@@ -22,31 +23,13 @@ export class FileService {
     private readonly MTYPE = '$import';
     private readonly MSTATE = '$pre';
 
-    public constructor(private http: HttpClient) {
+    public constructor(private http: HttpClient,
+                       private dateService: DateService) {
 
     }
 
     public getBaseFilename(): string {
         return this.baseFilename;
-    }
-
-    public utfDatetimeToLocalString(date: Date, separator: boolean): string {
-        let dateSeparator = '-';
-        let timeSeparator = ':';
-        let charBetweenTimeAndDate = ' ';
-
-        if (!separator) {
-            dateSeparator = '';
-            timeSeparator = '';
-            charBetweenTimeAndDate = '';
-        }
-        const month = date.getMonth() < 10 ? '0'.concat(date.getMonth().toString()) : date.getMonth();
-        const day = date.getDay() < 10 ? '0'.concat(date.getDay().toString()) : date.getDay();
-        const hour = date.getHours() < 10 ? '0'.concat(date.getHours().toString()) : date.getHours();
-        const minute = date.getMinutes() < 10 ? '0'.concat(date.getMinutes().toString()) : date.getMinutes();
-        const second = date.getSeconds() < 10 ? '0'.concat(date.getSeconds().toString()) : date.getSeconds();
-        return date.getFullYear() + dateSeparator + month + dateSeparator + day + charBetweenTimeAndDate
-            + hour + timeSeparator + minute + timeSeparator + second;
     }
 
     public writeFile(filename: string, clockingRecords: ClockingRecord[], resultIds: Array<number>): Observable<WriteFileResult> {
@@ -55,7 +38,7 @@ export class FileService {
             resultIds.push(value.id);
             fileContent = fileContent + this.csvSeparator + this.MCLI + this.csvSeparator +
                 value.badge_number + this.csvSeparator +
-                this.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
+                this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
                 this.csvSeparator + this.MTYPE + this.csvSeparator + this.MSTATE + '\n';
         });
         return from(Filesystem.writeFile({

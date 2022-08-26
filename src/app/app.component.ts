@@ -7,6 +7,7 @@ import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {mergeMap} from 'rxjs/operators';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
+import {BackgroundTaskService} from "@app/services/background-task.service";
 
 @Component({
     selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent {
     constructor(private platform: Platform,
                 private storageService: StorageService,
                 private sqliteService: SQLiteService,
+                private backgroundTaskService: BackgroundTaskService,
                 private navService: NavService) {
         this.initializeApp();
     }
@@ -32,6 +34,7 @@ export class AppComponent {
                 return adminUsername ? of(null) : this.storageService.initStorage();
             }),
             mergeMap(() => this.sqliteService.initialiseDatabase(this.isFirstApplicationLaunch)),
+            mergeMap(() => this.backgroundTaskService.startSynchronisationLoop()),
             mergeMap(() => {
                 if (this.isFirstApplicationLaunch) {
                     return this.navService.setRoot(PagePath.ACCOUNT_CREATION);

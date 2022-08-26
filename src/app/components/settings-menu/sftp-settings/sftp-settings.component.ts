@@ -6,9 +6,11 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {StorageService} from '@app/services/storage/storage.service';
 import {LoadingService} from '@app/services/loading.service';
 import {FormSize} from '@app/components/form/form-size-enum';
-import {zip} from 'rxjs';
+import {Observable, of, Subscription, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type.enum';
+import {SftpServices} from '@app/services/sftp.services';
+import {DateService} from '@app/services/date.service';
 
 @Component({
     selector: 'app-sftp-settings',
@@ -60,10 +62,17 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
     public readonly syncBeginTimeFormControlName = 'syncBeginTime';
     public readonly syncBeginTimeFieldName = 'heures de début*';
 
+    private isConnexionTestOngoing: boolean;
+    private syncBeginTimeStartValue: Date;
+    private syncFrequencyStartValue: number;
+    private connexionTestSubscription: Subscription;
+
     public constructor(protected screenOrientationService: ScreenOrientationService,
                        protected windowSizeService: WindowSizeService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
+                       private sftpService: SftpServices,
+                       private dateService: DateService,
                        private formBuilder: FormBuilder,
                        protected ngZone: NgZone,) {
         super(screenOrientationService, windowSizeService, ngZone);
@@ -84,6 +93,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
 
     public ngOnInit(): void {
         this.initSettingsMenu();
+        this.isConnexionTestOngoing = false;
     }
 
     public ngAfterViewInit(): void {
@@ -92,6 +102,21 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
 
     public ngOnDestroy(): void {
         this.clearSubscriptionOnDestroy();
+        if (this.connexionTestSubscription && !this.connexionTestSubscription.closed) {
+            this.connexionTestSubscription.unsubscribe();
+        }
+    }
+
+    public testSftpConnectionButtonClicked() {
+        if (!this.isConnexionTestOngoing) {
+            this.isConnexionTestOngoing = true;
+            this.connexionTestSubscription = this.sftpService.testConnection()
+                .subscribe((result) => {
+                    console.log('connection is good ?', result);
+                    //Todo spawn toast with result when created
+                    this.isConnexionTestOngoing = false;
+                });
+        }
     }
 
     protected initContent(): void {
@@ -102,7 +127,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
             this.storageService.getValue(StorageKeyEnum.SFTP_PASSWORD),
             this.storageService.getValue(StorageKeyEnum.SFTP_SAVE_PATH),
             this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY),
-            this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME))
+            this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME))
             .subscribe(([sftpSetup,
                             serverAddress,
                             serverPort,
@@ -141,9 +166,11 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                 if (!syncBeginTime) {
                     throw new Error('synchronisation begin time should not be null');
                 }
-
                 this.form.controls.syncFrequency.setValue(syncFrequency);
-                this.form.controls.syncBeginTime.setValue(syncBeginTime);
+                this.syncFrequencyStartValue = Number(syncFrequency);
+                this.syncBeginTimeStartValue = new Date(syncBeginTime);
+                this.form.controls.syncBeginTime.setValue(this.dateService
+                    .utfDatetimeToLocalTime(this.syncBeginTimeStartValue, true).substring(0, 5));
             });
     }
 
@@ -160,8 +187,8 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                     this.storageService.setValue(StorageKeyEnum.SFTP_USERNAME, this.form.value.serverUsername),
                     this.storageService.setValue(StorageKeyEnum.SFTP_PASSWORD, this.form.value.serverPassword),
                     this.storageService.setValue(StorageKeyEnum.SFTP_SAVE_PATH, this.form.value.serverPath),
-                    this.storageService.setValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY, this.form.value.syncFrequency.toString()),
-                    this.storageService.setValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_TIME, this.form.value.syncBeginTime.toString()),
+                    this.storageService.updateSynchronisationValues(this.syncBeginTimeStartValue,
+                        this.form.value.syncBeginTime, this.syncFrequencyStartValue, Number(this.form.value.syncFrequency)),
                     this.storageService.setValue(StorageKeyEnum.SFTP_SETUP, '1')
                 )
             }
