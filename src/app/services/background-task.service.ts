@@ -12,6 +12,7 @@ export class BackgroundTaskService {
 
     private intervalDuration = 60;
     private clockingSyncSubscription: Subscription;
+    private syncMessageSubscription: Subscription;
     private lastNextSyncDatetime: Date;
 
     public constructor(private sftpService: SftpServices,
@@ -86,7 +87,7 @@ export class BackgroundTaskService {
 
     private synchronizeClocking(): void {
         let currentSyncFrequency: number;
-        this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY).pipe(
+        this.syncMessageSubscription = this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY).pipe(
             mergeMap((syncFrequency) => {
                 currentSyncFrequency = Number(syncFrequency);
                 return this.sftpService.synchronizeClocking();
@@ -103,6 +104,12 @@ export class BackgroundTaskService {
                 this.lastNextSyncDatetime = newNextSynchro;
                 return this.storageService.updateStorageAfterSync(newLastSynchro, newNextSynchro);
             })
-        ).subscribe(() => console.log('synchronisation loop completed'));
+        ).subscribe(() => {
+            console.log('synchronisation loop completed');
+            if(this.syncMessageSubscription && !this.syncMessageSubscription.closed) {
+                this.syncMessageSubscription.unsubscribe();
+                this.syncMessageSubscription = null;
+            }
+        });
     }
 }
