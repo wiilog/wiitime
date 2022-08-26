@@ -11,6 +11,7 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type.enum';
 import {SftpServices} from '@app/services/sftp.services';
 import {DateService} from '@app/services/date.service';
+import {BackgroundTaskService} from "@app/services/background-task.service";
 
 @Component({
     selector: 'app-sftp-settings',
@@ -73,6 +74,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                        private loadingService: LoadingService,
                        private sftpService: SftpServices,
                        private dateService: DateService,
+                       private backgroundTaskService: BackgroundTaskService,
                        private formBuilder: FormBuilder,
                        protected ngZone: NgZone,) {
         super(screenOrientationService, windowSizeService, ngZone);
@@ -187,7 +189,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                     this.storageService.setValue(StorageKeyEnum.SFTP_USERNAME, this.form.value.serverUsername),
                     this.storageService.setValue(StorageKeyEnum.SFTP_PASSWORD, this.form.value.serverPassword),
                     this.storageService.setValue(StorageKeyEnum.SFTP_SAVE_PATH, this.form.value.serverPath),
-                    this.storageService.updateSynchronisationValues(this.syncBeginTimeStartValue,
+                    this.backgroundTaskService.syncParametersHaveChanged(this.syncBeginTimeStartValue,
                         this.form.value.syncBeginTime, this.syncFrequencyStartValue, Number(this.form.value.syncFrequency)),
                     this.storageService.setValue(StorageKeyEnum.SFTP_SETUP, '1')
                 )

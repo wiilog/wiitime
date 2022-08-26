@@ -19,6 +19,10 @@ const routes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full'
     },
+  {
+    path: 'active-mode',
+    loadChildren: () => import('./pages/active-mode/active-mode.module').then(m => m.ActiveModePageModule)
+  },
 ];
 
 @NgModule({
