@@ -1,14 +1,15 @@
 import {Component} from '@angular/core';
-import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
+import {ModalController, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {NavService} from '@app/services/nav/nav.service';
 import {NfcService} from '@app/services/nfc.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {from, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {SftpServices} from '@app/services/sftp.services';
+import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 
 @Component({
     selector: 'app-home',
@@ -28,6 +29,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
                        private navService: NavService,
                        private storageService: StorageService,
                        private sftpService: SftpServices,
+                       private modalCtrl: ModalController,
                        private sqliteService: SQLiteService) {
     }
 
@@ -85,8 +87,23 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
         }
     }
 
-    public openNfcParameters(): void {
-        this.nfcService.openParameters();
+    public async openNfcParameters(): Promise<void> {
+        const modal = await this.modalCtrl.create({
+            component: PasswordCheckModalComponent,
+            keyboardClose: true,
+            componentProps: {
+                modalTitle: 'Accès au paramétrage',
+            },
+            cssClass: 'auto-height',
+            backdropDismiss: false,
+        });
+        await modal.present();
+
+        const {data, role} = await modal.onWillDismiss();
+        if (role === 'confirm') {
+            console.log(data);
+        }
+        //this.nfcService.openParameters();
     }
 }
 

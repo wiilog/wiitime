@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {FormSize} from '@app/components/form/form-size-enum';
 import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type.enum';
@@ -29,6 +29,9 @@ export class FormPasswordInputComponent implements OnInit , ControlValueAccessor
     @Input()
     public titleOnTop?: boolean;
 
+    @Output()
+    public valueChangeEvent: EventEmitter<any>;
+
     public content: string;
 
     public formSizeEnum = FormSize;
@@ -46,6 +49,7 @@ export class FormPasswordInputComponent implements OnInit , ControlValueAccessor
     public constructor() {
         this.touched = false;
         this.disabled = false;
+        this.valueChangeEvent = new EventEmitter<any>();
     }
 
     public ngOnInit(): void {
@@ -65,6 +69,7 @@ export class FormPasswordInputComponent implements OnInit , ControlValueAccessor
         if (this.onChange) {
             this.onChange(newText);
         }
+        this.valueChangeEvent.emit();
     }
 
     public registerOnChange(onChange: any): void {

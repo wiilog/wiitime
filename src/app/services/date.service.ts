@@ -10,7 +10,6 @@ export class DateService {
 
     public setDateTime(date: Date, hour: number, minute: number): Date {
         const newDate = new Date(date);
-        console.log('set datime entry are', hour, minute);
         newDate.setHours(hour);
         newDate.setMinutes(minute);
         newDate.setSeconds(0);

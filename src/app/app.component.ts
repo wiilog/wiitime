@@ -7,7 +7,7 @@ import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {mergeMap} from 'rxjs/operators';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
-import {BackgroundTaskService} from "@app/services/background-task.service";
+import {BackgroundTaskService} from '@app/services/background-task.service';
 
 @Component({
     selector: 'app-root',

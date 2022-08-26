@@ -29,7 +29,7 @@
 @import "fonts";
 @import "mixins";
 
-@for $i from 1 through 6 {
+@for $i from 1 through 12 {
     //mt = margin-top
     .mt-#{$i} {
         margin-top: #{$i * 0.5}rem !important;
@@ -88,10 +88,12 @@ ion-content {
 }
 
 .formSubmitted {
-    .ng-invalid {
+    .ng-invalid,
+    .invalid {
         .field-wrapper {
             --border-color: #{$red};
-            --highlight-background: #{$red}
+            --highlight-background: #{$red};
+            --border-width: 0.15rem;
         }
     }
 }

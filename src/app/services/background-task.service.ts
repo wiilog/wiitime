@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {SftpServices} from '@app/services/sftp.services';
 import {StorageService} from '@app/services/storage/storage.service';
-import {interval, Observable, of, Subscription, zip} from 'rxjs';
+import {Observable, of, Subscription, timer, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {mergeMap} from 'rxjs/operators';
 
@@ -28,7 +28,7 @@ export class BackgroundTaskService {
                     console.log('sftp not setup, not starting sync loop');
                     return of(false);
                 }
-                this.clockingSyncSubscription = interval(this.intervalDuration * 1000)
+                this.clockingSyncSubscription = timer(100,this.intervalDuration * 1000)
                     .subscribe(() => {
                         this.synchronizeClockingIfRequired();
                     });

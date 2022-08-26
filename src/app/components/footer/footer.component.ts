@@ -1,14 +1,10 @@
-import {Component, Input, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {App} from '@capacitor/app';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {Subscription} from 'rxjs';
-import {WindowSizeService} from '@app/services/window-size.service';
-import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'app-footer',

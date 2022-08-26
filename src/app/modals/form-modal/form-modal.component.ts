@@ -37,7 +37,6 @@ export class FormModalComponent implements OnInit, OnDestroy {
     public readonly passwordMinLength: number = environment.adminPasswordMinLength;
     public readonly passwordMaxLength: number = environment.adminPasswordMaxLength;
 
-    private valueSetterSubscription: Subscription;
     private backButtonSubscription: Subscription;
 
     public constructor(private modalController: ModalController,
@@ -63,9 +62,6 @@ export class FormModalComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        if (this.valueSetterSubscription && !this.valueSetterSubscription.closed) {
-            this.valueSetterSubscription.unsubscribe();
-        }
         if(this.backButtonSubscription && !this.backButtonSubscription.closed) {
             this.backButtonSubscription.unsubscribe();
         }
