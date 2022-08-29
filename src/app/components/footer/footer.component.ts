@@ -5,6 +5,9 @@ import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
+import {Subscription} from 'rxjs';
+import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
+import {ModalController} from '@ionic/angular';
 
 @Component({
     selector: 'app-footer',
@@ -20,8 +23,11 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public currentVersionNumber: string; //TODO get value from storage instead
 
+    private valueGetterSubscription: Subscription;
+
     constructor(private navService: NavService,
-                private storage: StorageService,) {
+                private storage: StorageService,
+                private modalCtrl: ModalController,) {
         this.currentVersionNumber = '0.0.42';
     }
 
@@ -29,6 +35,9 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
+        if(this.valueGetterSubscription && !this.valueGetterSubscription.closed) {
+            this.valueGetterSubscription.unsubscribe();
+        }
     }
 
     public quitApplicationButtonClicked() {
@@ -37,25 +46,40 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public changeModeButtonClicked() {
-        this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE).subscribe((isActive) => {
-            if (isActive != null) {
-                const numberValue: number = parseInt(isActive.toString(), 10);
-                if (numberValue) {
-                    // Todo connect to background mode when created
-                    this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
+        this.valueGetterSubscription = this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)
+            .subscribe((isActive) => {
+                if (isActive != null) {
+                    const numberValue: number = parseInt(isActive.toString(), 10);
+                    if (numberValue) {
+                        // Todo connect to background mode when created
+                        this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
+                    } else {
+                        // Todo connect to kiosk mode page when created
+                        this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
+                    }
                 } else {
-                    // Todo connect to kiosk mode page when created
-                    this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
+                    console.error('Error storage value of key IS_BACKGROUND_MODE_ACTIVE is null -> should be 0 or 1');
                 }
-            } else {
-                console.error('Error storage value of key IS_BACKGROUND_MODE_ACTIVE is null -> should be 0 or 1');
-            }
-        });
+            });
 
     }
 
-    public parametersButtonClicked() {
-        this.navService.push(PagePath.SETTINGS_MENU).subscribe(() => console.log('success'));
+    public async parametersButtonClicked() {
+        const modal = await this.modalCtrl.create({
+            component: PasswordCheckModalComponent,
+            keyboardClose: true,
+            componentProps: {
+                modalTitle: 'Accès au paramétrage',
+            },
+            cssClass: 'auto-height',
+            backdropDismiss: false,
+        });
+        await modal.present();
+
+        const {role} = await modal.onWillDismiss();
+        if (role === 'confirm') {
+            this.navService.push(PagePath.SETTINGS_MENU);
+        }
     }
 }
 

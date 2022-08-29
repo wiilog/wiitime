@@ -1,36 +1,64 @@
 <app-header [mode]="headerMode"></app-header>
 
 <ion-content>
-    <div class="top-content-wrapper">
-        <div class="welcome-text-wrapper">
+    <div class="top-content-wrapper"
+         [class.active-mode-flex]="!isPortraitMode">
+        <div class="welcome-text-wrapper"
+             [class.flex-1]="!isPortraitMode"
+             [class.welcome-text-wrapper-landscape]="!isPortraitMode">
             <ion-label class="welcome-text mt-6">Bonjour</ion-label>
             <ion-label class="username-text mt-1">{{username}}</ion-label>
         </div>
 
-        <div class="timer-wrapper">
+        <div class="timer-wrapper"
+             [class.flex-2]="!isPortraitMode">
         <span>
             {{currentDatetime | date: 'HH : mm : ss'}}
         </span>
         </div>
     </div>
 
-    <div class="sync-info-wrapper">
+    <div [class.sync-info-wrapper-portrait]="isPortraitMode"
+         [class.sync-info-wrapper-landscape]="!isPortraitMode">
 
-        <ion-label class="title-text mt-8">Statut</ion-label>
-        <div class="server-status-value mt-1">
-            <ion-label class="value-text"
-                       [class.bgGreen]="currentSftpStatus === sftpStatusEnum.READY"
-                       [class.bgGrey]="currentSftpStatus === sftpStatusEnum.NOT_SET"
-                       [class.bgRed]="currentSftpStatus === sftpStatusEnum.ERROR">
-                {{currentSftpStatus.toString()}}
+        <div class="sync-elem-wrapper">
+            <ion-label class="title-text mt-8"
+                       [class.center-text]="!isPortraitMode">
+                Statut
+            </ion-label>
+            <div class="server-status-value mt-1"
+                 [class.center-text]="!isPortraitMode">
+                <ion-label class="value-text"
+                           [class.center-text]="!isPortraitMode"
+                           [class.bg-green]="currentSftpStatus === sftpStatusEnum.READY"
+                           [class.bg-grey]="currentSftpStatus === sftpStatusEnum.NOT_SET"
+                           [class.bg-red]="currentSftpStatus === sftpStatusEnum.ERROR">
+                    {{currentSftpStatus.toString()}}
+                </ion-label>
+            </div>
+        </div>
+
+        <div class="sync-elem-wrapper">
+            <ion-label class="title-text mt-8"
+                       [class.center-text]="!isPortraitMode">
+                Prochaine synchronisation
+            </ion-label>
+            <ion-label class="value-text mt-1"
+                       [class.center-text]="!isPortraitMode">
+                {{nextSyncDatetime | date: 'dd/MM/YY HH:mm'}}
             </ion-label>
         </div>
 
-        <ion-label class="title-text mt-8">Prochaine synchronisation</ion-label>
-        <ion-label class="value-text mt-1">{{nextSyncDatetime | date: 'dd/MM/YY HH:mm'}}</ion-label>
-
-        <ion-label class="title-text mt-8">Dernière synchronistion</ion-label>
-        <ion-label class="value-text mt-1">{{lastSyncDatetime | date: 'dd/MM/YY HH:mm'}}</ion-label>
+        <div class="sync-elem-wrapper">
+            <ion-label class="title-text mt-8"
+                       [class.center-text]="!isPortraitMode">
+                Dernière synchronisation
+            </ion-label>
+            <ion-label class="value-text mt-1"
+                       [class.center-text]="!isPortraitMode">
+                {{lastSyncDatetime | date: 'dd/MM/YY HH:mm'}}
+            </ion-label>
+        </div>
     </div>
 </ion-content>
 <app-footer [mode]="footerMode"></app-footer>

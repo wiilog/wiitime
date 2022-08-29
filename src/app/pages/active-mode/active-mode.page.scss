@@ -17,6 +17,33 @@ ion-content {
         }
     }
 
+    .welcome-text-wrapper-landscape {
+        justify-content: center;
+        margin-left: 4rem;
+        margin-right: 2rem;
+    }
+
+    .active-mode-flex {
+        display: flex;
+
+        .flex-1 {
+            flex: 1;
+        }
+
+        @media (max-width: 950px) {
+            .flex-2 {
+                flex: 3;
+            }
+        }
+
+        @media (min-width: 951px) {
+            .flex-2 {
+                flex: 2;
+            }
+        }
+
+    }
+
     .timer-wrapper {
         background: $blue;
         height: 16rem;
@@ -24,44 +51,76 @@ ion-content {
         justify-content: center;
         align-items: center;
 
-        span {
-            @include title(7.5rem);
-            text-align: center;
-            color: $white;
+        @media (max-width: 950px) {
+            span {
+                @include title(6rem);
+                text-align: center;
+                color: $white;
+            }
+        }
+
+        @media (min-width: 951px) {
+            span {
+                @include title(7.5rem);
+                text-align: center;
+                color: $white;
+            }
         }
     }
 
-    .sync-info-wrapper {
-        display: flex;
+    .sync-info-wrapper-portrait {
         flex-direction: column;
         margin-left: 6rem;
+    }
 
-        .title-text {
-            @include text(body-bold);
-        }
+    .sync-info-wrapper-landscape {
+        margin-top: 2rem;
+        margin-left: 5rem;
+        margin-right: 5rem;
+        flex-direction: row;
+    }
 
-        .server-status-value {
-            height: 3.5rem;
+    .sync-info-wrapper-portrait,
+    .sync-info-wrapper-landscape {
+        display: flex;
+        margin-bottom: 1rem;
+
+        .sync-elem-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+
+            .title-text {
+                @include text(body-bold);
+            }
+
+            .server-status-value {
+                height: 3.5rem;
+
+                .value-text {
+                    padding: 0.5rem 1.5rem;
+                }
+
+                .bg-green {
+                    background-color: $success20;
+                }
+
+                .bg-grey {
+                    background-color: $grey20;
+                }
+
+                .bg-red {
+                    background-color: $red20;
+                }
+            }
 
             .value-text {
-                padding: 0.5rem 1.5rem;
+                @include text();
             }
 
-           .bgGreen {
-               background-color: $success20;
-           }
-
-            .bgGrey {
-                background-color: $grey20;
+            .center-text {
+                text-align: center;
             }
-
-            .bgRed {
-                background-color: $red20;
-            }
-        }
-
-        .value-text {
-            @include text();
         }
     }
 }

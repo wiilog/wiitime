@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
+import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {NfcService} from '@app/services/nfc.service';
@@ -35,6 +35,7 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     private isSftpSetup: boolean;
     private nfcSubscription: Subscription;
+    private windowSizeSubscription: Subscription;
     private storageGetterSubscription: Subscription;
     private timerSubscription: Subscription;
 
@@ -42,7 +43,6 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
                        private navService: NavService,
                        private storageService: StorageService,
                        private sftpService: SftpServices,
-                       private modalCtrl: ModalController,
                        private sqliteService: SQLiteService,
                        private windowService: WindowService) {
     }
@@ -72,11 +72,21 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
         if (this.storageGetterSubscription && !this.storageGetterSubscription.closed) {
             this.storageGetterSubscription.unsubscribe();
         }
+        if (this.windowSizeSubscription && !this.windowSizeSubscription.closed) {
+            this.windowSizeSubscription.unsubscribe();
+        }
     }
 
     public initPage(): void {
+        this.isPortraitMode = this.windowService.isPortraitMode();
+
         this.timerSubscription = timer(0, 1000).subscribe(() => {
             this.currentDatetime = new Date().toISOString();
+        });
+
+        this.windowSizeSubscription = this.windowService.getWindowResizedObservable().subscribe(() => {
+            this.isPortraitMode = this.windowService.isPortraitMode();
+            console.log('tourne', this.isPortraitMode);
         });
 
         this.storageGetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
@@ -86,16 +96,19 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
             .pipe(mergeMap(([adminUsername, isSftpSetup, nextSync, lastSync]) => {
                 this.username = adminUsername;
                 this.isSftpSetup = Number(isSftpSetup) === 1;
+
                 this.nextSyncDatetime = nextSync;
                 this.lastSyncDatetime = lastSync;
 
-                if (isSftpSetup) {
+                if (this.isSftpSetup) {
                     return this.sftpService.testConnection();
                 }
                 this.currentSftpStatus = SfpStatus.NOT_SET;
-                return of(false);
+                return of(null);
             })).subscribe((isConnected) => {
-                this.currentSftpStatus = isConnected ? this.sftpStatusEnum.READY : this.sftpStatusEnum.ERROR;
+                if (isConnected != null) {
+                    this.currentSftpStatus = isConnected ? this.sftpStatusEnum.READY : this.sftpStatusEnum.ERROR;
+                }
             });
 
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
