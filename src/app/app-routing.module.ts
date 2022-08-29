@@ -15,14 +15,14 @@ const routes: Routes = [
         loadChildren: () => import('./pages/settings-menu/settings-menu.module').then(m => m.SettingsMenuPageModule)
     },
     {
+        path: 'active-mode',
+        loadChildren: () => import('./pages/active-mode/active-mode.module').then(m => m.ActiveModePageModule)
+    },
+    {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
     },
-  {
-    path: 'active-mode',
-    loadChildren: () => import('./pages/active-mode/active-mode.module').then(m => m.ActiveModePageModule)
-  },
 ];
 
 @NgModule({

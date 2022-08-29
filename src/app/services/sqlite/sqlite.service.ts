@@ -216,9 +216,8 @@ export class SQLiteService {
 
     public updateClockingSynchronisation(resultIds: Array<number>): Observable<any> {
         return this.executeQuery(`UPDATE ${TableName.CLOCKING_RECORD}
-                                  SET is_synchronised = 0
+                                  SET is_synchronised = 1
                                   WHERE id in (${resultIds})`);
-        //Todo change is_synchronised = 0 back to = 1 when test are over
     }
 
     public registerClocking(badgeId: string): void {

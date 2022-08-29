@@ -1,17 +1,16 @@
 import {AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {WindowSizeService} from '@app/services/window-size.service';
+import {WindowService} from '@app/services/window.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import {StorageService} from '@app/services/storage/storage.service';
 import {LoadingService} from '@app/services/loading.service';
 import {FormSize} from '@app/components/form/form-size-enum';
-import {Observable, of, Subscription, zip} from 'rxjs';
+import {Subscription, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type.enum';
 import {SftpServices} from '@app/services/sftp.services';
 import {DateService} from '@app/services/date.service';
-import {BackgroundTaskService} from "@app/services/background-task.service";
+import {BackgroundTaskService} from '@app/services/background-task.service';
 
 @Component({
     selector: 'app-sftp-settings',
@@ -68,8 +67,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
     private syncFrequencyStartValue: number;
     private connexionTestSubscription: Subscription;
 
-    public constructor(protected screenOrientationService: ScreenOrientationService,
-                       protected windowSizeService: WindowSizeService,
+    public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private sftpService: SftpServices,
@@ -77,7 +75,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                        private backgroundTaskService: BackgroundTaskService,
                        private formBuilder: FormBuilder,
                        protected ngZone: NgZone,) {
-        super(screenOrientationService, windowSizeService, ngZone);
+        super(windowService, ngZone);
         this.form = this.formBuilder.group({
             serverAddress: ['', [Validators.required, Validators.maxLength(this.serverAddressMaxLength)]],
             serverPort: ['', [Validators.required,

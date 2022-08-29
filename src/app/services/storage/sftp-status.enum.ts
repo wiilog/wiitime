@@ -1,6 +1,6 @@
 export enum SfpStatus {
-    PRET = 'Prêt',
-    ERROR = 'ERREUR',
-    OFFLINE = 'Hors Ligne'
+    READY = 'Prêt',
+    ERROR = 'En erreur',
+    NOT_SET = 'Non paramétré'
 
 }

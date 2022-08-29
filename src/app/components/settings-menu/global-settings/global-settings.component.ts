@@ -11,8 +11,7 @@ import {zip} from 'rxjs';
 import {FormBuilder, Validators} from '@angular/forms';
 import {FormSize} from '@app/components/form/form-size-enum';
 import {TabConfig} from '@app/components/tab/tab-config';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {WindowSizeService} from '@app/services/window-size.service';
+import {WindowService} from '@app/services/window.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {LoadingService} from '@app/services/loading.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
@@ -70,14 +69,13 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public readonly volumeRangeFormControlName = 'clockingVolume';
     public readonly volumeRangeFieldName = 'Volume bip';
 
-    public constructor(protected screenOrientationService: ScreenOrientationService,
-                       protected windowSizeService: WindowSizeService,
+    public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private formBuilder: FormBuilder,
                        private modalCtrl: ModalController,
                        protected ngZone: NgZone) {
-        super(screenOrientationService, windowSizeService, ngZone);
+        super(windowService, ngZone);
         this.form = this.formBuilder.group({
             kioskMessage: ['', [Validators.maxLength(this.kioskMessageMaxLength)
             ]],

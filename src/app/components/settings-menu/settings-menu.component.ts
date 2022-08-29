@@ -1,8 +1,7 @@
 import {EventEmitter, Input, NgZone, Output} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {environment} from '../../../environments/environment';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {WindowSizeService} from '@app/services/window-size.service';
+import {WindowService} from '@app/services/window.service';
 import {FormGroup} from '@angular/forms';
 
 export abstract class SettingsMenuComponent {
@@ -22,15 +21,14 @@ export abstract class SettingsMenuComponent {
     protected valueSetterSubscription: Subscription;
     protected saveSubscription: Subscription;
 
-    protected constructor(protected screenOrientationService: ScreenOrientationService,
-                          protected windowSizeService: WindowSizeService,
+    protected constructor(protected windowService: WindowService,
                           protected ngZone: NgZone,) {
         this.validFormSubmittedEvent = new EventEmitter<any>();
     }
 
     public updateViewAfterWindowSizeChanged(): void {
-        this.showTitle = this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu
-            || this.screenOrientationService.isPortraitMode();
+        this.showTitle = this.windowService.getWindowWidth() < environment.minWindowWidthForSideMenu
+            || this.windowService.isPortraitMode();
     }
 
     public getErrorControl() {
@@ -41,7 +39,7 @@ export abstract class SettingsMenuComponent {
     protected initSettingsMenu() {
         this.isSubmitted = false;
         this.updateViewAfterWindowSizeChanged();
-        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(
+        this.windowSizeSubscription = this.windowService.getWindowResizedObservable().subscribe(
             () => {
                 this.ngZone.run(() => {
                     this.updateViewAfterWindowSizeChanged();

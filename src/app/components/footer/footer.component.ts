@@ -55,7 +55,6 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public parametersButtonClicked() {
-        //Todo maybe stuff to set up ?
         this.navService.push(PagePath.SETTINGS_MENU).subscribe(() => console.log('success'));
     }
 }

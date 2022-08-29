@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
-import {WindowSizeService} from '@app/services/window-size.service';
+import {WindowService} from '@app/services/window.service';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {StorageService} from '@app/services/storage/storage.service';
 import {zip} from 'rxjs';
@@ -43,14 +42,12 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     public readonly popupDisplayDurationMinValue = 0;
     public readonly popupDisplayDurationMaxValue = 120;
 
-    public constructor(protected screenOrientationService: ScreenOrientationService,
-                       protected windowSizeService: WindowSizeService,
+    public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private formBuilder: FormBuilder,
                        protected ngZone: NgZone,) {
-        super(screenOrientationService,
-            windowSizeService, ngZone);
+        super(windowService, ngZone);
         this.form = this.formBuilder.group({
             storageDuration: ['', [Validators.required,
                 Validators.min(this.storageDurationMinValue),

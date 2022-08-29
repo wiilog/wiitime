@@ -88,6 +88,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async openNfcParameters(): Promise<void> {
+        //Todo remove
         const modal = await this.modalCtrl.create({
             component: PasswordCheckModalComponent,
             keyboardClose: true,

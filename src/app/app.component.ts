@@ -39,7 +39,7 @@ export class AppComponent {
                 if (this.isFirstApplicationLaunch) {
                     return this.navService.setRoot(PagePath.ACCOUNT_CREATION);
                 } else {
-                    return this.navService.setRoot(PagePath.HOME); //TODO change to active mode page when created
+                    return this.navService.setRoot(PagePath.ACTIVE_MODE); //TODO change to active mode page when test over
                 }
             }),
         ).subscribe(() => console.log('init over'));

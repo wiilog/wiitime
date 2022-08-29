@@ -3,9 +3,8 @@ import {IonMenu, Platform, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {NavService} from '@app/services/nav/nav.service';
 import {Subject, Subscription} from 'rxjs';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {WindowSizeService} from '@app/services/window-size.service';
+import {WindowService} from '@app/services/window.service';
 import {environment} from '../../../environments/environment';
 import {PagePath} from '@app/services/nav/page-path.enum';
 
@@ -48,8 +47,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     constructor(private platform: Platform,
                 private navService: NavService,
-                private screenOrientationService: ScreenOrientationService,
-                private windowSizeService: WindowSizeService,
+                private windowService: WindowService,
                 private ngZone: NgZone) {
     }
 
@@ -65,7 +63,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
         this.hideSubmitButton = false;
 
         this.updatePageAfterWindowSizeChanged();
-        this.windowSizeSubscription = this.windowSizeService.getWindowResizedObservable().subscribe(() => {
+        this.windowSizeSubscription = this.windowService.getWindowResizedObservable().subscribe(() => {
             this.ngZone.run(() => {
                 this.updatePageAfterWindowSizeChanged();
             });
@@ -97,7 +95,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     public backButtonAction(): void {
         if (!this.isMenuOpen || (!this.isPortraitMode && this.isMenuOpen && !this.hideSideMenu)) {
-            this.navService.pop(PagePath.HOME, {redirectToParams: false}); //Todo change to active mode page when created
+            this.navService.pop(PagePath.ACTIVE_MODE, {redirectToParams: false}); //Todo change to active mode page when test over
             console.log('leave page');
         } else {
             this.isMenuOpen = false;
@@ -128,8 +126,8 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     }
 
     private updatePageAfterWindowSizeChanged(): void {
-        this.isPortraitMode = this.screenOrientationService.isPortraitMode();
-        this.hideSideMenu = this.windowSizeService.getWindowWidth() < environment.minWindowWidthForSideMenu;
+        this.isPortraitMode = this.windowService.isPortraitMode();
+        this.hideSideMenu = this.windowService.getWindowWidth() < environment.minWindowWidthForSideMenu;
 
         if (!this.isMenuOpen) {
             this.isMenuOpen = (!this.isPortraitMode && !this.hideSideMenu);

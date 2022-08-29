@@ -45,7 +45,6 @@ export class SftpServices {
     }
 
     public synchronizeClocking(): Observable<boolean> {
-        //Todo update to return an observable boolean for success or failure
         const fileName = this.fileService.getBaseFilename()
             + this.dateService.utfDatetimeToLocalString(new Date(), false) + '.txt';
         const resultIds = new Array<number>();

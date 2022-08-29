@@ -19,6 +19,6 @@ export class AccountCreationPage {
     }
 
     public loadParameterMenu(): void {
-        this.navService.setRoot(PagePath.HOME, {redirectToParams: true}); //Todo change to active mode page when created)
+        this.navService.setRoot(PagePath.ACTIVE_MODE, {redirectToParams: true});
     }
 }

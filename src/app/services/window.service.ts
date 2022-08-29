@@ -1,15 +1,20 @@
 import {Injectable} from '@angular/core';
 import {Platform} from '@ionic/angular';
-import {ScreenOrientationService} from '@app/services/screen-orientation.service';
 import {Observable} from 'rxjs';
+import {ScreenOrientation} from '@awesome-cordova-plugins/screen-orientation/ngx';
 
 @Injectable({
     providedIn: 'root'
 })
-export class WindowSizeService {
+export class WindowService {
 
     public constructor(private platform: Platform,
-                       private screenOrientationService: ScreenOrientationService) {
+                       private screenOrientation: ScreenOrientation) {
+    }
+
+    public isPortraitMode(): boolean {
+        return this.screenOrientation.type === this.screenOrientation.ORIENTATIONS.PORTRAIT_PRIMARY
+            || this.screenOrientation.type === this.screenOrientation.ORIENTATIONS.PORTRAIT_SECONDARY;
     }
 
     public getWindowResizedObservable(): Observable<void> {
@@ -27,7 +32,7 @@ export class WindowSizeService {
      * Return the width of the window used to run the app when the device is in portrait mode.
      */
     public getWindowWidthOrientationFree(): number {
-        return (this.screenOrientationService.isPortraitMode()) ? this.platform.width() : this.platform.height();
+        return (this.isPortraitMode()) ? this.platform.width() : this.platform.height();
     }
 
     /*
@@ -41,6 +46,6 @@ export class WindowSizeService {
      * Return the height of the window used to run the app when the device is in portrait mode.
      */
     public getWindowHeightOrientationFree(): number {
-        return (this.screenOrientationService.isPortraitMode()) ? this.platform.height() : this.platform.width();
+        return (this.isPortraitMode()) ? this.platform.height() : this.platform.width();
     }
 }

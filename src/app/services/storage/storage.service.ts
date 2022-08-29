@@ -35,7 +35,7 @@ export class StorageService {
         [StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME]: this.dateService.setDateTime(new Date(), 13, 30), //TIME
         [StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME]: null, //Date
         [StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME]: null, //Datetime
-        [StorageKeyEnum.LAST_SFTP_STATUS]: SfpStatus.OFFLINE,
+        [StorageKeyEnum.LAST_SFTP_STATUS]: SfpStatus.NOT_SET,
         [StorageKeyEnum.SFTP_SETUP]: '0', //boolean
     };
 
