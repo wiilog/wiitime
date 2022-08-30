@@ -53,23 +53,24 @@ html {
 }
 
 ion-modal {
+    &.auto-height {
+        .ion-page {
+            position: relative;
+            display: block;
+            contain: content;
 
+            .inner-content {
+                max-height: 50rem;
+                overflow: auto;
+                padding: 1rem;
+            }
+        }
+    }
+    
     @media screen and (orientation:portrait) {
         &.auto-height {
             --height: auto;
             --max-width: 95%;
-
-            .ion-page {
-                position: relative;
-                display: block;
-                contain: content;
-
-                .inner-content {
-                    max-height: 50rem;
-                    overflow: auto;
-                    padding: 1rem;
-                }
-            }
         }
     }
 
@@ -77,18 +78,6 @@ ion-modal {
         &.auto-height {
             --height: auto;
             --max-width: 60rem;
-
-            .ion-page {
-                position: relative;
-                display: block;
-                contain: content;
-
-                .inner-content {
-                    max-height: 50rem;
-                    overflow: auto;
-                    padding: 1rem;
-                }
-            }
         }
     }
 
@@ -96,18 +85,6 @@ ion-modal {
         &.auto-height {
             --height: auto;
             --max-width: 75%;
-
-            .ion-page {
-                position: relative;
-                display: block;
-                contain: content;
-
-                .inner-content {
-                    max-height: 50rem;
-                    overflow: auto;
-                    padding: 1rem;
-                }
-            }
         }
     }
 }
