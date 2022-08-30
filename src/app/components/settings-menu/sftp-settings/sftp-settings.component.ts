@@ -51,6 +51,10 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
     public readonly serverPathMaxLength = 100;
     public readonly serverPathSize: FormSize = FormSize.MEDIUM;
 
+    //test connection button settings
+    public readonly isTestConnectionButtonFillingScreenWidth: boolean = true;
+    public readonly areTestConnectionButtonColorsSwapped: boolean = true;
+
     //synchronisation frequency field settings
     public readonly syncFrequencyFormControlName = 'syncFrequency';
     public readonly syncFrequencyFieldName = 'Toutes les*';

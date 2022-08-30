@@ -25,6 +25,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     public menu: IonMenu;
 
     public readonly rightArrowIconPath = '/assets/icon/fleche-droite.svg';
+    public readonly isBottomButtonLarge: boolean = true;
 
     public headerMode: HeaderMode = HeaderMode.PARAMETER_MENU;
     public refreshHeader$: Subject<any>;

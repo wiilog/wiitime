@@ -21,6 +21,10 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     public readonly storageDurationMinValue = 1;
     public readonly storageDurationMaxValue = 365;
 
+    //export button settings
+    public readonly isExportButtonFillingScreenWidth: boolean = true;
+    public readonly areExportButtonColorsSwapped: boolean = true;
+
     //display clocking from field settings
     public readonly displayClockingFromFromControlName = 'displayClockingFrom';
     public readonly displayClockingFromFieldName = 'Affichage des badgeages sur*';

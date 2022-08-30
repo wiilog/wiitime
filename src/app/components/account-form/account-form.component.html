@@ -3,7 +3,7 @@
     <form [formGroup]="form" [class.formSubmitted]="isSubmitted" class="mt-4 form" (ngSubmit)="formSubmitted()">
         <div class="account-form-wrapper">
             <app-form-text-area [formControlName]="usernameFormControlName"
-                                [titleOnTop]="true"
+                                [titleOnTop]="usernameTitleOnTop"
                                 [fieldName]="usernameFieldName"
                                 [maxLength]="usernameMaxLength"
                                 [size]="usernameFieldSize">
@@ -21,7 +21,7 @@
                                          [fieldName]="passwordFieldName"
                                          [maxLength]="passwordMaxLength"
                                          [size]="passwordFieldSize"
-                                         titleOnTop="true">
+                                         [titleOnTop]="passwordTitleOnTop">
                 </app-form-password-input>
                 <span class="error" *ngIf="isSubmitted && getErrorControl().password.errors?.required">
                     Ce champ doit être renseigné pour sauvegarder

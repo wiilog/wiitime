@@ -7,7 +7,7 @@
                             [fieldName]="usernameFieldName"
                             [maxLength]="usernameMaxLength"
                             [size]="usernameFieldSize"
-                            titleOnTop="true">
+                            [titleOnTop]="usernameTitleOnTop">
         </app-form-text-area>
         <span class="error" *ngIf="isSubmitted && getErrorControl().username.errors?.required">
                 Ce champ doit être renseigné pour sauvegarder
@@ -21,7 +21,7 @@
                                      [fieldName]="passwordFieldName"
                                      [maxLength]="passwordMaxLength"
                                      [size]="passwordFieldSize"
-                                     titleOnTop="true">
+                                     [titleOnTop]="passwordTitleOnTop">
             </app-form-password-input>
             <span class="error" *ngIf="isSubmitted && getErrorControl().password.errors?.required">
                 Ce champ doit être renseigné pour sauvegarder

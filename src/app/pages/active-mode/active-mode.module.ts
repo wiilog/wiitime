@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ActiveModePageRoutingModule } from './active-mode-routing.module';
 
 import { ActiveModePage } from './active-mode.page';
-import {CommonModules} from "@app/common.modules";
+import {CommonModules} from '@app/common.modules';
 
 @NgModule({
     imports: [

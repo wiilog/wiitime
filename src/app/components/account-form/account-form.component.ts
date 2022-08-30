@@ -24,6 +24,7 @@ export class AccountFormComponent implements OnInit, OnDestroy {
     public readonly usernameFieldName = 'Nom d\'utilisateur';
     public readonly usernameFieldSize = FormSize.NORMAL;
     public readonly usernameMaxLength: number = environment.adminUsernameMaxLength;
+    public readonly usernameTitleOnTop: boolean = true;
 
     // password field settings
     public readonly passwordFormControlName = 'password';
@@ -31,6 +32,7 @@ export class AccountFormComponent implements OnInit, OnDestroy {
     public readonly passwordFieldSize = FormSize.NORMAL;
     public readonly passwordMinLength: number = environment.adminPasswordMinLength;
     public readonly passwordMaxLength: number = environment.adminPasswordMaxLength;
+    public readonly passwordTitleOnTop: boolean = true;
 
     protected saveSubscription: Subscription;
 

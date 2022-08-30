@@ -70,7 +70,7 @@
         <app-form-button class="bottom-button"
                          buttonText="Valider"
                          iconPath="/assets/icon/tick-blanc.svg"
-                         isLarge="true"
+                         [isLarge]="isBottomButtonLarge"
                          (buttonClickedEvent)="submitButtonClicked()">
         </app-form-button>
     </div>

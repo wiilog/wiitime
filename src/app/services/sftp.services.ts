@@ -9,6 +9,7 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FTP} from '@awesome-cordova-plugins/ftp/ngx';
 import {FileService} from '@app/services/file.service';
 import {DateService} from '@app/services/date.service';
+import {Device, DeviceId} from '@capacitor/device';
 
 @Injectable({
     providedIn: 'root'
@@ -45,7 +46,7 @@ export class SftpServices {
     }
 
     public synchronizeClocking(): Observable<boolean> {
-        const fileName = this.fileService.getBaseFilename()
+        let fileName = this.fileService.getBaseFilename()
             + this.dateService.utfDatetimeToLocalString(new Date(), false) + '.txt';
         const resultIds = new Array<number>();
         let sftpSaveFolderPath;
@@ -63,19 +64,26 @@ export class SftpServices {
                 return from(this.ftp.connect(sftpAddress.concat(':', sftpPort), sftpUsername, sftpPassword));
             }),
             mergeMap(() =>
-                this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD, {is_synchronised: '0'})
+                zip(this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD, {is_synchronised: '0'}),
+                    from(Device.getId()))
             ),
-            mergeMap((clockingRecords) =>
-                this.fileService.writeFile(fileName, clockingRecords, resultIds)
-            ), mergeMap((writeFileResult) =>
+            mergeMap(([clockingRecords, deviceId]: [ClockingRecord[], DeviceId]) => {
+                fileName = `${deviceId.uuid}_${fileName}`;
+                return this.fileService.writeFile(fileName, clockingRecords, resultIds);
+            }),
+            mergeMap((writeFileResult) =>
                 this.uploadFileToServer(writeFileResult.uri, sftpSaveFolderPath, fileName)
-            ), filter((uploadResult) =>
+            ),
+            filter((uploadResult) =>
                 uploadResult === 1
-            ), mergeMap(() =>
+            ),
+            mergeMap(() =>
                 this.sqliteService.updateClockingSynchronisation(resultIds)
-            ), mergeMap(() =>
+            ),
+            mergeMap(() =>
                 from(this.ftp.disconnect())
-            ), mergeMap((disconnectResult) =>
+            ),
+            mergeMap((disconnectResult) =>
                 of(disconnectResult === 'OK')
             ),
             catchError((err) => {

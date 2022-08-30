@@ -66,8 +66,8 @@
             chemin non valide
         </span>
 
-        <app-form-button fillScreenWidth="true"
-                         swapColor="true"
+        <app-form-button [fillScreenWidth]="isTestConnectionButtonFillingScreenWidth"
+                         [swapColor]="areTestConnectionButtonColorsSwapped"
                          buttonText="Test connection"
                         (buttonClickedEvent)="testSftpConnectionButtonClicked()">
         </app-form-button>

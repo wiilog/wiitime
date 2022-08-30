@@ -1,9 +1,10 @@
-import {EventEmitter, Input, NgZone, Output} from '@angular/core';
+import {Component, EventEmitter, Input, NgZone, Output} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {WindowService} from '@app/services/window.service';
 import {FormGroup} from '@angular/forms';
 
+@Component({ template: '' })
 export abstract class SettingsMenuComponent {
     @Input()
     public submitForm$: Observable<string>;

@@ -18,8 +18,8 @@
                 Ce champ ne peut être infèrieur à {{storageDurationMinValue}}
         </span>
 
-        <app-form-button fillScreenWidth="true"
-                         swapColor="true"
+        <app-form-button [fillScreenWidth]="isExportButtonFillingScreenWidth"
+                         [swapColor]="areExportButtonColorsSwapped"
                          buttonText="Export des données">
         </app-form-button>
 

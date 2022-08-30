@@ -86,7 +86,6 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
 
         this.windowSizeSubscription = this.windowService.getWindowResizedObservable().subscribe(() => {
             this.isPortraitMode = this.windowService.isPortraitMode();
-            console.log('tourne', this.isPortraitMode);
         });
 
         this.storageGetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),

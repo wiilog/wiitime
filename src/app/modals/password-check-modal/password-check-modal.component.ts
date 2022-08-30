@@ -28,6 +28,7 @@ export class PasswordCheckModalComponent implements OnInit, OnDestroy {
     public readonly passwordFieldName = 'Mot de passe administrateur';
     public readonly passwordFieldSize = FormSize.NORMAL;
     public readonly passwordMaxLength: number = environment.adminPasswordMaxLength;
+    public readonly passwordTitleOnTop: boolean = true;
 
     private backButtonSubscription: Subscription;
     private passwordGetterSubscription;

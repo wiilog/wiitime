@@ -4,7 +4,7 @@ import {from, Observable, Subject} from 'rxjs';
 import {Directory, Encoding, Filesystem, WriteFileResult} from '@capacitor/filesystem';
 import {mergeMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
-import {DateService} from "@app/services/date.service";
+import {DateService} from '@app/services/date.service';
 
 @Injectable({
     providedIn: 'root'
