@@ -16,6 +16,10 @@ export class DateService {
         return newDate;
     }
 
+    public datetimeToDaySlashMonthString(date: Date): string {
+        return this.dateMonthToString(date) + '/' + this.dateDayToString(date);
+    }
+
     public utfDatetimeToLocalString(date: Date, separator: boolean): string {
         let charBetweenTimeAndDate = ' ';
 
@@ -49,7 +53,7 @@ export class DateService {
     }
 
     public dateDayToString(date: Date): string {
-        return date.getDay() < 10 ? '0'.concat(date.getDay().toString()) : date.getDay().toString();
+        return date.getDate() < 10 ? '0'.concat(date.getDay().toString()) : date.getDay().toString();
     }
 
     public dateHourToString(date: Date): string {

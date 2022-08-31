@@ -46,6 +46,9 @@ $medium-button-height: 5.5rem;
 //Parameter menu
 $side-menu-width: 33%;
 
+//Clocking info modal
+$top-content-height: 10rem;
+
 @function toRGBParams ($color) {
     @return red($color) + ", " + green($color) + ", " + blue($color);
 }

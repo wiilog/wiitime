@@ -17,6 +17,7 @@ import {FormInputComponent} from '@app/components/form/form-input/form-input.com
 import {FormPasswordInputComponent} from '@app/components/form/form-password-input/form-password-input.component';
 import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
+import {ClockingInfoLineComponent} from '@app/components/clocking-info-line/clocking-info-line.component';
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/pass
         FormRangeComponent,
         FormInputComponent,
         FormPasswordInputComponent,
+        ClockingInfoLineComponent,
         FormModalComponent,
         PasswordCheckModalComponent,
     ],
@@ -52,6 +54,7 @@ import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/pass
         FormRangeComponent,
         FormInputComponent,
         FormPasswordInputComponent,
+        ClockingInfoLineComponent,
         FormModalComponent,
         PasswordCheckModalComponent,
     ]

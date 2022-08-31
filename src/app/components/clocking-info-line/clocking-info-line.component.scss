@@ -1,0 +1,40 @@
+@import "src/theme/global";
+
+.line-wrapper {
+    height: 5rem;
+    border-bottom: 1px solid #CBCBCB;
+
+    .date-label {
+        margin: auto;
+        flex: 2;
+        @include text(body-big);
+    }
+
+    .time-label {
+        margin: auto 1rem auto 1rem;
+        flex: 1;
+        @include text(body-big);
+    }
+
+    .period-image {
+        height: 5rem * 0.7;
+        margin: auto;
+    }
+
+    .bold-date {
+        @include title(2rem);
+    }
+
+    .bold-text {
+        @include title(2.2rem);
+        margin: auto 1rem auto 0;
+    }
+}
+
+.grey-background {
+    --background: #{$light-blue};
+}
+
+.bigger-border {
+    border-bottom: 2px solid #CBCBCB;
+}

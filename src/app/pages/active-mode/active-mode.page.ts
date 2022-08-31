@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ViewWillEnter, ViewWillLeave} from '@ionic/angular';
+import {ModalController, ViewWillEnter, ViewWillLeave} from '@ionic/angular';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {NfcService} from '@app/services/nfc.service';
@@ -11,8 +11,10 @@ import {of, Subscription, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
-import {mergeMap} from 'rxjs/operators';
+import {mergeMap, tap} from 'rxjs/operators';
 import {WindowService} from '@app/services/window.service';
+import {ClockingInfoModalPage} from '@app/modals/clocking-info-modal/clocking-info-modal.page';
+import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 
 @Component({
     selector: 'app-active-mode',
@@ -34,6 +36,7 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
     public readonly sftpStatusEnum = SfpStatus;
 
     private isSftpSetup: boolean;
+    private isClockingInfoModalOpen: boolean;
     private nfcSubscription: Subscription;
     private windowSizeSubscription: Subscription;
     private storageGetterSubscription: Subscription;
@@ -44,7 +47,8 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
                        private storageService: StorageService,
                        private sftpService: SftpServices,
                        private sqliteService: SQLiteService,
-                       private windowService: WindowService) {
+                       private windowService: WindowService,
+                       private modalCtrl: ModalController) {
     }
 
     public ionViewWillEnter(): void {
@@ -78,6 +82,7 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
     }
 
     public initPage(): void {
+        this.isClockingInfoModalOpen = false;
         this.isPortraitMode = this.windowService.isPortraitMode();
 
         this.timerSubscription = timer(0, 1000).subscribe(() => {
@@ -111,7 +116,41 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
             });
 
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
-            (data) => this.sqliteService.registerClocking(this.nfcService.convertIdToHex(data)));
+            (data) => this.manageClocking(data.id));
     }
 
+    private async manageClocking(badgeId: number[]): Promise<any> {
+        if(this.isClockingInfoModalOpen) {
+            return;
+        }
+        this.isClockingInfoModalOpen = true;
+        const hexId = this.nfcService.convertIdToHex(badgeId);
+        let openModal = true; //Todo init with value false after test
+
+        await this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING)
+            .pipe(
+                mergeMap((delay) => this.sqliteService.getBadgeClockingInInterval(hexId, Number(delay))),
+                tap((clockingRecords: ClockingRecord[]) => {
+                    if (clockingRecords.length === 0) {
+                        openModal = true;
+                    }
+                })
+            ).toPromise();
+
+
+        if (openModal) {
+            const modal = await this.modalCtrl.create({
+                component: ClockingInfoModalPage,
+                keyboardClose: true,
+                componentProps: {
+                    clockedBadgeNumber: hexId,
+                },
+                cssClass: 'clocking-info-modal',
+                backdropDismiss: false,
+            });
+            await modal.present();
+            await modal.onWillDismiss();
+        }
+        this.isClockingInfoModalOpen = false;
+    }
 }

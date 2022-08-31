@@ -96,7 +96,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     public backButtonAction(): void {
         if (!this.isMenuOpen || (!this.isPortraitMode && this.isMenuOpen && !this.hideSideMenu)) {
-            this.navService.pop(PagePath.ACTIVE_MODE, {redirectToParams: false}); //Todo change to active mode page when test over
+            this.navService.pop(PagePath.ACTIVE_MODE, {redirectToParams: false});
             console.log('leave page');
         } else {
             this.isMenuOpen = false;

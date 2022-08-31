@@ -69,6 +69,8 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public readonly volumeRangeFormControlName = 'clockingVolume';
     public readonly volumeRangeFieldName = 'Volume bip';
 
+    private isUpdateUserInfoModalOpen: boolean;
+
     public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
@@ -87,6 +89,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
 
     public ngOnInit(): void {
         this.initSettingsMenu();
+        this.isUpdateUserInfoModalOpen = false;
     }
 
     public ngAfterViewInit(): void {
@@ -103,6 +106,10 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     }
 
     public async updateAdminInfoButtonClicked(): Promise<void> {
+        if(this.isUpdateUserInfoModalOpen) {
+            return;
+        }
+        this.isUpdateUserInfoModalOpen = true;
         const modal = await this.modalCtrl.create({
             component: FormModalComponent,
             keyboardClose: true,
@@ -123,6 +130,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
             this.adminPassword = data.password;
             console.log(this.adminUsername, ' ', this.adminPassword);
         }
+        this.isUpdateUserInfoModalOpen = false;
     }
 
     public updateLogo(result: any) {

@@ -67,12 +67,7 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
 
     public initPage(): void {
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
-            (data) => this.sqliteService.registerClocking(this.nfcService.convertIdToHex(data)));
-
-        /*
-        this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
-            (data) => this.sftpService.synchronizeClocking().subscribe(() => console.log('hoho')));
-        */
+            (data) => this.sqliteService.registerClocking(this.nfcService.convertIdToHex(data.id)));
     }
 
     public async ionViewWillLeave(): Promise<any> {
@@ -114,9 +109,4 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     public cry(mode: 'right' | 'left'): void {
         console.log('I am now crying :\'(');
     }
-
-    import {tap} from 'rxjs/operators';
-    tap(() => {
-        this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME).subscribe((ff) => {console.log(typeof ff);});
-    })
 */

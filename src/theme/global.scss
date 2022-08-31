@@ -52,6 +52,42 @@ html {
     font-size: 62.5%;
 }
 
+.clocking-info-modal {
+    /*
+    &::part(backdrop) {
+        background-color: $white;
+    }
+    */
+
+    @media screen and (min-height: 1000px) and (orientation: portrait) {
+        &::part(content) {
+            width: 95%;
+            height: 50%;
+        }
+    }
+
+    @media screen and (max-height: 1001px) and (orientation: portrait) {
+        &::part(content) {
+            width: 95%;
+            height: 60%;
+        }
+    }
+
+    @media screen and (min-width: 901px) and (orientation: landscape) {
+        &::part(content) {
+            width: 67rem;
+            height: 70%;
+        }
+    }
+
+    @media screen and (max-width: 900px) and (orientation: landscape) {
+        &::part(content) {
+            width: 75%;
+            height: 90%;
+        }
+    }
+}
+
 ion-modal {
     &.auto-height {
         .ion-page {
@@ -66,13 +102,6 @@ ion-modal {
             }
         }
     }
-    
-    @media screen and (orientation:portrait) {
-        &.auto-height {
-            --height: auto;
-            --max-width: 95%;
-        }
-    }
 
     @media screen and (min-width: 851px) and (orientation: landscape) {
         &.auto-height {
@@ -81,10 +110,24 @@ ion-modal {
         }
     }
 
-    @media screen and (max-width: 850px) and (orientation: landscape) {
+    @media screen and (min-width: 401px) and (max-width: 850px) and (orientation: landscape) {
         &.auto-height {
             --height: auto;
             --max-width: 75%;
+        }
+    }
+
+    @media screen and (max-width: 400px) and (orientation: landscape) {
+        &.auto-height {
+            --height: auto;
+            --max-width: 95%;
+        }
+    }
+
+    @media screen and (orientation: portrait) {
+        &.auto-height {
+            --height: auto;
+            --max-width: 95%;
         }
     }
 }

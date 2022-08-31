@@ -34,12 +34,13 @@ export class AppComponent {
                 return adminUsername ? of(null) : this.storageService.initStorage();
             }),
             mergeMap(() => this.sqliteService.initialiseDatabase(this.isFirstApplicationLaunch)),
+            mergeMap(() => this.sqliteService.deleteOldClocking()),
             mergeMap(() => this.backgroundTaskService.startSynchronisationLoop()),
             mergeMap(() => {
                 if (this.isFirstApplicationLaunch) {
                     return this.navService.setRoot(PagePath.ACCOUNT_CREATION);
                 } else {
-                    return this.navService.setRoot(PagePath.ACTIVE_MODE); //TODO change to active mode page when test over
+                    return this.navService.setRoot(PagePath.ACTIVE_MODE);
                 }
             }),
         ).subscribe(() => console.log('init over'));

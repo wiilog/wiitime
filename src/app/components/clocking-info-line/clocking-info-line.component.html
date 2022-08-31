@@ -1,0 +1,16 @@
+<ion-item class="line-wrapper"
+          lines="none"
+          [class.grey-background]="isFirst"
+          [class.bigger-border]="isLastOfDay">
+    <ion-label class="date-label"
+               [class.bold-date]="isFirst">
+        {{dateText}}
+    </ion-label>
+    <ion-label class="time-label"
+               [class.bold-text]="isFirst">
+        {{linkedClocking.clocking_date | date:'HH:mm'}}
+    </ion-label>
+    <ion-img [src]="imagePath"
+             class="period-image">
+    </ion-img>
+</ion-item>

@@ -8,6 +8,7 @@ import {TableName} from '@app/services/sqlite/table-name';
 import {Entity} from '@app/services/sqlite/entities/entity';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
+import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 
 @Injectable({
     providedIn: 'root'
@@ -220,13 +221,32 @@ export class SQLiteService {
                                   WHERE id in (${resultIds})`);
     }
 
-    public registerClocking(badgeId: string): void {
-        from(this.insert(TableName.CLOCKING_RECORD, {
+    public registerClocking(badgeId: string): Observable<void> {
+        return from(this.insert(TableName.CLOCKING_RECORD, {
             id: null,
             badge_number: badgeId,
             clocking_date: new Date().toISOString(),
             is_synchronised: '0'
-        })).pipe(mergeMap(() => this.deleteOldClocking()))
-            .subscribe(() => console.log('clocking registered'));
+        })).pipe(mergeMap(() => this.deleteOldClocking()));
+    }
+
+    /**
+     * Return an Observable containing an Array of the clocking records for a given badge which have been
+     * registered in the last interval minutes
+     *
+     * @param badgeId - The id of a badge in hexadecimal
+     * @param interval - the maximum age of a clocking in minutes for it to be selected
+     * @return an Observable containing an Array of clocking records
+     */
+    public getBadgeClockingInInterval(badgeId: string, interval: number): Observable<ClockingRecord[]> {
+        const query = `SELECT *
+                       FROM ${TableName.CLOCKING_RECORD}
+                       WHERE badge_number = ?
+                         AND DATETIME(clocking_date) >= DATETIME('now', '-${interval} minutes')
+                       ORDER BY clocking_date desc`;
+
+        const values = [];
+        values.push(badgeId);
+        return this.executeQuery(query, values);
     }
 }

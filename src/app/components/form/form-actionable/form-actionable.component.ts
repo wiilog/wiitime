@@ -20,10 +20,10 @@ export class FormActionableComponent implements OnInit {
         this.fieldActioned = new EventEmitter<any>();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 
-    public iconClicked() {
+    public iconClicked(): void {
         this.fieldActioned.emit();
     }
 }

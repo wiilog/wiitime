@@ -29,8 +29,8 @@ export class NfcService {
             );
     }
 
-    public convertIdToHex(scannedTag: NfcTag): string {
-        return this.nfc.bytesToHexString(scannedTag.id);
+    public convertIdToHex(tagId: number[]): string {
+        return this.nfc.bytesToHexString(tagId);
     }
 
     public openParameters(): Observable<void> {

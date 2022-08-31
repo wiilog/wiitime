@@ -1,0 +1,60 @@
+@import "../../../theme/global";
+
+ion-content {
+    --background: $white;
+}
+
+.top-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: $white;
+    height: $top-content-height;
+    width: 100%;
+
+    .modal-title {
+        margin: 2rem 0 2rem 0;
+        text-align: center;
+        @include title(2rem);
+    }
+
+    .modal-text {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        @include text(body-grey);
+    }
+}
+
+.modal-list-wrapper {
+    margin: $top-content-height 2rem ($medium-button-height + 2rem) 2rem;
+}
+
+.bottom-buttons-wrapper {
+    width: 100%;
+    background-color: $white;
+    height: $medium-button-height + 2rem;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .button {
+        flex: 1;
+        margin: 0 1rem 0 1rem;
+    }
+}
+
+/*
+.modal-title {
+    margin: 2rem 0 3rem 0;
+    text-align: center;
+    @include title(2rem);
+}
+
+.modal-content-wrapper {
+    margin: 1rem 2rem 1rem 2rem;
+
+    .modal-text {
+        @include text(body-grey);
+    }
+}
+ */

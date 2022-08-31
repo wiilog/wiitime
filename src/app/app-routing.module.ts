@@ -23,6 +23,10 @@ const routes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full'
     },
+  {
+    path: 'clocking-info-modal',
+    loadChildren: () => import('./modals/clocking-info-modal/clocking-info-modal.module').then(m => m.ClockingInfoModalPageModule)
+  },
 ];
 
 @NgModule({

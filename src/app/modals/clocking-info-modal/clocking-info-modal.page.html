@@ -1,0 +1,63 @@
+<ion-content>
+    <div slot="fixed"
+         class="top-content-wrapper">
+        <div class="modal-title">
+            {{modalTitle}}
+        </div>
+        <ion-label class="modal-text">
+            Badgeages bruts des {{clockingDisplayInterval}} dernières heures
+        </ion-label>
+    </div>
+    <div *ngIf="isModalLoaded"
+         class="modal-list-wrapper">
+        <app-clocking-info-line [dateText]="firstClockingText"
+                                [linkedClocking]="firstClocking"
+                                [isLastOfDay]="false"
+                                [isFirst]="true">
+        </app-clocking-info-line>
+        <app-clocking-info-line *ngFor="let clocking of badgeRegisteredClocking | keyvalue"
+                                [dateText]="clocking.value"
+                                [linkedClocking]="clocking.key"
+                                [isLastOfDay]="false">
+        </app-clocking-info-line>
+    </div>
+    <div class="bottom-buttons-wrapper"
+         slot="fixed">
+        <app-form-button class="button"
+                         buttonText="Valider"
+                         [isLarge]="isValidateButtonLarge"
+                         (buttonClickedEvent)="confirmButtonClicked()">
+        </app-form-button>
+    </div>
+</ion-content>
+<!--
+<ion-content>
+    <div class="modal-title">
+        {{modalTitle}}
+    </div>
+    <div class="modal-content-wrapper">
+        <ion-label class="modal-text">
+            Badgeages bruts des {{clockingDisplayInterval}} dernières heures
+        </ion-label>
+
+        <div *ngIf="isModalLoaded"
+             class="mt-2">
+            <app-clocking-info-line [dateText]="firstClockingText"
+                                    [linkedClocking]="firstClocking"
+                                    [isLastOfDay]="false"
+                                    [isFirst]="true">
+            </app-clocking-info-line>
+            <app-clocking-info-line *ngFor="let clocking of badgeRegisteredClocking | keyvalue"
+                                    [dateText]="clocking.value"
+                                    [linkedClocking]="clocking.key"
+                                    [isLastOfDay]="false">
+            </app-clocking-info-line>
+        </div>
+    </div>
+
+    <app-form-button buttonText="Valider"
+                     [isLarge]="isValidateButtonLarge"
+                     (buttonClickedEvent)="confirmButtonClicked()">
+    </app-form-button>
+</ion-content>
+ -->

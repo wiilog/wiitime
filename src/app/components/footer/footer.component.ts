@@ -24,6 +24,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     public currentVersionNumber: string; //TODO get value from storage instead
 
     private valueGetterSubscription: Subscription;
+    private isPasswordCheckModalOpen: boolean;
 
     constructor(private navService: NavService,
                 private storage: StorageService,
@@ -32,10 +33,11 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        this.isPasswordCheckModalOpen = false;
     }
 
     public ngOnDestroy(): void {
-        if(this.valueGetterSubscription && !this.valueGetterSubscription.closed) {
+        if (this.valueGetterSubscription && !this.valueGetterSubscription.closed) {
             this.valueGetterSubscription.unsubscribe();
         }
     }
@@ -46,6 +48,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public changeModeButtonClicked() {
+        /* Todo uncomment for test
         this.valueGetterSubscription = this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)
             .subscribe((isActive) => {
                 if (isActive != null) {
@@ -61,10 +64,15 @@ export class FooterComponent implements OnInit, OnDestroy {
                     console.error('Error storage value of key IS_BACKGROUND_MODE_ACTIVE is null -> should be 0 or 1');
                 }
             });
+         */
 
     }
 
     public async parametersButtonClicked() {
+        if(this.isPasswordCheckModalOpen) {
+            return;
+        }
+        this.isPasswordCheckModalOpen = true;
         const modal = await this.modalCtrl.create({
             component: PasswordCheckModalComponent,
             keyboardClose: true,
@@ -80,6 +88,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         if (role === 'confirm') {
             this.navService.push(PagePath.SETTINGS_MENU);
         }
+        this.isPasswordCheckModalOpen = false;
     }
 }
 

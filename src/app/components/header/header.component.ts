@@ -22,13 +22,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy{
 
     public readonly HeaderMode = HeaderMode;
 
-    public appLogoPath = '/assets/img/Logo-HeRa.png';
+    public readonly appLogoPath = '/assets/img/Logo-HeRa.png';
 
     public logo: string;
 
-    public backButtonImagePath = '/assets/icon/fleche-gauche.svg';
+    public readonly backButtonImagePath = '/assets/icon/fleche-gauche.svg';
 
-    public disconnectLogoPath = '/assets/icon/deconnexion.svg';
+    public readonly disconnectLogoPath = '/assets/icon/deconnexion.svg';
 
     private refreshHeaderSubscription;
 
