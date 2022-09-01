@@ -10,15 +10,11 @@
     </div>
     <div *ngIf="isModalLoaded"
          class="modal-list-wrapper">
-        <app-clocking-info-line [dateText]="firstClockingText"
-                                [linkedClocking]="firstClocking"
-                                [isLastOfDay]="false"
-                                [isFirst]="true">
-        </app-clocking-info-line>
         <app-clocking-info-line *ngFor="let clocking of badgeRegisteredClocking | keyvalue"
-                                [dateText]="clocking.value"
+                                [isFirst]="clocking.value.isFirst"
+                                [dateText]="clocking.value.dateText"
                                 [linkedClocking]="clocking.key"
-                                [isLastOfDay]="false">
+                                [isLastOfDay]="clocking.value.isLastOfDay">
         </app-clocking-info-line>
     </div>
     <div class="bottom-buttons-wrapper"

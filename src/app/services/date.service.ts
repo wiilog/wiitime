@@ -5,6 +5,8 @@ import {Injectable} from '@angular/core';
 })
 export class DateService {
 
+    private static readonly ONE_DAY_IN_MILLISECOND = 24 * 60 * 60 * 1000;
+
     public constructor() {
     }
 
@@ -14,6 +16,20 @@ export class DateService {
         newDate.setMinutes(minute);
         newDate.setSeconds(0);
         return newDate;
+    }
+
+    /**
+     * Check if the first date is from the day before the day of the second date
+     *
+     * @param date1 a date
+     * @param date2 an other date
+     */
+    public isFromDayBefore(date1, date2): boolean {
+        const startOfDate1Day = new Date(date1);
+        const startOfDate2Day = new Date(date2);
+        startOfDate1Day.setHours(0, 0, 0, 0);
+        startOfDate2Day.setHours(0, 0, 0, 0);
+        return (startOfDate2Day.getTime() - startOfDate1Day.getTime()) === DateService.ONE_DAY_IN_MILLISECOND;
     }
 
     public datetimeToDaySlashMonthString(date: Date): string {
@@ -53,7 +69,7 @@ export class DateService {
     }
 
     public dateDayToString(date: Date): string {
-        return date.getDate() < 10 ? '0'.concat(date.getDay().toString()) : date.getDay().toString();
+        return date.getDate() < 10 ? '0'.concat(date.getDate().toString()) : date.getDate().toString();
     }
 
     public dateHourToString(date: Date): string {

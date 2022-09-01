@@ -4,9 +4,20 @@
     height: 5rem;
     border-bottom: 1px solid #CBCBCB;
 
+    @media (max-width: 950px) {
+        .date-label {
+            flex: 2;
+        }
+    }
+
+    @media (min-width: 951px) {
+        .date-label {
+            flex: 1;
+        }
+    }
+
     .date-label {
         margin: auto;
-        flex: 2;
         @include text(body-big);
     }
 

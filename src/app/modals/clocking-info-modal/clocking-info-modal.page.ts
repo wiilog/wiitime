@@ -8,6 +8,7 @@ import {ModalController, Platform} from '@ionic/angular';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {mergeMap, tap} from 'rxjs/operators';
 import {DateService} from '@app/services/date.service';
+import {ClockingInfo} from '@app/modals/clocking-info-modal/clocking-info';
 
 @Component({
     selector: 'app-clocking-info-modal',
@@ -21,16 +22,15 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
 
     public isModalLoaded: boolean;
     public modalTitle = 'Badge n°';
-    public badgeRegisteredClocking: Map<ClockingRecord, string>;
-    public firstClocking: ClockingRecord;
+    public badgeRegisteredClocking: Map<ClockingRecord, ClockingInfo>;
     public clockingDisplayInterval: number;
 
     //validate button settings
     public readonly isValidateButtonLarge: boolean = false;
 
-    public readonly firstClockingText = 'Aujourd\'hui';
-    public readonly yesterdayClockingText = 'Hier';
-    public readonly emptyText = '';
+    private readonly firstClockingText = 'Aujourd\'hui';
+    private readonly yesterdayClockingText = 'Hier';
+    private readonly emptyText = '';
 
     private modalLoadingSubscription: Subscription;
     private backButtonSubscription: Subscription;
@@ -98,30 +98,46 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
     }
 
     public fillClockingInfo(clockingRecords: ClockingRecord[]) {
-        this.badgeRegisteredClocking = new Map<ClockingRecord, string>();
-        let lastDate = null;
+        this.badgeRegisteredClocking = new Map<ClockingRecord, ClockingInfo>();
+        let lastDayDate = null;
+        let lastClocking = null;
         let yesterday = true;
         clockingRecords.forEach((clocking: ClockingRecord) => {
             const currentClockingDate = new Date(clocking.clocking_date);
-            if (lastDate === null) {
-                this.firstClocking = clocking;
-                lastDate = currentClockingDate;
+            if (lastClocking === null) {
+                this.badgeRegisteredClocking.set(clocking, {
+                    isFirst: true,
+                    dateText: this.firstClockingText,
+                    isLastOfDay: false
+                });
+                lastDayDate = currentClockingDate;
             } else {
-                if (currentClockingDate.toLocaleDateString() < lastDate.toLocaleDateString()) {
+                if (this.dateService.utfDatetimeToLocalDate(currentClockingDate, false)
+                    < this.dateService.utfDatetimeToLocalDate(lastDayDate, false))
+                {
                     let text = this.dateService.datetimeToDaySlashMonthString(currentClockingDate);
                     if (yesterday) {
                         yesterday = false;
-                        if (lastDate.getDate() - currentClockingDate.getDate() === 1) {
+                        if (this.dateService.isFromDayBefore(currentClockingDate, lastDayDate)) {
                             text = this.yesterdayClockingText;
                         }
                     }
-                    this.badgeRegisteredClocking.set(clocking, text);
-                    lastDate = currentClockingDate;
+                    this.badgeRegisteredClocking.set(clocking, {
+                        isFirst: false,
+                        dateText: text,
+                        isLastOfDay: false
+                    });
+                    this.badgeRegisteredClocking.get(lastClocking).isLastOfDay = true;
+                    lastDayDate = currentClockingDate;
                 } else {
-                    this.badgeRegisteredClocking.set(clocking, this.emptyText);
+                    this.badgeRegisteredClocking.set(clocking, {
+                        isFirst: false,
+                        dateText: this.emptyText,
+                        isLastOfDay: false
+                    });
                 }
             }
+            lastClocking = clocking;
         });
     }
-
 }

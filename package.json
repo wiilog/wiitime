@@ -42,6 +42,7 @@
         "@ionic/cli": "^6.20.1",
         "cordova-plugin-ftp": "^1.2.1",
         "cordova-plugin-screen-orientation": "git+https://github.com/apache/cordova-plugin-screen-orientation",
+        "cordova-res": "^0.15.4",
         "cordova-sqlite-storage": "^6.0.0",
         "es6-promise-plugin": "^4.2.2",
         "native-run": "=1.6.0",
