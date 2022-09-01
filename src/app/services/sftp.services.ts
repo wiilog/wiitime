@@ -3,13 +3,12 @@ import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 import {TableName} from '@app/services/sqlite/table-name';
 import {from, Observable, of, zip} from 'rxjs';
-import {catchError, filter, mergeMap} from 'rxjs/operators';
+import {catchError, filter, map, mergeMap} from 'rxjs/operators';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FTP} from '@awesome-cordova-plugins/ftp/ngx';
 import {FileService} from '@app/services/file.service';
 import {DateService} from '@app/services/date.service';
-import {Device, DeviceId} from '@capacitor/device';
 
 @Injectable({
     providedIn: 'root'
@@ -38,7 +37,42 @@ export class SftpServices {
             ), mergeMap((connectionResult) => {
                 connectionSuccess = connectionResult === 'OK';
                 return from(this.ftp.disconnect());
-            }), mergeMap(() => of(connectionSuccess)
+            }), map(() => connectionSuccess
+            ), catchError((err) => {
+                console.log(err);
+                return from(this.ftp.disconnect()).pipe(mergeMap(() => of(false)));
+            }));
+    }
+
+    public testConnectionWithFile(): Observable<boolean> {
+        let connectionSuccess: boolean;
+        let filename: string;
+        let sftpSaveFolderPath: string;
+        return zip(this.storageService.getValue(StorageKeyEnum.SFTP_SERVER_ADDRESS),
+            this.storageService.getValue(StorageKeyEnum.SFTP_PORT),
+            this.storageService.getValue(StorageKeyEnum.SFTP_USERNAME),
+            this.storageService.getValue(StorageKeyEnum.SFTP_PASSWORD),
+            this.storageService.getValue(StorageKeyEnum.SFTP_SAVE_PATH),
+            this.fileService.getDataExportFileName()).pipe(
+            mergeMap(([sftpAddress,
+                          sftpPort,
+                          sftpUsername,
+                          sftpPassword,
+                          sftpSavePath,
+                          dataExportFilename]) => {
+                filename = dataExportFilename;
+                sftpSaveFolderPath = sftpSavePath;
+                return from(this.ftp.connect(sftpAddress.concat(':', sftpPort), sftpUsername, sftpPassword));
+            }), mergeMap((connectionResult) => {
+                connectionSuccess = connectionResult === 'OK';
+                return this.fileService.writeFile(filename, null, null);
+            }),
+            mergeMap((writeFileResult) =>
+                this.uploadFileToServer(writeFileResult.uri, sftpSaveFolderPath, filename)
+            ),
+            mergeMap(() =>
+                from(this.ftp.disconnect())
+            ), map(() => connectionSuccess
             ), catchError((err) => {
                 console.log(err);
                 return from(this.ftp.disconnect()).pipe(mergeMap(() => of(false)));
@@ -46,8 +80,7 @@ export class SftpServices {
     }
 
     public synchronizeClocking(): Observable<boolean> {
-        let fileName = this.fileService.getBaseFilename()
-            + this.dateService.utfDatetimeToLocalString(new Date(), false) + '.txt';
+        let fileName: string;
         const resultIds = new Array<number>();
         let sftpSaveFolderPath;
         return zip(this.storageService.getValue(StorageKeyEnum.SFTP_SERVER_ADDRESS),
@@ -65,10 +98,10 @@ export class SftpServices {
             }),
             mergeMap(() =>
                 zip(this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD, {is_synchronised: '0'}),
-                    from(Device.getId()))
+                    this.fileService.getDataExportFileName())
             ),
-            mergeMap(([clockingRecords, deviceId]: [ClockingRecord[], DeviceId]) => {
-                fileName = `${deviceId.uuid}_${fileName}`;
+            mergeMap(([clockingRecords, dataExportFilename]: [ClockingRecord[], string]) => {
+                fileName = dataExportFilename;
                 return this.fileService.writeFile(fileName, clockingRecords, resultIds);
             }),
             mergeMap((writeFileResult) =>

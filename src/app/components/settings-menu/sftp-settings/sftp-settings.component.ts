@@ -114,7 +114,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
     public testSftpConnectionButtonClicked() {
         if (!this.isConnexionTestOngoing) {
             this.isConnexionTestOngoing = true;
-            this.connexionTestSubscription = this.sftpService.testConnection()
+            this.connexionTestSubscription = this.sftpService.testConnectionWithFile()
                 .subscribe((result) => {
                     console.log('connection is good ?', result);
                     //Todo spawn toast with result when created

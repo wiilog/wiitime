@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 import {from, Observable, Subject} from 'rxjs';
 import {Directory, Encoding, Filesystem, WriteFileResult} from '@capacitor/filesystem';
-import {mergeMap} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {DateService} from '@app/services/date.service';
+import {Device, DeviceId} from '@capacitor/device';
 
 @Injectable({
     providedIn: 'root'
@@ -28,19 +29,27 @@ export class FileService {
 
     }
 
-    public getBaseFilename(): string {
-        return this.baseFilename;
+    public getDataExportFileName(): Observable<string> {
+        return from(Device.getId())
+            .pipe(
+                map((deviceId: DeviceId) => (
+                        `${deviceId.uuid}_${this.baseFilename}${this.dateService.utfDatetimeToLocalString(new Date(), false)}.txt`
+                    )
+                )
+            );
     }
 
     public writeFile(filename: string, clockingRecords: ClockingRecord[], resultIds: Array<number>): Observable<WriteFileResult> {
         let fileContent = this.fileHeader;
-        clockingRecords.forEach((value) => {
-            resultIds.push(value.id);
-            fileContent = fileContent + this.csvSeparator + this.MCLI + this.csvSeparator +
-                value.badge_number + this.csvSeparator +
-                this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
-                this.csvSeparator + this.MTYPE + this.csvSeparator + this.MSTATE + '\n';
-        });
+        if (clockingRecords) {
+            clockingRecords.forEach((value) => {
+                resultIds.push(value.id);
+                fileContent = fileContent + this.csvSeparator + this.MCLI + this.csvSeparator +
+                    value.badge_number + this.csvSeparator +
+                    this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
+                    this.csvSeparator + this.MTYPE + this.csvSeparator + this.MSTATE + '\n';
+            });
+        }
         return from(Filesystem.writeFile({
             path: filename,
             data: fileContent,
