@@ -20,11 +20,11 @@ export class FormToggleComponent implements OnInit {
     @Output()
     public activeKeyChange: EventEmitter<number>;
 
-    constructor() {
+    public constructor() {
         this.activeKeyChange = new EventEmitter<number>();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
     }
 
     public activeKeyChanged(key: number): void {

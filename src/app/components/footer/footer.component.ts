@@ -48,7 +48,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public changeModeButtonClicked() {
-        /* Todo uncomment for test
+        /* Todo uncomment when secondary mode is added
         this.valueGetterSubscription = this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)
             .subscribe((isActive) => {
                 if (isActive != null) {

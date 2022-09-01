@@ -20,8 +20,8 @@ import {ModalController} from '@ionic/angular';
 import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
 
 enum SecondaryMode {
-    KIOSK = 1,
-    BACKGROUND = 2,
+    KIOSK = 0,
+    BACKGROUND = 1,
 }
 
 @Component({
@@ -106,7 +106,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     }
 
     public async updateAdminInfoButtonClicked(): Promise<void> {
-        if(this.isUpdateUserInfoModalOpen) {
+        if (this.isUpdateUserInfoModalOpen) {
             return;
         }
         this.isUpdateUserInfoModalOpen = true;
@@ -146,6 +146,10 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         }
     }
 
+    public secondaryModeToggleValueChanged(newKey: number): void {
+        this.currentToggleOption = this.tabConfig[newKey].key;
+    }
+
     protected initContent(): void {
         this.ngZone.run(() => {
             this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.KIOSK_MODE_MESSAGE),
@@ -169,7 +173,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                     if (!communication && communication !== '') {
                         throw new Error('Kiosk mode communication should not be null');
                     }
-                    if (!currentSecondaryMode) {
+                    if (!currentSecondaryMode && currentSecondaryMode !== '0') {
                         throw new Error('current secondary mode should not be null');
                     }
                     if (!clockingSoundVolume) {

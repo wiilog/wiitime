@@ -34,7 +34,8 @@
 
         <app-form-toggle [fieldName]="secondaryModeToggleName"
                          [currentToggleOption]="currentToggleOption"
-                         [tabConfig]="tabConfig">
+                         [tabConfig]="tabConfig"
+                        (activeKeyChange)="secondaryModeToggleValueChanged($event)">
         </app-form-toggle>
 
         <app-form-range [formControlName]="volumeRangeFormControlName"
