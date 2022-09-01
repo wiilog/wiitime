@@ -18,7 +18,6 @@
             <ion-input class="text-input"
                        [(ngModel)]="content"
                        (ngModelChange)="textChanged($event)"
-                       [maxlength]="maxLength"
                        (ionFocus)="markAsTouched()">
             </ion-input>
         </ng-template>
@@ -28,8 +27,8 @@
                           inputmode="text"
                           [(ngModel)]="content"
                           (ngModelChange)="textChanged($event)"
-                          [maxlength]="maxLength"
                           (ionFocus)="markAsTouched()">
+                            <!--[maxlength]="maxLength"-->
             </ion-textarea>
         </ng-template>
     </ion-item>
