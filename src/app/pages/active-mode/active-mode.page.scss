@@ -70,20 +70,21 @@ ion-content {
 
     .sync-info-wrapper-portrait {
         flex-direction: column;
-        margin-left: 6rem;
+        padding-left: 6rem;
     }
 
     .sync-info-wrapper-landscape {
-        margin-top: 2rem;
-        margin-left: 5rem;
-        margin-right: 5rem;
+        padding-top: 2rem;
+        padding-left: 5rem;
+        padding-right: 5rem;
         flex-direction: row;
     }
 
     .sync-info-wrapper-portrait,
     .sync-info-wrapper-landscape {
         display: flex;
-        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        background: $white;
 
         .sync-elem-wrapper {
             display: flex;
