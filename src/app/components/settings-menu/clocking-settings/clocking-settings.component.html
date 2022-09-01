@@ -15,7 +15,7 @@
                 ce champ ne peut être supérieur à {{storageDurationMaxValue}}
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().storageDuration.errors?.min">
-                Ce champ ne peut être infèrieur à {{storageDurationMinValue}}
+                {{inferiorErrorMessage}} {{storageDurationMinValue}}
         </span>
 
         <app-form-button [fillScreenWidth]="isExportButtonFillingScreenWidth"
@@ -35,7 +35,7 @@
                 ce champ ne peut être supérieur à {{displayClockingFromMaxValue}}
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().displayClockingFrom.errors?.min">
-                Ce champ ne peut être infèrieur à {{displayClockingFromMinValue}}
+                {{inferiorErrorMessage}} {{displayClockingFromMinValue}}
         </span>
 
         <app-form-input [formControlName]="delayBetweenTwoClockingFormControlName"
@@ -49,7 +49,7 @@
                 ce champ ne peut être supérieur à {{delayBetweenTwoClockingMaxValue}}
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().delayBetweenTwoClocking.errors?.min">
-                Ce champ ne peut être infèrieur à {{delayBetweenTwoClockingMinValue}}
+                {{inferiorErrorMessage}} {{delayBetweenTwoClockingMinValue}}
         </span>
 
         <app-form-input [formControlName]="popupDisplayDurationFormControlName"
@@ -63,7 +63,7 @@
                 ce champ ne peut être supérieur à {{popupDisplayDurationMaxValue}}
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().displayClockingFrom.errors?.min">
-                Ce champ ne peut être infèrieur à {{popupDisplayDurationMinValue}}
+                {{inferiorErrorMessage}} {{popupDisplayDurationMinValue}}
         </span>
     </form>
 </div>

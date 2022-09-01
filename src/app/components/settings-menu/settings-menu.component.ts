@@ -17,6 +17,8 @@ export abstract class SettingsMenuComponent {
     public showTitle: boolean;
     public isSubmitted: boolean;
 
+    public readonly inferiorErrorMessage = 'Ce champ ne peut être inférieur à';
+
     protected windowSizeSubscription: Subscription;
     protected submitFormSubscription: Subscription;
     protected valueSetterSubscription: Subscription;

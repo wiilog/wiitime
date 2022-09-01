@@ -27,7 +27,7 @@
                 ce champ ne peut être supérieur à {{serverPortMaxValue}}
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().serverPort.errors?.min">
-                Ce champ ne peut être infèrieur à {{serverPortMinValue}}
+                {{inferiorErrorMessage}} {{serverPortMinValue}}
         </span>
 
         <app-form-text-area [formControlName]="serverUsernameFormControlName"
@@ -88,7 +88,7 @@
                 ce champ ne peut être supérieur à {{syncFrequencyMaxValue}}
         </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().syncFrequency.errors?.min">
-                Ce champ ne peut être infèrieur à {{syncFrequencyMinValue}}
+               {{inferiorErrorMessage}} {{syncFrequencyMinValue}}
         </span>
 
         <app-form-input [formControlName]="syncBeginTimeFormControlName"
