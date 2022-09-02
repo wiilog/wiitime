@@ -7,28 +7,26 @@ import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SftpServices} from '@app/services/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {of, Subscription, timer, zip} from 'rxjs';
+import {of, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
-import {mergeMap, tap} from 'rxjs/operators';
+import {mergeMap} from 'rxjs/operators';
 import {WindowService} from '@app/services/window.service';
-import {ClockingInfoModalPage} from '@app/modals/clocking-info-modal/clocking-info-modal.page';
-import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
+import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
+import {ModePagePage} from '@app/pages/mode-page.page';
 
 @Component({
     selector: 'app-active-mode',
     templateUrl: './active-mode.page.html',
     styleUrls: ['./active-mode.page.scss'],
 })
-export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
+export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewWillLeave, OnInit {
 
     public headerMode: HeaderMode = HeaderMode.ACCOUNT_CREATION_PAGE;
     public footerMode: FooterMode = FooterMode.ACTIVE_MODE;
-    public isPortraitMode: boolean;
 
     public username: string;
-    public currentDatetime: string;
     public nextSyncDatetime: string;
     public lastSyncDatetime: string;
     public currentSftpStatus: SfpStatus = SfpStatus.NOT_SET;
@@ -36,19 +34,19 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
     public readonly sftpStatusEnum = SfpStatus;
 
     private isSftpSetup: boolean;
-    private isClockingInfoModalOpen: boolean;
-    private nfcSubscription: Subscription;
-    private windowSizeSubscription: Subscription;
-    private storageGetterSubscription: Subscription;
-    private timerSubscription: Subscription;
 
-    public constructor(private nfcService: NfcService,
+    public constructor(protected nfcService: NfcService,
                        private navService: NavService,
-                       private storageService: StorageService,
+                       protected storageService: StorageService,
                        private sftpService: SftpServices,
-                       private sqliteService: SQLiteService,
-                       private windowService: WindowService,
-                       private modalCtrl: ModalController) {
+                       protected sqliteService: SQLiteService,
+                       protected windowService: WindowService,
+                       protected modalCtrl: ModalController) {
+        super(nfcService,
+            storageService,
+            sqliteService,
+            windowService,
+            modalCtrl);
     }
 
     public ionViewWillEnter(): void {
@@ -67,31 +65,11 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
     }
 
     public ionViewWillLeave(): void {
-        if (this.nfcSubscription && !this.nfcSubscription.closed) {
-            this.nfcSubscription.unsubscribe();
-        }
-        if (this.timerSubscription && !this.timerSubscription.closed) {
-            this.timerSubscription.unsubscribe();
-        }
-        if (this.storageGetterSubscription && !this.storageGetterSubscription.closed) {
-            this.storageGetterSubscription.unsubscribe();
-        }
-        if (this.windowSizeSubscription && !this.windowSizeSubscription.closed) {
-            this.windowSizeSubscription.unsubscribe();
-        }
+        this.leaveModePage();
     }
 
     public initPage(): void {
-        this.isClockingInfoModalOpen = false;
-        this.isPortraitMode = this.windowService.isPortraitMode();
-
-        this.timerSubscription = timer(0, 1000).subscribe(() => {
-            this.currentDatetime = new Date().toISOString();
-        });
-
-        this.windowSizeSubscription = this.windowService.getWindowResizedObservable().subscribe(() => {
-            this.isPortraitMode = this.windowService.isPortraitMode();
-        });
+        this.enterModePage();
 
         this.storageGetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
             this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
@@ -116,41 +94,6 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
             });
 
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
-            (data) => this.manageClocking(data.id));
-    }
-
-    private async manageClocking(badgeId: number[]): Promise<any> {
-        if(this.isClockingInfoModalOpen) {
-            return;
-        }
-        this.isClockingInfoModalOpen = true;
-        const hexId = this.nfcService.convertIdToHex(badgeId);
-        let openModal = true; //TODO init with value false after test
-
-        await this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING)
-            .pipe(
-                mergeMap((delay) => this.sqliteService.getBadgeClockingInInterval(hexId, Number(delay))),
-                tap((clockingRecords: ClockingRecord[]) => {
-                    if (clockingRecords.length === 0) {
-                        openModal = true;
-                    }
-                })
-            ).toPromise();
-
-
-        if (openModal) {
-            const modal = await this.modalCtrl.create({
-                component: ClockingInfoModalPage,
-                keyboardClose: true,
-                componentProps: {
-                    clockedBadgeNumber: hexId,
-                },
-                cssClass: 'clocking-info-modal',
-                backdropDismiss: false,
-            });
-            await modal.present();
-            await modal.onWillDismiss();
-        }
-        this.isClockingInfoModalOpen = false;
+            (data) => this.manageClocking(data.id, ClockingInfoModalModeEnum.ACTIVE_MODE));
     }
 }

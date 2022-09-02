@@ -19,7 +19,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     @Input()
     public mode: FooterMode;
 
-    public readonly FooterMode = FooterMode;
+    public readonly footerMode = FooterMode;
 
     public currentVersionNumber: string; //TODO get value from storage instead
 
@@ -48,24 +48,21 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public changeModeButtonClicked() {
-        /* Todo uncomment when secondary mode is added
         this.valueGetterSubscription = this.storage.getValue(StorageKeyEnum.CURRENT_SECONDARY_MODE)
             .subscribe((isActive) => {
                 if (isActive != null) {
                     const numberValue: number = parseInt(isActive.toString(), 10);
                     if (numberValue) {
                         // Todo connect to background mode when created
-                        this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
+                        this.navService.push(PagePath.KIOSK_MODE);
                     } else {
                         // Todo connect to kiosk mode page when created
-                        this.navService.setRoot(PagePath.ACCOUNT_CREATION).subscribe(() => console.log('ho yes'));
+                        this.navService.push(PagePath.KIOSK_MODE);
                     }
                 } else {
                     console.error('Error storage value of key IS_BACKGROUND_MODE_ACTIVE is null -> should be 0 or 1');
                 }
             });
-         */
-
     }
 
     public async parametersButtonClicked() {

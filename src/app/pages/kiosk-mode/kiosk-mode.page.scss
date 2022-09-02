@@ -1,0 +1,90 @@
+@import "src/theme/global";
+
+ion-content {
+    --background: #{$white};
+
+    .welcome-label-wrapper {
+        background-color: $background;
+        height: 11.5rem;
+        display: flex;
+        flex-direction: column;
+        padding-left: 3rem;
+
+        .welcome-label {
+            margin-top: 3rem;
+            @include text(body-bold);
+        }
+
+        .username-label {
+            @include text(body-big);
+        }
+    }
+
+    .welcome-label-wrapper-landscape {
+        height: auto;
+        justify-content: center;
+        margin-top: unset;
+        padding-left: 4rem;
+        padding-right: 2rem;
+
+        .welcome-label {
+            margin-top: unset;
+        }
+    }
+
+    .active-mode-flex {
+        display: flex;
+
+        .flex-1 {
+            flex: 1;
+        }
+
+        @media (max-width: 950px) {
+            .flex-2 {
+                flex: 3;
+            }
+        }
+
+        @media (min-width: 951px) {
+            .flex-2 {
+                flex: 2;
+            }
+        }
+
+    }
+
+    .timer-wrapper {
+        background: $blue;
+        height: 16rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        @media (max-width: 950px) {
+            span {
+                @include title(6rem);
+                text-align: center;
+                color: $white;
+            }
+        }
+
+        @media (min-width: 951px) {
+            span {
+                @include title(7.5rem);
+                text-align: center;
+                color: $white;
+            }
+        }
+    }
+
+    .communication-label-wrapper {
+        display: flex;
+        flex-direction: column;
+
+        .communication-label {
+            @include text(body);
+            text-align: center;
+            margin: 5rem 5rem 0 5rem;
+        }
+    }
+}

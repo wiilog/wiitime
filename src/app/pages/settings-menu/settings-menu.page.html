@@ -1,6 +1,6 @@
 <app-header [mode]="headerMode"
             [refreshHeader$]="refreshHeader$"
-            (backButtonClickedEvent)="backButtonAction()">
+            (headerButtonClickedEvent)="headerButtonClicked($event)">
 </app-header>
 <ion-content>
     <div *ngIf="(!isPortraitMode && !hideSideMenu) || !isMenuOpen"
@@ -8,7 +8,7 @@
          class="button-container" slot="fixed">
 
         <div class="div-button ion-activatable"
-             [class.selected-menu]="currentMenu === possibleMenu.GENERAL"
+             [class.selected-menu]="currentMenu === possibleMenu.GENERAL && (!isPortraitMode && !hideSideMenu)"
              (click)="swapMenu(possibleMenu.GENERAL)">
             <ion-label class="text">
                 {{possibleMenu.GENERAL}}
@@ -19,7 +19,7 @@
         </div>
 
         <div class="div-button ion-activatable"
-             [class.selected-menu]="currentMenu === possibleMenu.CLOCKING"
+             [class.selected-menu]="currentMenu === possibleMenu.CLOCKING && (!isPortraitMode && !hideSideMenu)"
              (click)="swapMenu(possibleMenu.CLOCKING)">
             <ion-label class="text">
                 {{possibleMenu.CLOCKING}}
@@ -30,7 +30,7 @@
         </div>
 
         <div class="div-button ion-activatable"
-             [class.selected-menu]="currentMenu === possibleMenu.SFTP"
+             [class.selected-menu]="currentMenu === possibleMenu.SFTP && (!isPortraitMode && !hideSideMenu)"
              (click)="swapMenu(possibleMenu.SFTP)">
             <ion-label class="text">
                 {{possibleMenu.SFTP}}

@@ -84,7 +84,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
         this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION),
             this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL),
             this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING),
-            this.storageService.getValue(StorageKeyEnum.CLOCKING_POPUP_DISPLAY_DURATION))
+            this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION))
             .subscribe(([storageDuration,
                             displayClockingFrom,
                             delayBetweenTwoClocking,
@@ -120,7 +120,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                 event: () => zip(this.storageService.setValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION, this.form.value.storageDuration.toString()),
                     this.storageService.setValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL, this.form.value.displayClockingFrom.toString()),
                     this.storageService.setValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING, this.form.value.delayBetweenTwoClocking.toString()),
-                    this.storageService.setValue(StorageKeyEnum.CLOCKING_POPUP_DISPLAY_DURATION, this.form.value.popupDisplayDuration.toString())
+                    this.storageService.setValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION, this.form.value.popupDisplayDuration.toString())
                 )
             }
         ).subscribe(() => {

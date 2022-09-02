@@ -3,11 +3,11 @@
 <ion-content>
     <div class="top-content-wrapper"
          [class.active-mode-flex]="!isPortraitMode">
-        <div class="welcome-text-wrapper"
+        <div class="welcome-label-wrapper"
              [class.flex-1]="!isPortraitMode"
              [class.welcome-text-wrapper-landscape]="!isPortraitMode">
-            <ion-label class="welcome-text">Bonjour</ion-label>
-            <ion-label class="username-text mt-1">{{username}}</ion-label>
+            <ion-label class="welcome-label">Bonjour</ion-label>
+            <ion-label class="username-label mt-1">{{username}}</ion-label>
         </div>
 
         <div class="timer-wrapper"
@@ -22,13 +22,13 @@
          [class.sync-info-wrapper-landscape]="!isPortraitMode">
 
         <div class="sync-elem-wrapper">
-            <ion-label class="title-text mt-8"
+            <ion-label class="title-label mt-8"
                        [class.center-text]="!isPortraitMode">
                 Statut
             </ion-label>
             <div class="server-status-value mt-1"
                  [class.center-text]="!isPortraitMode">
-                <ion-label class="value-text"
+                <ion-label class="value-label"
                            [class.center-text]="!isPortraitMode"
                            [class.bg-green]="currentSftpStatus === sftpStatusEnum.READY"
                            [class.bg-grey]="currentSftpStatus === sftpStatusEnum.NOT_SET"
@@ -39,22 +39,22 @@
         </div>
 
         <div class="sync-elem-wrapper">
-            <ion-label class="title-text mt-8"
+            <ion-label class="title-label mt-8"
                        [class.center-text]="!isPortraitMode">
                 Prochaine synchronisation
             </ion-label>
-            <ion-label class="value-text mt-1"
+            <ion-label class="value-label mt-1"
                        [class.center-text]="!isPortraitMode">
                 {{nextSyncDatetime | date: 'dd/MM/YY HH:mm'}}
             </ion-label>
         </div>
 
         <div class="sync-elem-wrapper">
-            <ion-label class="title-text mt-8"
+            <ion-label class="title-label mt-8"
                        [class.center-text]="!isPortraitMode">
                 Dernière synchronisation
             </ion-label>
-            <ion-label class="value-text mt-1"
+            <ion-label class="value-label mt-1"
                        [class.center-text]="!isPortraitMode">
                 {{lastSyncDatetime | date: 'dd/MM/YY HH:mm'}}
             </ion-label>

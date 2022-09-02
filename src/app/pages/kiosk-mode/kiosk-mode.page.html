@@ -1,9 +1,30 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>kiosk-mode</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [mode]="headerMode"
+            (headerButtonClickedEvent)="headerButtonClicked($event)">
+
+</app-header>
 
 <ion-content>
+    <div class="top-content-wrapper"
+         [class.active-mode-flex]="!isPortraitMode">
+        <div class="welcome-label-wrapper"
+             [class.flex-1]="!isPortraitMode"
+             [class.welcome-label-wrapper-landscape]="!isPortraitMode">
+            <ion-label class="welcome-label">Bonjour</ion-label>
+            <ion-label class="username-label mt-1">{{kioskMessage}}</ion-label>
+        </div>
 
+        <div class="timer-wrapper"
+             [class.flex-2]="!isPortraitMode">
+        <span>
+            {{currentDatetime | date: 'HH : mm : ss'}}
+        </span>
+        </div>
+    </div>
+    <div class="communication-label-wrapper">
+        <ion-label class="communication-label">
+            {{kioskCommunication}}
+        </ion-label>
+    </div>
 </ion-content>
+<app-footer [mode]="footerMode">
+</app-footer>

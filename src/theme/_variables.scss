@@ -48,6 +48,8 @@ $side-menu-width: 33%;
 
 //Clocking info modal
 $top-content-height: 10rem;
+$active-mode-bottom-content-height: $medium-button-height + 2rem;
+$kiosk-mode-bottom-content-height: 2rem;
 
 @function toRGBParams ($color) {
     @return red($color) + ", " + green($color) + ", " + blue($color);

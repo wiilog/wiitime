@@ -49,7 +49,12 @@ ion-header > div {
     min-width: 18%;
     display: flex;
 
-    img {
+    .disconnect-logo {
+        margin: auto;
+        height: $header-height * 0.6;
+    }
+
+    .app-logo {
         margin: auto;
         height: $header-height * 0.7;
     }

@@ -7,6 +7,7 @@ import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {WindowService} from '@app/services/window.service';
 import {environment} from '../../../environments/environment';
 import {PagePath} from '@app/services/nav/page-path.enum';
+import {HeaderButtonEnum} from '@app/components/header/header-button.enum';
 
 enum SettingsMenu {
     GENERAL = 'Général',
@@ -94,13 +95,10 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
         this.keyboardHideSubscription.unsubscribe();
     }
 
-    public backButtonAction(): void {
-        if (!this.isMenuOpen || (!this.isPortraitMode && this.isMenuOpen && !this.hideSideMenu)) {
-            this.navService.pop(PagePath.ACTIVE_MODE, {redirectToParams: false});
-            console.log('leave page');
-        } else {
-            this.isMenuOpen = false;
-            console.log('back to list');
+    public headerButtonClicked(headerClickedButton: HeaderButtonEnum) {
+        //useless to test in theory but just in case
+        if (headerClickedButton === HeaderButtonEnum.BACK_BUTTON) {
+            this.backButtonAction();
         }
     }
 
@@ -116,14 +114,24 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     }
 
     public refreshPageAfterSubmission(logo: string): void {
-        if(logo) {
+        if (logo) {
             this.refreshHeader$.next(logo);
         }
-        if((!this.isPortraitMode && this.hideSideMenu) || this.isPortraitMode) {
+        if ((!this.isPortraitMode && this.hideSideMenu) || this.isPortraitMode) {
             this.isMenuOpen = false;
         }
         console.log('save done');
         //Todo spawn a cool toast
+    }
+
+    private backButtonAction(): void {
+        if (!this.isMenuOpen || (!this.isPortraitMode && this.isMenuOpen && !this.hideSideMenu)) {
+            this.navService.pop(PagePath.ACTIVE_MODE, {redirectToParams: false});
+            console.log('leave page');
+        } else {
+            this.isMenuOpen = false;
+            console.log('back to list');
+        }
     }
 
     private updatePageAfterWindowSizeChanged(): void {

@@ -3,31 +3,31 @@
 ion-content {
     --background: #{$white};
 
-    .welcome-text-wrapper {
+    .welcome-label-wrapper {
         background-color: $background;
         height: 11.5rem;
         display: flex;
         flex-direction: column;
         padding-left: 3rem;
 
-        .welcome-text {
+        .welcome-label {
             margin-top: 3rem;
             @include text(body-bold);
         }
 
-        .username-text {
+        .username-label {
             @include text(body-big);
         }
     }
 
-    .welcome-text-wrapper-landscape {
+    .welcome-label-wrapper-landscape {
         height: auto;
         justify-content: center;
         margin-top: unset;
         padding-left: 4rem;
         padding-right: 2rem;
 
-        .welcome-text {
+        .welcome-label {
             margin-top: unset;
         }
     }
@@ -99,14 +99,14 @@ ion-content {
             flex-direction: column;
             flex: 1;
 
-            .title-text {
+            .title-label {
                 @include text(body-bold);
             }
 
             .server-status-value {
                 height: 3.5rem;
 
-                .value-text {
+                .value-label {
                     padding: 0.5rem 1.5rem;
                 }
 
@@ -123,7 +123,7 @@ ion-content {
                 }
             }
 
-            .value-text {
+            .value-label {
                 @include text();
             }
 

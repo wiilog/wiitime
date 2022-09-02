@@ -1,14 +1,15 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
-import {Subscription} from 'rxjs';
+import {iif, of, Subscription, timer} from 'rxjs';
 import {LoadingService} from '@app/services/loading.service';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {ModalController, Platform} from '@ionic/angular';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {mergeMap, tap} from 'rxjs/operators';
+import {map, mergeMap, tap} from 'rxjs/operators';
 import {DateService} from '@app/services/date.service';
 import {ClockingInfo} from '@app/modals/clocking-info-modal/clocking-info';
+import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
 
 @Component({
     selector: 'app-clocking-info-modal',
@@ -20,10 +21,15 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
     @Input()
     public clockedBadgeNumber: string;
 
+    @Input()
+    public modalMode: ClockingInfoModalModeEnum;
+
     public isModalLoaded: boolean;
     public modalTitle = 'Badge n°';
     public badgeRegisteredClocking: Map<ClockingRecord, ClockingInfo>;
     public clockingDisplayInterval: number;
+
+    public readonly clockingInfoModalModeEnum = ClockingInfoModalModeEnum;
 
     //validate button settings
     public readonly isValidateButtonLarge: boolean = false;
@@ -32,8 +38,10 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
     private readonly yesterdayClockingText = 'Hier';
     private readonly emptyText = '';
 
+    private modalDisplayDuration: number;
     private modalLoadingSubscription: Subscription;
     private backButtonSubscription: Subscription;
+    private closingTimerSubscription: Subscription;
 
     public constructor(private loadingService: LoadingService,
                        private sqliteService: SQLiteService,
@@ -68,6 +76,17 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
              */
             event: () => this.sqliteService.registerClocking(this.clockedBadgeNumber)
                 .pipe(
+                    mergeMap(() =>
+                        iif(() => this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE
+                            , this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION)
+                                .pipe(
+                                    tap((displayDuration: string) => {
+                                        console.log(Number(displayDuration));
+                                        this.modalDisplayDuration = Number(displayDuration);
+                                    })
+                                )
+                            , of(null))
+                    ),
                     mergeMap(() => this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL)),
                     mergeMap((clockingDisplayInterval: string) => {
                         this.clockingDisplayInterval = Number(clockingDisplayInterval);
@@ -77,9 +96,25 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
                         this.fillClockingInfo(clockingRecords);
                     })
                 )
-
+            /*
+            event: () => this.sqliteService.registerClocking(this.clockedBadgeNumber)
+                .pipe(
+                    mergeMap(() => this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL)),
+                    mergeMap((clockingDisplayInterval: string) => {
+                        this.clockingDisplayInterval = Number(clockingDisplayInterval);
+                        return this.sqliteService.getBadgeClockingInInterval(this.clockedBadgeNumber, this.clockingDisplayInterval * 60);
+                    }),
+                    tap((clockingRecords: ClockingRecord[]) => {
+                        this.fillClockingInfo(clockingRecords);
+                    })
+                )
+             */
         }).subscribe(() => {
             this.isModalLoaded = true;
+            if(this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE) {
+                this.closingTimerSubscription = timer(this.modalDisplayDuration * 1000)
+                    .subscribe(() => this.confirmButtonClicked());
+            }
         });
     }
 
@@ -89,6 +124,9 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
         }
         if (this.modalLoadingSubscription && !this.modalLoadingSubscription.closed) {
             this.modalLoadingSubscription.unsubscribe();
+        }
+        if(this.closingTimerSubscription && !this.closingTimerSubscription.closed) {
+            this.closingTimerSubscription.unsubscribe();
         }
     }
 
@@ -113,8 +151,7 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
                 lastDayDate = currentClockingDate;
             } else {
                 if (this.dateService.utfDatetimeToLocalDate(currentClockingDate, false)
-                    < this.dateService.utfDatetimeToLocalDate(lastDayDate, false))
-                {
+                    < this.dateService.utfDatetimeToLocalDate(lastDayDate, false)) {
                     let text = this.dateService.datetimeToDaySlashMonthString(currentClockingDate);
                     if (yesterday) {
                         yesterday = false;

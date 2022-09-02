@@ -12,7 +12,7 @@ export enum StorageKeyEnum {
     CLOCKING_SOUND_VOLUME = 'clockingSoundVolume',
     CLOCKING_STORAGE_DURATION = 'clockingStoringDuration',
     CLOCKING_DISPLAY_INTERVAL = 'clockingDisplayInterval',
-    CLOCKING_POPUP_DISPLAY_DURATION = 'clockingPopupDisplayDuration',
+    CLOCKING_INFO_MODAL_DISPLAY_DURATION = 'clockingInfoModalDisplayDuration',
     DELAY_BETWEEN_TWO_CLOCKING = 'delayBetweenTwoClocking',
 
     SFTP_SERVER_ADDRESS = 'sftpServerAddress',

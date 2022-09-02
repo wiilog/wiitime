@@ -4,7 +4,7 @@ import {environment} from '../../../environments/environment';
 import {WindowService} from '@app/services/window.service';
 import {FormGroup} from '@angular/forms';
 
-@Component({ template: '' })
+@Component({template: ''})
 export abstract class SettingsMenuComponent {
     @Input()
     public submitForm$: Observable<string>;
@@ -38,7 +38,9 @@ export abstract class SettingsMenuComponent {
         return this.form.controls;
     }
 
-    //Call in ngOnInit
+    /**
+     * Call it in  ngOnInit() of the child component
+     */
     protected initSettingsMenu() {
         this.isSubmitted = false;
         this.updateViewAfterWindowSizeChanged();
@@ -53,14 +55,18 @@ export abstract class SettingsMenuComponent {
         this.initContent();
     }
 
-    //Call in ngAfterViewInit()
+    /**
+     * Call it in ngAfterViewInit() of the child component
+     */
     protected initSubmitFormSubscription() {
         this.submitFormSubscription = this.submitForm$.subscribe(() => {
             this.formSubmitted();
         });
     }
 
-    //Call in ngOnDestroy
+    /**
+     * Call it in ngOnDestroy() of the child component
+     */
     protected clearSubscriptionOnDestroy() {
         this.windowSizeSubscription.unsubscribe();
 

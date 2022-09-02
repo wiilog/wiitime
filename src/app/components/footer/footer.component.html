@@ -1,5 +1,5 @@
-<ion-footer>
-    <ng-container *ngIf="mode === FooterMode.ACTIVE_MODE; then navBarFooter else iconFooter"></ng-container>
+<ion-footer [class.ion-no-border]="mode === footerMode.KIOSK_MODE">
+    <ng-container *ngIf="mode === footerMode.ACTIVE_MODE; then navBarFooter else iconFooter"></ng-container>
     <ng-template #navBarFooter>
         <ion-tabs>
             <ion-tab-bar slot="bottom" color="light">
@@ -22,7 +22,9 @@
     </ng-template>
     <ng-template #iconFooter>
         <div>
-            <ion-label>Paramétrage Wiitime version {{currentVersionNumber}}</ion-label>
+            <ion-label *ngIf="mode === footerMode.PARAMETER_MENU">
+                Paramétrage Wiitime version {{currentVersionNumber}}
+            </ion-label>
             <img src="/assets/img/Logo-HeRa.png">
         </div>
     </ng-template>

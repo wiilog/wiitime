@@ -25,13 +25,17 @@ ion-content {
 }
 
 .modal-list-wrapper {
-    margin: $top-content-height 2rem ($medium-button-height + 2rem) 2rem;
+    margin: $top-content-height 2rem $active-mode-bottom-content-height 2rem;
+}
+
+.small-margin-bottom {
+    margin-bottom: $kiosk-mode-bottom-content-height;
 }
 
 .bottom-buttons-wrapper {
     width: 100%;
     background-color: $white;
-    height: $medium-button-height + 2rem;
+    height: $active-mode-bottom-content-height;
     bottom: 0;
     display: flex;
     align-items: center;
@@ -43,18 +47,6 @@ ion-content {
     }
 }
 
-/*
-.modal-title {
-    margin: 2rem 0 3rem 0;
-    text-align: center;
-    @include title(2rem);
+.kiosk-mode-wrapper {
+    height: $kiosk-mode-bottom-content-height;
 }
-
-.modal-content-wrapper {
-    margin: 1rem 2rem 1rem 2rem;
-
-    .modal-text {
-        @include text(body-grey);
-    }
-}
- */

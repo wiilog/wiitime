@@ -29,10 +29,14 @@
 
         <div class="right-div">
             <ion-img *ngIf="mode === HeaderMode.KIOSK_MODE"
-                     class="button"
+                     class="disconnect-logo"
                      [src]="disconnectLogoPath"
-                     (click)="disconnectButtonClicked()"></ion-img>
-            <img *ngIf="mode === HeaderMode.ACCOUNT_CREATION_PAGE" [src]="appLogoPath">
+                     (click)="disconnectButtonClicked()">
+            </ion-img>
+            <ion-img *ngIf="mode === HeaderMode.ACCOUNT_CREATION_PAGE"
+                     class="app-logo"
+                     [src]="appLogoPath">
+            </ion-img>
         </div>
     </div>
 </ion-header>

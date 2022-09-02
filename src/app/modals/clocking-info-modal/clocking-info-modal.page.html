@@ -9,6 +9,7 @@
         </ion-label>
     </div>
     <div *ngIf="isModalLoaded"
+         [class.small-margin-bottom]="modalMode === clockingInfoModalModeEnum.KIOSK_MODE"
          class="modal-list-wrapper">
         <app-clocking-info-line *ngFor="let clocking of badgeRegisteredClocking | keyvalue"
                                 [isFirst]="clocking.value.isFirst"
@@ -17,43 +18,14 @@
                                 [isLastOfDay]="clocking.value.isLastOfDay">
         </app-clocking-info-line>
     </div>
-    <div class="bottom-buttons-wrapper"
+    <div [class.kiosk-mode-wrapper]="modalMode === clockingInfoModalModeEnum.KIOSK_MODE"
+         class="bottom-buttons-wrapper"
          slot="fixed">
-        <app-form-button class="button"
+        <app-form-button *ngIf="modalMode === clockingInfoModalModeEnum.ACTIVE_MODE"
+                         class="button"
                          buttonText="Valider"
                          [isLarge]="isValidateButtonLarge"
                          (buttonClickedEvent)="confirmButtonClicked()">
         </app-form-button>
     </div>
 </ion-content>
-<!--
-<ion-content>
-    <div class="modal-title">
-        {{modalTitle}}
-    </div>
-    <div class="modal-content-wrapper">
-        <ion-label class="modal-text">
-            Badgeages bruts des {{clockingDisplayInterval}} dernières heures
-        </ion-label>
-
-        <div *ngIf="isModalLoaded"
-             class="mt-2">
-            <app-clocking-info-line [dateText]="firstClockingText"
-                                    [linkedClocking]="firstClocking"
-                                    [isLastOfDay]="false"
-                                    [isFirst]="true">
-            </app-clocking-info-line>
-            <app-clocking-info-line *ngFor="let clocking of badgeRegisteredClocking | keyvalue"
-                                    [dateText]="clocking.value"
-                                    [linkedClocking]="clocking.key"
-                                    [isLastOfDay]="false">
-            </app-clocking-info-line>
-        </div>
-    </div>
-
-    <app-form-button buttonText="Valider"
-                     [isLarge]="isValidateButtonLarge"
-                     (buttonClickedEvent)="confirmButtonClicked()">
-    </app-form-button>
-</ion-content>
- -->
