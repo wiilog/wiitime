@@ -8,6 +8,7 @@
          class="button-container" slot="fixed">
 
         <div class="div-button ion-activatable"
+             [class.selected-menu]="currentMenu === possibleMenu.GENERAL"
              (click)="swapMenu(possibleMenu.GENERAL)">
             <ion-label class="text">
                 {{possibleMenu.GENERAL}}
@@ -18,6 +19,7 @@
         </div>
 
         <div class="div-button ion-activatable"
+             [class.selected-menu]="currentMenu === possibleMenu.CLOCKING"
              (click)="swapMenu(possibleMenu.CLOCKING)">
             <ion-label class="text">
                 {{possibleMenu.CLOCKING}}
@@ -28,6 +30,7 @@
         </div>
 
         <div class="div-button ion-activatable"
+             [class.selected-menu]="currentMenu === possibleMenu.SFTP"
              (click)="swapMenu(possibleMenu.SFTP)">
             <ion-label class="text">
                 {{possibleMenu.SFTP}}

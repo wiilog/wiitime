@@ -42,6 +42,10 @@ ion-content {
             }
         }
 
+        .selected-menu {
+            background-color: $light-blue;
+        }
+
         app-footer {
             position: sticky;
             top: 100%;

@@ -125,7 +125,7 @@ export class ActiveModePage implements ViewWillEnter, ViewWillLeave, OnInit {
         }
         this.isClockingInfoModalOpen = true;
         const hexId = this.nfcService.convertIdToHex(badgeId);
-        let openModal = true; //Todo init with value false after test
+        let openModal = true; //TODO init with value false after test
 
         await this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING)
             .pipe(

@@ -44,7 +44,7 @@ export class FileService {
         if (clockingRecords) {
             clockingRecords.forEach((value) => {
                 resultIds.push(value.id);
-                fileContent = fileContent + this.csvSeparator + this.MCLI + this.csvSeparator +
+                fileContent = fileContent + this.MCLI + this.csvSeparator +
                     value.badge_number + this.csvSeparator +
                     this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
                     this.csvSeparator + this.MTYPE + this.csvSeparator + this.MSTATE + '\n';
