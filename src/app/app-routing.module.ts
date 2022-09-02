@@ -23,10 +23,14 @@ const routes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full'
     },
-  {
-    path: 'clocking-info-modal',
-    loadChildren: () => import('./modals/clocking-info-modal/clocking-info-modal.module').then(m => m.ClockingInfoModalPageModule)
-  },
+    {
+        path: 'clocking-info-modal',
+        loadChildren: () => import('./modals/clocking-info-modal/clocking-info-modal.module').then(m => m.ClockingInfoModalPageModule)
+    },
+    {
+        path: 'kiosk-mode',
+        loadChildren: () => import('./pages/kiosk-mode/kiosk-mode.module').then(m => m.KioskModePageModule)
+    },
 ];
 
 @NgModule({

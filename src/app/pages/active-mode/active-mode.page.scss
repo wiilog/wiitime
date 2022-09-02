@@ -1,14 +1,17 @@
 @import "src/theme/global";
 
 ion-content {
+    --background: #{$white};
 
     .welcome-text-wrapper {
+        background-color: $background;
         height: 11.5rem;
         display: flex;
         flex-direction: column;
-        margin-left: 3rem;
+        padding-left: 3rem;
 
         .welcome-text {
+            margin-top: 3rem;
             @include text(body-bold);
         }
 
@@ -18,9 +21,15 @@ ion-content {
     }
 
     .welcome-text-wrapper-landscape {
+        height: auto;
         justify-content: center;
-        margin-left: 4rem;
-        margin-right: 2rem;
+        margin-top: unset;
+        padding-left: 4rem;
+        padding-right: 2rem;
+
+        .welcome-text {
+            margin-top: unset;
+        }
     }
 
     .active-mode-flex {
@@ -84,7 +93,6 @@ ion-content {
     .sync-info-wrapper-landscape {
         display: flex;
         padding-bottom: 1rem;
-        background: $white;
 
         .sync-elem-wrapper {
             display: flex;

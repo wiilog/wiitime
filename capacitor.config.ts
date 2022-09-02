@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'wiitime',
+  appName: 'WiiTime',
   webDir: 'www',
   bundledWebRuntime: false
 };

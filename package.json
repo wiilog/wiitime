@@ -36,6 +36,7 @@
         "@capacitor/haptics": "^4.0.0",
         "@capacitor/keyboard": "^4.0.0",
         "@capacitor/preferences": "^4.0.1",
+        "@capacitor/splash-screen": "^4.0.1",
         "@capacitor/status-bar": "^4.0.0",
         "@fontsource/open-sans": "^4.5.10",
         "@ionic/angular": "^6.1.9",

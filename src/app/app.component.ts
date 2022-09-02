@@ -8,6 +8,7 @@ import {mergeMap} from 'rxjs/operators';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {BackgroundTaskService} from '@app/services/background-task.service';
+import {SplashScreen} from '@capacitor/splash-screen';
 
 @Component({
     selector: 'app-root',
@@ -27,6 +28,7 @@ export class AppComponent {
     }
 
     public initializeApp(): void {
+        SplashScreen.show();
         from(this.platform.ready()).pipe(
             mergeMap(() => this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME)),
             mergeMap((adminUsername) => {
@@ -43,6 +45,9 @@ export class AppComponent {
                     return this.navService.setRoot(PagePath.ACTIVE_MODE);
                 }
             }),
-        ).subscribe(() => console.log('init over'));
+        ).subscribe(async () => {
+            await SplashScreen.hide();
+            console.log('init over');
+        });
     }
 }
