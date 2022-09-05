@@ -3,9 +3,14 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {WindowService} from '@app/services/window.service';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {StorageService} from '@app/services/storage/storage.service';
-import {zip} from 'rxjs';
+import {from, of, Subscription, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {LoadingService} from '@app/services/loading.service';
+import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
+import {TableName} from '@app/services/sqlite/table-name';
+import {SQLiteService} from '@app/services/sqlite/sqlite.service';
+import {catchError, mergeMap, tap} from 'rxjs/operators';
+import {FileService} from '@app/services/file.service';
 
 @Component({
     selector: 'app-clocking-settings',
@@ -46,9 +51,13 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     public readonly popupDisplayDurationMinValue = 0;
     public readonly popupDisplayDurationMaxValue = 120;
 
+    private clockingDataExportSubscription: Subscription;
+
     public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
+                       private sqliteService: SQLiteService,
+                       private fileService: FileService,
                        private formBuilder: FormBuilder,
                        protected ngZone: NgZone,) {
         super(windowService, ngZone);
@@ -78,6 +87,39 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
 
     public ngOnDestroy(): void {
         this.clearSubscriptionOnDestroy();
+
+        if(this.clockingDataExportSubscription && !this.clockingDataExportSubscription.closed) {
+            this.clockingDataExportSubscription.unsubscribe();
+        }
+    }
+
+    public exportClockingDataButtonClicked(): void {
+        if (!this.clockingDataExportSubscription) {
+            this.clockingDataExportSubscription = this.loadingService.presentLoadingWhile({
+                    message: 'export des données en cours...',
+                    event: () => zip(
+                        this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD, {is_synchronised: '0'}),
+                        this.fileService.getLocalDataExportFileName()
+                    ).pipe(
+                        mergeMap(([clockingRecords, filename]) => (
+                            this.fileService.writeFile(filename, clockingRecords, null, false)
+                        )),
+                        tap((writeFileResult) => {
+                            console.log(writeFileResult.uri);
+                        }),
+                        catchError((err) => {
+                            console.log(err);
+                            return of(null);
+                        })
+                    )
+                }
+            ).subscribe(() => {
+                this.clockingDataExportSubscription.unsubscribe();
+                this.clockingDataExportSubscription = null;
+                //Todo spawn cool toast to confirm that export was a success
+            });
+        }
+
     }
 
     protected initContent() {
@@ -117,10 +159,16 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
         }
         this.saveSubscription = this.loadingService.presentLoadingWhile({
                 message: 'sauvegarde en cours...',
-                event: () => zip(this.storageService.setValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION, this.form.value.storageDuration.toString()),
-                    this.storageService.setValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL, this.form.value.displayClockingFrom.toString()),
-                    this.storageService.setValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING, this.form.value.delayBetweenTwoClocking.toString()),
-                    this.storageService.setValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION, this.form.value.popupDisplayDuration.toString())
+                event: () => zip(
+                    this.storageService.setValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION,
+                        this.form.value.storageDuration.toString()),
+                    this.storageService.setValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL,
+                        this.form.value.displayClockingFrom.toString()),
+                    this.storageService.setValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING,
+                        this.form.value.delayBetweenTwoClocking.toString()),
+                    this.storageService.setValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION,
+                        this.form.value.popupDisplayDuration.toString()
+                    )
                 )
             }
         ).subscribe(() => {

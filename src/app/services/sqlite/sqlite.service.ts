@@ -238,7 +238,7 @@ export class SQLiteService {
      * @param interval - the maximum age of a clocking in minutes for it to be selected
      * @return an Observable containing an Array of clocking records
      */
-    public getBadgeClockingInInterval(badgeId: string, interval: number): Observable<ClockingRecord[]> {
+    public getClockingRecordInInterval(badgeId: string, interval: number): Observable<ClockingRecord[]> {
         const query = `SELECT *
                        FROM ${TableName.CLOCKING_RECORD}
                        WHERE badge_number = ?

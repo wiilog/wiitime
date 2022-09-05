@@ -85,7 +85,7 @@ export abstract class ModePagePage {
 
         await this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING)
             .pipe(
-                mergeMap((delay) => this.sqliteService.getBadgeClockingInInterval(hexId, Number(delay))),
+                mergeMap((delay) => this.sqliteService.getClockingRecordInInterval(hexId, Number(delay))),
                 tap((clockingRecords: ClockingRecord[]) => {
                     if (clockingRecords.length === 0) {
                         openModal = true;

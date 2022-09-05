@@ -90,7 +90,7 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
                     mergeMap(() => this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL)),
                     mergeMap((clockingDisplayInterval: string) => {
                         this.clockingDisplayInterval = Number(clockingDisplayInterval);
-                        return this.sqliteService.getBadgeClockingInInterval(this.clockedBadgeNumber, this.clockingDisplayInterval * 60);
+                        return this.sqliteService.getClockingRecordInInterval(this.clockedBadgeNumber, this.clockingDisplayInterval * 60);
                     }),
                     tap((clockingRecords: ClockingRecord[]) => {
                         this.fillClockingInfo(clockingRecords);

@@ -29,7 +29,7 @@ export class FileService {
 
     }
 
-    public getDataExportFileName(): Observable<string> {
+    public getSFTPDataExportFileName(): Observable<string> {
         return from(Device.getId())
             .pipe(
                 map((deviceId: DeviceId) => (
@@ -39,11 +39,29 @@ export class FileService {
             );
     }
 
-    public writeFile(filename: string, clockingRecords: ClockingRecord[], resultIds: Array<number>): Observable<WriteFileResult> {
-        let fileContent = this.fileHeader;
+    public getLocalDataExportFileName(): Observable<string> {
+        return from(Device.getId())
+            .pipe(
+                map((deviceId: DeviceId) => (
+                        `${deviceId.uuid}_export_pointagebrut_${this.dateService.utfDatetimeToLocalString(new Date(), false)}.txt`
+                    )
+                )
+            );
+    }
+
+    public writeFile(filename: string,
+                     clockingRecords: ClockingRecord[],
+                     resultIds: Array<number>,
+                     isForSFTP: boolean): Observable<WriteFileResult> {
+        let fileContent = '';
+        if (isForSFTP) {
+            fileContent = this.fileHeader;
+        }
         if (clockingRecords) {
             clockingRecords.forEach((value) => {
-                resultIds.push(value.id);
+                if (resultIds) {
+                    resultIds.push(value.id);
+                }
                 fileContent = fileContent + this.MCLI + this.csvSeparator +
                     value.badge_number + this.csvSeparator +
                     this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
@@ -53,7 +71,7 @@ export class FileService {
         return from(Filesystem.writeFile({
             path: filename,
             data: fileContent,
-            directory: Directory.Cache,
+            directory: (isForSFTP ? Directory.Cache : Directory.Documents),
             encoding: Encoding.ASCII,
         }));
     }

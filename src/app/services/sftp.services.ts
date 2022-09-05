@@ -53,7 +53,7 @@ export class SftpServices {
             this.storageService.getValue(StorageKeyEnum.SFTP_USERNAME),
             this.storageService.getValue(StorageKeyEnum.SFTP_PASSWORD),
             this.storageService.getValue(StorageKeyEnum.SFTP_SAVE_PATH),
-            this.fileService.getDataExportFileName()).pipe(
+            this.fileService.getSFTPDataExportFileName()).pipe(
             mergeMap(([sftpAddress,
                           sftpPort,
                           sftpUsername,
@@ -65,7 +65,7 @@ export class SftpServices {
                 return from(this.ftp.connect(sftpAddress.concat(':', sftpPort), sftpUsername, sftpPassword));
             }), mergeMap((connectionResult) => {
                 connectionSuccess = connectionResult === 'OK';
-                return this.fileService.writeFile(filename, null, null);
+                return this.fileService.writeFile(filename, null, null, true);
             }),
             mergeMap((writeFileResult) =>
                 this.uploadFileToServer(writeFileResult.uri, sftpSaveFolderPath, filename)
@@ -98,11 +98,11 @@ export class SftpServices {
             }),
             mergeMap(() =>
                 zip(this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD, {is_synchronised: '0'}),
-                    this.fileService.getDataExportFileName())
+                    this.fileService.getSFTPDataExportFileName())
             ),
             mergeMap(([clockingRecords, dataExportFilename]: [ClockingRecord[], string]) => {
                 fileName = dataExportFilename;
-                return this.fileService.writeFile(fileName, clockingRecords, resultIds);
+                return this.fileService.writeFile(fileName, clockingRecords, resultIds, true);
             }),
             mergeMap((writeFileResult) =>
                 this.uploadFileToServer(writeFileResult.uri, sftpSaveFolderPath, fileName)
