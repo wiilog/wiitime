@@ -8,7 +8,7 @@ import {Subscription} from 'rxjs';
 import {HeaderMode} from '@app/components/header/header-mode.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {PagePath} from '@app/services/nav/page-path.enum';
-import {SftpServices} from '@app/services/sftp.services';
+import {SftpServices} from '@app/services/sftp/sftp.services';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 
 @Component({

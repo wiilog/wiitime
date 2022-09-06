@@ -8,7 +8,7 @@ import {FormSize} from '@app/components/form/form-size-enum';
 import {Subscription, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type.enum';
-import {SftpServices} from '@app/services/sftp.services';
+import {SftpServices} from '@app/services/sftp/sftp.services';
 import {DateService} from '@app/services/date.service';
 import {BackgroundTaskService} from '@app/services/background-task.service';
 import {ToastService} from '@app/services/toast/toast.service';
@@ -115,72 +115,91 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
     }
 
     public testSftpConnectionButtonClicked() {
+        this.isSubmitted = true;
+        if (!this.form.valid) {
+            console.log('Invalid form content !');
+            /* Todo re
+            this.toastService.displayToast(
+                `Test de connexion impossible, certains champs ont une valeur incorrecte`,
+                ToastTypeEnum.ERROR);
+             */
+            return;
+        }
         if (!this.isConnexionTestOngoing) {
             this.isConnexionTestOngoing = true;
-            this.connexionTestSubscription = this.sftpService.testConnectionWithFile()
-                .subscribe((result) => {
-                    console.log('connection is good ?', result);
-                    this.toastService.displayToast(result === true ?
-                            `Connexion établie avec succès` : `Échec de la connexion ${result}`,
-                        result === true ? ToastTypeEnum.SUCCESS : ToastTypeEnum.ERROR);
-                    this.isConnexionTestOngoing = false;
-                });
+            this.connexionTestSubscription = this.sftpService.testConnectionWithFile({
+                    serverAddress: this.form.value.serverAddress,
+                    serverPort: this.form.value.serverPort,
+                    serverUsername: this.form.value.serverUsername,
+                    serverPassword: this.form.value.serverPassword,
+                    remoteSavePath: this.form.value.serverPath
+                }
+            ).subscribe((result) => {
+                console.log('connection is good ?', result);
+                if (result === true) {
+                    this.toastService.displayToast(`Connexion établie avec succès`, ToastTypeEnum.SUCCESS);
+                } else {
+                    this.toastService.displayToast(`Échec de la connexion ${result}`, ToastTypeEnum.ERROR);
+                }
+                this.isConnexionTestOngoing = false;
+            });
         }
     }
 
     protected initContent(): void {
-        this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
+        this.valueSetterSubscription = zip(
+            this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
             this.storageService.getValue(StorageKeyEnum.SFTP_SERVER_ADDRESS),
             this.storageService.getValue(StorageKeyEnum.SFTP_PORT),
             this.storageService.getValue(StorageKeyEnum.SFTP_USERNAME),
             this.storageService.getValue(StorageKeyEnum.SFTP_PASSWORD),
             this.storageService.getValue(StorageKeyEnum.SFTP_SAVE_PATH),
             this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY),
-            this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME))
-            .subscribe(([sftpSetup,
-                            serverAddress,
-                            serverPort,
-                            serverUsername,
-                            serverPassword,
-                            serverPath,
-                            syncFrequency,
-                            syncBeginTime]) => {
-                if (Number(sftpSetup)) {
-                    if (!serverAddress) {
-                        throw new Error('server address should not be null');
-                    }
-                    if (!serverPort) {
-                        throw new Error('server port should not be null');
-                    }
-                    if (!serverUsername) {
-                        throw new Error('server username should not be null');
-                    }
-                    if (!serverPassword) {
-                        serverPassword = '';
-                    }
-                    if (!serverPath) {
-                        throw new Error('server path should not be null');
-                    }
-
-                    this.form.controls.serverAddress.setValue(serverAddress);
-                    this.form.controls.serverPort.setValue(serverPort);
-                    this.form.controls.serverUsername.setValue(serverUsername);
-                    this.form.controls.serverPassword.setValue(serverPassword);
-                    this.form.controls.serverPath.setValue(serverPath);
+            this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME)
+        ).subscribe(([sftpSetup,
+                         serverAddress,
+                         serverPort,
+                         serverUsername,
+                         serverPassword,
+                         serverPath,
+                         syncFrequency,
+                         syncBeginTime]) => {
+            if (Number(sftpSetup)) {
+                if (!serverAddress) {
+                    throw new Error('server address should not be null');
+                }
+                if (!serverPort) {
+                    throw new Error('server port should not be null');
+                }
+                if (!serverUsername) {
+                    throw new Error('server username should not be null');
+                }
+                if (!serverPassword) {
+                    serverPassword = '';
+                }
+                if (!serverPath) {
+                    throw new Error('server path should not be null');
                 }
 
-                if (!syncFrequency) {
-                    throw new Error('synchronisation frequency should not be null');
-                }
-                if (!syncBeginTime) {
-                    throw new Error('synchronisation begin time should not be null');
-                }
-                this.form.controls.syncFrequency.setValue(syncFrequency);
-                this.syncFrequencyStartValue = Number(syncFrequency);
-                this.syncBeginTimeStartValue = new Date(syncBeginTime);
-                this.form.controls.syncBeginTime.setValue(this.dateService
-                    .utfDatetimeToLocalTime(this.syncBeginTimeStartValue, true).substring(0, 5));
-            });
+                this.form.controls.serverAddress.setValue(serverAddress);
+                this.form.controls.serverPort.setValue(serverPort);
+                this.form.controls.serverUsername.setValue(serverUsername);
+                this.form.controls.serverPassword.setValue(serverPassword);
+                this.form.controls.serverPath.setValue(serverPath);
+            }
+
+            if (!syncFrequency) {
+                throw new Error('synchronisation frequency should not be null');
+            }
+            if (!syncBeginTime) {
+                throw new Error('synchronisation begin time should not be null');
+            }
+            this.form.controls.syncFrequency.setValue(syncFrequency);
+            this.syncFrequencyStartValue = Number(syncFrequency);
+            this.syncBeginTimeStartValue = new Date(syncBeginTime);
+            this.form.controls.syncBeginTime.setValue(this.dateService
+                .utfDatetimeToLocalTime(this.syncBeginTimeStartValue, true).substring(0, 5));
+        });
     }
 
     protected formSubmitted(): void {
@@ -191,7 +210,8 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
         }
         this.saveSubscription = this.loadingService.presentLoadingWhile({
                 message: 'sauvegarde en cours...',
-                event: () => zip(this.storageService.setValue(StorageKeyEnum.SFTP_SERVER_ADDRESS, this.form.value.serverAddress),
+                event: () => zip(
+                    this.storageService.setValue(StorageKeyEnum.SFTP_SERVER_ADDRESS, this.form.value.serverAddress),
                     this.storageService.setValue(StorageKeyEnum.SFTP_PORT, this.form.value.serverPort.toString()),
                     this.storageService.setValue(StorageKeyEnum.SFTP_USERNAME, this.form.value.serverUsername),
                     this.storageService.setValue(StorageKeyEnum.SFTP_PASSWORD, this.form.value.serverPassword),

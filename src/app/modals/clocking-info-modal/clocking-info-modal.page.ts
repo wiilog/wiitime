@@ -83,19 +83,6 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
                         this.fillClockingInfo(clockingRecords);
                     })
                 )
-            /*
-            event: () => this.sqliteService.registerClocking(this.clockedBadgeNumber)
-                .pipe(
-                    mergeMap(() => this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL)),
-                    mergeMap((clockingDisplayInterval: string) => {
-                        this.clockingDisplayInterval = Number(clockingDisplayInterval);
-                        return this.sqliteService.getBadgeClockingInInterval(this.clockedBadgeNumber, this.clockingDisplayInterval * 60);
-                    }),
-                    tap((clockingRecords: ClockingRecord[]) => {
-                        this.fillClockingInfo(clockingRecords);
-                    })
-                )
-             */
         }).subscribe(() => {
             this.isModalLoaded = true;
             if(this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE) {

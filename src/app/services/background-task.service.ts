@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {SftpServices} from '@app/services/sftp.services';
+import {SftpServices} from '@app/services/sftp/sftp.services';
 import {StorageService} from '@app/services/storage/storage.service';
 import {Observable, of, Subscription, timer, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';

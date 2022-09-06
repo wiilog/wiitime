@@ -5,7 +5,7 @@ import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {NfcService} from '@app/services/nfc.service';
 import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
-import {SftpServices} from '@app/services/sftp.services';
+import {SftpServices} from '@app/services/sftp/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {of, Subject, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
