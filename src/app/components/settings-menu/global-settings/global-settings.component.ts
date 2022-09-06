@@ -18,6 +18,7 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {ModalController} from '@ionic/angular';
 import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
+import {ToastService} from '@app/services/toast/toast.service';
 
 enum SecondaryMode {
     KIOSK = 0,

@@ -132,6 +132,21 @@ ion-modal {
     }
 }
 
+ion-toast.success-toast {
+    --background: #{$success};
+}
+
+ion-toast.error-toast {
+    --background: #{$red};
+}
+
+ion-toast.success-toast::part(message),
+ion-toast.error-toast::part(message){
+    @include text(body ,1.5rem);
+    text-align: center;
+    color: $white;
+}
+
 ion-content {
     --background: #{$background};
 }

@@ -61,19 +61,6 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
 
         this.modalLoadingSubscription = this.loadingService.presentLoadingWhile({
             message: 'chargement en cours...',
-            /* TODO use this version for local testing
-            event: () => this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL)
-                .pipe(
-                    mergeMap((clockingDisplayInterval: string) => {
-                        this.clockingDisplayInterval = Number(clockingDisplayInterval);
-                        return this.sqliteService.getBadgeClockingInInterval(this.clockedBadgeNumber, this.clockingDisplayInterval);
-                    }),
-                    tap((clockingRecords: ClockingRecord[]) => {
-                        console.log(clockingRecords);
-                        this.badgeRegisteredClocking = clockingRecords;
-                    })
-                )
-             */
             event: () => this.sqliteService.registerClocking(this.clockedBadgeNumber)
                 .pipe(
                     mergeMap(() =>

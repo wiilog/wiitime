@@ -10,8 +10,10 @@ import {mergeMap, tap} from 'rxjs/operators';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 import {ClockingInfoModalPage} from '@app/modals/clocking-info-modal/clocking-info-modal.page';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
+import {ToastService} from '@app/services/toast/toast.service';
+import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 
-@Component({ template: '' })
+@Component({template: ''})
 export abstract class ModePagePage {
     public isPortraitMode: boolean;
     public currentDatetime: string;
@@ -24,10 +26,11 @@ export abstract class ModePagePage {
     private windowSizeSubscription: Subscription;
 
     protected constructor(protected nfcService: NfcService,
-                       protected storageService: StorageService,
-                       protected sqliteService: SQLiteService,
-                       protected windowService: WindowService,
-                       protected modalCtrl: ModalController) {
+                          protected storageService: StorageService,
+                          protected sqliteService: SQLiteService,
+                          protected windowService: WindowService,
+                          protected toastService: ToastService,
+                          protected modalCtrl: ModalController) {
     }
 
     /**
@@ -76,12 +79,12 @@ export abstract class ModePagePage {
      * @protected
      */
     protected async manageClocking(badgeId: number[], clockingInfoModalMode: ClockingInfoModalModeEnum): Promise<any> {
-        if(this.isClockingInfoModalOpen) {
+        if (this.isClockingInfoModalOpen) {
             return;
         }
         this.isClockingInfoModalOpen = true;
         const hexId = this.nfcService.convertIdToHex(badgeId);
-        let openModal = true; //TODO init with value false after test
+        let openModal = false;
 
         await this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING)
             .pipe(
@@ -107,6 +110,10 @@ export abstract class ModePagePage {
             });
             await modal.present();
             await modal.onWillDismiss();
+        } else {
+            //'badgeage du badge avec le numéro X ignoré car il a été bad '
+            await this.toastService.displayToast(`Ce badgeage n'a pas été pris
+            en compte, car le badge numéro ${hexId} a déjà été badgé récemment`, ToastTypeEnum.ERROR);
         }
         this.isClockingInfoModalOpen = false;
     }

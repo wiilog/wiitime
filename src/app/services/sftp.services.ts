@@ -75,7 +75,7 @@ export class SftpServices {
             ), map(() => connectionSuccess
             ), catchError((err) => {
                 console.log(err);
-                return from(this.ftp.disconnect()).pipe(mergeMap(() => of(false)));
+                return from(this.ftp.disconnect()).pipe(mergeMap(() => of(err)));
             }));
     }
 

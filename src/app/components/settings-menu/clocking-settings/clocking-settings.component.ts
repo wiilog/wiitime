@@ -3,14 +3,16 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {WindowService} from '@app/services/window.service';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {StorageService} from '@app/services/storage/storage.service';
-import {from, of, Subscription, zip} from 'rxjs';
+import {from, Subscription, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {LoadingService} from '@app/services/loading.service';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 import {TableName} from '@app/services/sqlite/table-name';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {catchError, mergeMap, tap} from 'rxjs/operators';
+import {catchError, mergeMap} from 'rxjs/operators';
 import {FileService} from '@app/services/file.service';
+import {ToastService} from '@app/services/toast/toast.service';
+import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 
 @Component({
     selector: 'app-clocking-settings',
@@ -54,6 +56,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     private clockingDataExportSubscription: Subscription;
 
     public constructor(protected windowService: WindowService,
+                       private toastService: ToastService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
                        private sqliteService: SQLiteService,
@@ -88,12 +91,13 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     public ngOnDestroy(): void {
         this.clearSubscriptionOnDestroy();
 
-        if(this.clockingDataExportSubscription && !this.clockingDataExportSubscription.closed) {
+        if (this.clockingDataExportSubscription && !this.clockingDataExportSubscription.closed) {
             this.clockingDataExportSubscription.unsubscribe();
         }
     }
 
     public exportClockingDataButtonClicked(): void {
+        let exportedFileName: string;
         if (!this.clockingDataExportSubscription) {
             this.clockingDataExportSubscription = this.loadingService.presentLoadingWhile({
                     message: 'export des données en cours...',
@@ -101,22 +105,25 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                         this.sqliteService.get<ClockingRecord>(TableName.CLOCKING_RECORD, {is_synchronised: '0'}),
                         this.fileService.getLocalDataExportFileName()
                     ).pipe(
-                        mergeMap(([clockingRecords, filename]) => (
-                            this.fileService.writeFile(filename, clockingRecords, null, false)
-                        )),
-                        tap((writeFileResult) => {
+                        mergeMap(([clockingRecords, filename]) => {
+                            exportedFileName = filename;
+                            return this.fileService.writeFile(filename, clockingRecords, null, false);
+                        }),
+                        mergeMap((writeFileResult) => {
                             console.log(writeFileResult.uri);
+                            return from(this.toastService.displayToast(
+                                `Fichier d\'export \'${exportedFileName}\' sauvegardé dans les documents avec succès`
+                                , ToastTypeEnum.SUCCESS));
                         }),
                         catchError((err) => {
                             console.log(err);
-                            return of(null);
+                            return this.toastService.displayToast(err, ToastTypeEnum.ERROR);
                         })
                     )
                 }
             ).subscribe(() => {
                 this.clockingDataExportSubscription.unsubscribe();
                 this.clockingDataExportSubscription = null;
-                //Todo spawn cool toast to confirm that export was a success
             });
         }
 

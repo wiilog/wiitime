@@ -1,4 +1,4 @@
-@import "src/theme/global";
+@import "../../../../theme/global";
 
 ion-content {
     --background: #{$white};
@@ -77,59 +77,14 @@ ion-content {
         }
     }
 
-    .sync-info-wrapper-portrait {
-        flex-direction: column;
-        padding-left: 6rem;
-    }
-
-    .sync-info-wrapper-landscape {
-        padding-top: 2rem;
-        padding-left: 5rem;
-        padding-right: 5rem;
-        flex-direction: row;
-    }
-
-    .sync-info-wrapper-portrait,
-    .sync-info-wrapper-landscape {
+    .communication-label-wrapper {
         display: flex;
-        padding-bottom: 1rem;
+        flex-direction: column;
 
-        .sync-elem-wrapper {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-
-            .title-label {
-                @include text(body-bold);
-            }
-
-            .server-status-value {
-                height: 3.5rem;
-
-                .value-label {
-                    padding: 0.5rem 1.5rem;
-                }
-
-                .bg-green {
-                    background-color: $success20;
-                }
-
-                .bg-grey {
-                    background-color: $grey20;
-                }
-
-                .bg-red {
-                    background-color: $red20;
-                }
-            }
-
-            .value-label {
-                @include text();
-            }
-
-            .center-text {
-                text-align: center;
-            }
+        .communication-label {
+            @include text(body);
+            text-align: center;
+            margin: 5rem 5rem 0 5rem;
         }
     }
 }

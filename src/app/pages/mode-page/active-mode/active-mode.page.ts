@@ -7,14 +7,15 @@ import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SftpServices} from '@app/services/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {of, timer, zip} from 'rxjs';
+import {of, Subject, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
 import {mergeMap} from 'rxjs/operators';
 import {WindowService} from '@app/services/window.service';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
-import {ModePagePage} from '@app/pages/mode-page.page';
+import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
+import {ToastService} from '@app/services/toast/toast.service';
 
 @Component({
     selector: 'app-active-mode',
@@ -30,6 +31,7 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
     public nextSyncDatetime: string;
     public lastSyncDatetime: string;
     public currentSftpStatus: SfpStatus = SfpStatus.NOT_SET;
+    public refreshHeader$: Subject<any>;
 
     public readonly sftpStatusEnum = SfpStatus;
 
@@ -41,12 +43,15 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
                        private sftpService: SftpServices,
                        protected sqliteService: SQLiteService,
                        protected windowService: WindowService,
+                       protected toastService: ToastService,
                        protected modalCtrl: ModalController) {
         super(nfcService,
             storageService,
             sqliteService,
             windowService,
+            toastService,
             modalCtrl);
+        this.refreshHeader$ = new Subject<string>();
     }
 
     public ionViewWillEnter(): void {
@@ -62,6 +67,7 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
     }
 
     public ngOnInit(): void {
+        this.refreshHeader$ = new Subject<string>();
     }
 
     public ionViewWillLeave(): void {
@@ -70,6 +76,10 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
 
     public initPage(): void {
         this.enterModePage();
+
+        if(this.refreshHeader$) {
+            this.refreshHeader$.next();
+        }
 
         this.storageGetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
             this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),

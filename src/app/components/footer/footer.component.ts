@@ -56,7 +56,6 @@ export class FooterComponent implements OnInit, OnDestroy {
                         // Todo connect to background mode when created
                         this.navService.push(PagePath.KIOSK_MODE);
                     } else {
-                        // Todo connect to kiosk mode page when created
                         this.navService.push(PagePath.KIOSK_MODE);
                     }
                 } else {

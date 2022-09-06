@@ -8,12 +8,13 @@ import {StorageService} from '@app/services/storage/storage.service';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {WindowService} from '@app/services/window.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {ModePagePage} from '@app/pages/mode-page.page';
+import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
 import {HeaderButtonEnum} from '@app/components/header/header-button.enum';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
+import {ToastService} from "@app/services/toast/toast.service";
 
 @Component({
     selector: 'app-kiosk-mode',
@@ -36,12 +37,14 @@ export class KioskModePage extends ModePagePage implements ViewWillEnter, ViewWi
                        protected storageService: StorageService,
                        protected sqliteService: SQLiteService,
                        protected windowService: WindowService,
+                       protected toastService: ToastService,
                        protected modalCtrl: ModalController,
                        private platform: Platform) {
         super(nfcService,
             storageService,
             sqliteService,
             windowService,
+            toastService,
             modalCtrl);
     }
 

@@ -34,15 +34,8 @@ export class HomePage implements ViewWillEnter, ViewWillLeave {
     }
 
     public async ionViewWillEnter(): Promise<any> {
-        if (this.navService.params()) {
-            if (this.navService.param<boolean>('redirectToParams')) {
-                this.navService.push(PagePath.SETTINGS_MENU);
-            } else {
-                this.initPage();
-            }
-        } else {
-            this.initPage();
-        }
+
+        this.initPage();
         /*
         this.insertExampleSub = from(this.sqliteService.insert(TableName.CLOCKING_RECORD, {id: 5,
                                                             badge_number: '22222',

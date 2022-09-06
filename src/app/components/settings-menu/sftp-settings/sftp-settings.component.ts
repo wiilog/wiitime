@@ -11,6 +11,8 @@ import {FormInputTypeEnum} from '@app/components/form/form-input/form-input-type
 import {SftpServices} from '@app/services/sftp.services';
 import {DateService} from '@app/services/date.service';
 import {BackgroundTaskService} from '@app/services/background-task.service';
+import {ToastService} from '@app/services/toast/toast.service';
+import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 
 @Component({
     selector: 'app-sftp-settings',
@@ -77,6 +79,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
                        private sftpService: SftpServices,
                        private dateService: DateService,
                        private backgroundTaskService: BackgroundTaskService,
+                       private toastService: ToastService,
                        private formBuilder: FormBuilder,
                        protected ngZone: NgZone,) {
         super(windowService, ngZone);
@@ -117,7 +120,9 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
             this.connexionTestSubscription = this.sftpService.testConnectionWithFile()
                 .subscribe((result) => {
                     console.log('connection is good ?', result);
-                    //Todo spawn toast with result when created
+                    this.toastService.displayToast(result === true ?
+                            `Connexion établie avec succès` : `Échec de la connexion ${result}`,
+                        result === true ? ToastTypeEnum.SUCCESS : ToastTypeEnum.ERROR);
                     this.isConnexionTestOngoing = false;
                 });
         }

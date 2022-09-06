@@ -1,11 +1,13 @@
-<app-header [mode]="headerMode"></app-header>
+<app-header [mode]="headerMode"
+            [refreshHeader$]="refreshHeader$">
+</app-header>
 
 <ion-content>
     <div class="top-content-wrapper"
          [class.active-mode-flex]="!isPortraitMode">
         <div class="welcome-label-wrapper"
              [class.flex-1]="!isPortraitMode"
-             [class.welcome-text-wrapper-landscape]="!isPortraitMode">
+             [class.welcome-label-wrapper-landscape]="!isPortraitMode">
             <ion-label class="welcome-label">Bonjour</ion-label>
             <ion-label class="username-label mt-1">{{username}}</ion-label>
         </div>

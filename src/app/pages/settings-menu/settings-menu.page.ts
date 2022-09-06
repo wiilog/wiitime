@@ -8,6 +8,8 @@ import {WindowService} from '@app/services/window.service';
 import {environment} from '../../../environments/environment';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {HeaderButtonEnum} from '@app/components/header/header-button.enum';
+import {ToastService} from '@app/services/toast/toast.service';
+import {ToastTypeEnum} from "@app/services/toast/toast-type.enum";
 
 enum SettingsMenu {
     GENERAL = 'Général',
@@ -50,6 +52,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
     constructor(private platform: Platform,
                 private navService: NavService,
                 private windowService: WindowService,
+                private toastService: ToastService,
                 private ngZone: NgZone) {
     }
 
@@ -120,8 +123,7 @@ export class SettingsMenuPage implements ViewWillEnter, ViewWillLeave, OnInit {
         if ((!this.isPortraitMode && this.hideSideMenu) || this.isPortraitMode) {
             this.isMenuOpen = false;
         }
-        console.log('save done');
-        //Todo spawn a cool toast
+        this.toastService.displayToast('Paramètres sauvegardés avec succès', ToastTypeEnum.SUCCESS);
     }
 
     private backButtonAction(): void {

@@ -16,7 +16,7 @@ const routes: Routes = [
     },
     {
         path: 'active-mode',
-        loadChildren: () => import('./pages/active-mode/active-mode.module').then(m => m.ActiveModePageModule)
+        loadChildren: () => import('./pages/mode-page/active-mode/active-mode.module').then(m => m.ActiveModePageModule)
     },
     {
         path: '',
@@ -29,7 +29,7 @@ const routes: Routes = [
     },
     {
         path: 'kiosk-mode',
-        loadChildren: () => import('./pages/kiosk-mode/kiosk-mode.module').then(m => m.KioskModePageModule)
+        loadChildren: () => import('./pages/mode-page/kiosk-mode/kiosk-mode.module').then(m => m.KioskModePageModule)
     },
 ];
 
