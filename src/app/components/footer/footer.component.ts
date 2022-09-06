@@ -7,6 +7,7 @@ import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {Subscription} from 'rxjs';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {ModalController} from '@ionic/angular';
+import {App} from '@capacitor/app';
 
 @Component({
     selector: 'app-footer',
