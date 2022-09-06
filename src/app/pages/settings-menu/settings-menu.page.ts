@@ -9,7 +9,7 @@ import {environment} from '../../../environments/environment';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {HeaderButtonEnum} from '@app/components/header/header-button.enum';
 import {ToastService} from '@app/services/toast/toast.service';
-import {ToastTypeEnum} from "@app/services/toast/toast-type.enum";
+import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 
 enum SettingsMenu {
     GENERAL = 'Général',

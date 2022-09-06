@@ -120,8 +120,8 @@ export class StorageService {
         ).pipe(
             map(() => {
                 return {
-                    nextSyncDate: newLastSyncDatetime.toISOString(),
-                    lastSyncDate: newNextSyncDatetime.toISOString()
+                    nextSyncDate: newNextSyncDatetime.toISOString(),
+                    lastSyncDate: newLastSyncDatetime.toISOString()
                 };
             })
         );
