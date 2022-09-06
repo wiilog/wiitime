@@ -43,8 +43,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public quitApplicationButtonClicked() {
         //Todo save important data if any
-        //App.exitApp();
-        this.navService.push(PagePath.ACCOUNT_CREATION);
+        App.exitApp();
     }
 
     public changeModeButtonClicked() {
