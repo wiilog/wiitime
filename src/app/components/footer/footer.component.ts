@@ -1,5 +1,4 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {App} from '@capacitor/app';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
@@ -44,7 +43,8 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public quitApplicationButtonClicked() {
         //Todo save important data if any
-        App.exitApp();
+        //App.exitApp();
+        this.navService.push(PagePath.ACCOUNT_CREATION);
     }
 
     public changeModeButtonClicked() {

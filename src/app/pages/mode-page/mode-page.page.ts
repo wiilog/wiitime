@@ -96,6 +96,7 @@ export abstract class ModePagePage {
                 })
             ).toPromise();
 
+
         if (openModal) {
             const modal = await this.modalCtrl.create({
                 component: ClockingInfoModalPage,

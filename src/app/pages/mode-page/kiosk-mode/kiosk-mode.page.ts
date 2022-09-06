@@ -14,7 +14,7 @@ import {HeaderButtonEnum} from '@app/components/header/header-button.enum';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {ToastService} from "@app/services/toast/toast.service";
+import {ToastService} from '@app/services/toast/toast.service';
 
 @Component({
     selector: 'app-kiosk-mode',
@@ -33,11 +33,11 @@ export class KioskModePage extends ModePagePage implements ViewWillEnter, ViewWi
     private backButtonSubscription: Subscription;
 
     public constructor(protected nfcService: NfcService,
-                       private navService: NavService,
                        protected storageService: StorageService,
                        protected sqliteService: SQLiteService,
                        protected windowService: WindowService,
                        protected toastService: ToastService,
+                       private navService: NavService,
                        protected modalCtrl: ModalController,
                        private platform: Platform) {
         super(nfcService,

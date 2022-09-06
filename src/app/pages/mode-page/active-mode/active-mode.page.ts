@@ -7,7 +7,7 @@ import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SftpServices} from '@app/services/sftp/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {of, Subject, Subscription, timer, zip} from 'rxjs';
+import {of, Subject, Subscription, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
@@ -16,7 +16,7 @@ import {WindowService} from '@app/services/window.service';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
 import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
 import {ToastService} from '@app/services/toast/toast.service';
-import {BackgroundTaskService} from "@app/services/background-task.service";
+import {BackgroundTaskService} from '@app/services/background-task.service';
 
 @Component({
     selector: 'app-active-mode',

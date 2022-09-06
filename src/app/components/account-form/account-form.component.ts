@@ -68,8 +68,9 @@ export class AccountFormComponent implements OnInit, OnDestroy {
             console.log('form is invalid, respect all the constraints');
             return;
         }
-        this.saveSubscription = zip(this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.form.value.username),
-            this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.form.value.password))
-            .subscribe(() => this.validFormSubmittedEvent.emit());
+        this.saveSubscription = zip(
+            this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.form.value.username),
+            this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.form.value.password)
+        ).subscribe(() => this.validFormSubmittedEvent.emit());
     }
 }

@@ -8,7 +8,7 @@
 
     h1 {
         display: flex;
-        justify-content: center;
+        align-self: center;
         @include title(2rem)
     }
 
@@ -44,7 +44,7 @@
 
                 ion-icon {
                     margin: 0 0.5rem;
-                    max-height: 1rem;
+                    max-height: 2rem;
                 }
 
                 &.larger {

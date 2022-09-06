@@ -14,8 +14,7 @@ export class NfcService {
         const flags = this.nfc.FLAG_READER_NFC_A
             | this.nfc.FLAG_READER_NFC_V
             | this.nfc.FLAG_READER_NFC_B
-            | this.nfc.FLAG_READER_NFC_F
-            | this.nfc.FLAG_READER_NO_PLATFORM_SOUNDS;
+            | this.nfc.FLAG_READER_NFC_F;
 
         return from(this.nfc.enabled())
             .pipe(

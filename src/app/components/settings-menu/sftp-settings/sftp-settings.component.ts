@@ -66,7 +66,7 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
 
     //synchronisation begin time field settings
     public readonly syncBeginTimeFormControlName = 'syncBeginTime';
-    public readonly syncBeginTimeFieldName = 'heures de début*';
+    public readonly syncBeginTimeFieldName = 'Heures de début*';
 
     private isConnexionTestOngoing: boolean;
     private syncBeginTimeStartValue: Date;
