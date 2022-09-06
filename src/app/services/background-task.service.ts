@@ -1,14 +1,17 @@
 import {Injectable} from '@angular/core';
 import {SftpServices} from '@app/services/sftp/sftp.services';
 import {StorageService} from '@app/services/storage/storage.service';
-import {Observable, of, Subscription, timer, zip} from 'rxjs';
+import {Observable, of, Subject, Subscription, timer, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {mergeMap} from 'rxjs/operators';
+import {SftpSyncInfo} from '@app/services/sftp/sftp-sync-info';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BackgroundTaskService {
+
+    public readonly syncCompleted$: Subject<SftpSyncInfo>;
 
     private intervalDuration = 60;
     private clockingSyncSubscription: Subscription;
@@ -17,6 +20,7 @@ export class BackgroundTaskService {
 
     public constructor(private sftpService: SftpServices,
                        private storageService: StorageService) {
+        this.syncCompleted$ = new Subject<any>();
     }
 
     public isSyncLoopRunning(): boolean {
@@ -58,16 +62,16 @@ export class BackgroundTaskService {
             initSyncFrequency,
             newSyncFrequency
         ).pipe(
-                mergeMap(() => this.storageService.getValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME)),
-                mergeMap((nextSync) => {
-                    storageNextSyncDatetime = new Date(nextSync);
-                    if (storageNextSyncDatetime.toISOString() !== this.lastNextSyncDatetime.toISOString()) {
-                        this.lastNextSyncDatetime = storageNextSyncDatetime;
-                        this.setClockingSyncSubscription(this.lastNextSyncDatetime);
-                    }
-                    return of(null);
-                })
-            );
+            mergeMap(() => this.storageService.getValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME)),
+            mergeMap((nextSync) => {
+                storageNextSyncDatetime = new Date(nextSync);
+                if (storageNextSyncDatetime.toISOString() !== this.lastNextSyncDatetime.toISOString()) {
+                    this.lastNextSyncDatetime = storageNextSyncDatetime;
+                    this.setClockingSyncSubscription(this.lastNextSyncDatetime);
+                }
+                return of(null);
+            })
+        );
     }
 
     private clearClockingSyncSubscription(): void {
@@ -104,9 +108,12 @@ export class BackgroundTaskService {
                 this.lastNextSyncDatetime = newNextSynchro;
                 return this.storageService.updateStorageAfterSync(newLastSynchro, newNextSynchro);
             })
-        ).subscribe(() => {
+        ).subscribe((newSyncInfo: SftpSyncInfo) => {
             console.log('synchronisation loop completed');
-            if(this.syncMessageSubscription && !this.syncMessageSubscription.closed) {
+            if (newSyncInfo) {
+                this.syncCompleted$.next(newSyncInfo);
+            }
+            if (this.syncMessageSubscription && !this.syncMessageSubscription.closed) {
                 this.syncMessageSubscription.unsubscribe();
                 this.syncMessageSubscription = null;
             }

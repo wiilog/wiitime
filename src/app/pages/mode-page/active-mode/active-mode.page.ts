@@ -7,7 +7,7 @@ import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SftpServices} from '@app/services/sftp/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {of, Subject, timer, zip} from 'rxjs';
+import {of, Subject, Subscription, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
@@ -16,6 +16,7 @@ import {WindowService} from '@app/services/window.service';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
 import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
 import {ToastService} from '@app/services/toast/toast.service';
+import {BackgroundTaskService} from "@app/services/background-task.service";
 
 @Component({
     selector: 'app-active-mode',
@@ -36,14 +37,16 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
     public readonly sftpStatusEnum = SfpStatus;
 
     private isSftpSetup: boolean;
+    private clockingRecordSyncCompletedSubscription: Subscription;
 
     public constructor(protected nfcService: NfcService,
-                       private navService: NavService,
                        protected storageService: StorageService,
-                       private sftpService: SftpServices,
                        protected sqliteService: SQLiteService,
                        protected windowService: WindowService,
                        protected toastService: ToastService,
+                       private sftpService: SftpServices,
+                       private navService: NavService,
+                       private backgroundTaskService: BackgroundTaskService,
                        protected modalCtrl: ModalController) {
         super(nfcService,
             storageService,
@@ -72,20 +75,32 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
 
     public ionViewWillLeave(): void {
         this.leaveModePage();
+
+        if (this.clockingRecordSyncCompletedSubscription && !this.clockingRecordSyncCompletedSubscription.closed) {
+            this.clockingRecordSyncCompletedSubscription.unsubscribe();
+        }
     }
 
     public initPage(): void {
         this.enterModePage();
 
-        if(this.refreshHeader$) {
+        if (this.refreshHeader$) {
             this.refreshHeader$.next();
         }
 
-        this.storageGetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
+        this.clockingRecordSyncCompletedSubscription = this.backgroundTaskService.syncCompleted$
+            .subscribe((syncInfo) => {
+                this.nextSyncDatetime = syncInfo.nextSyncDate;
+                this.lastSyncDatetime = syncInfo.lastSyncDate;
+            });
+
+        this.storageGetterSubscription = zip(
+            this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
             this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
             this.storageService.getValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME),
-            this.storageService.getValue(StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME))
-            .pipe(mergeMap(([adminUsername, isSftpSetup, nextSync, lastSync]) => {
+            this.storageService.getValue(StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME)
+        ).pipe(
+            mergeMap(([adminUsername, isSftpSetup, nextSync, lastSync]) => {
                 this.username = adminUsername;
                 this.isSftpSetup = Number(isSftpSetup) === 1;
 
@@ -97,11 +112,12 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
                 }
                 this.currentSftpStatus = SfpStatus.NOT_SET;
                 return of(null);
-            })).subscribe((isConnected) => {
-                if (isConnected != null) {
-                    this.currentSftpStatus = isConnected ? this.sftpStatusEnum.READY : this.sftpStatusEnum.ERROR;
-                }
-            });
+            })
+        ).subscribe((isConnected) => {
+            if (isConnected != null) {
+                this.currentSftpStatus = isConnected ? this.sftpStatusEnum.READY : this.sftpStatusEnum.ERROR;
+            }
+        });
 
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
             (data) => this.manageClocking(data.id, ClockingInfoModalModeEnum.ACTIVE_MODE));

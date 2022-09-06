@@ -6,6 +6,7 @@ import {SfpStatus} from '@app/services/storage/sftp-status.enum';
 import {map, mergeMap} from 'rxjs/operators';
 import {FileService} from '@app/services/file.service';
 import {DateService} from '@app/services/date.service';
+import {SftpSyncInfo} from '@app/services/sftp/sftp-sync-info';
 
 @Injectable({
     providedIn: 'root'
@@ -79,39 +80,51 @@ export class StorageService {
             Number(newBeginTime.substring(3)));
         let newNextSyncDatetime: Date;
 
-        return this.getValue(StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME).pipe(
-            mergeMap((lastSyncDatetime) => {
-                if (initSyncFrequency !== newSyncFrequency) {
-                    if(lastSyncDatetime) {
-                        if(initBeginTime <= new Date(lastSyncDatetime)) {
+        return this.getValue(StorageKeyEnum.LAST_SYNCHRONISATION_DATETIME)
+            .pipe(
+                mergeMap((lastSyncDatetime) => {
+                    if (initSyncFrequency !== newSyncFrequency) {
+                        if (lastSyncDatetime) {
+                            if (initBeginTime <= new Date(lastSyncDatetime)) {
+                                newNextSyncDatetime = new Date();
+                                newNextSyncDatetime.setMinutes(60 * newSyncFrequency + newNextSyncDatetime.getMinutes());
+                            }
+                        } else {
                             newNextSyncDatetime = new Date();
                             newNextSyncDatetime.setMinutes(60 * newSyncFrequency + newNextSyncDatetime.getMinutes());
                         }
-                    } else {
-                        newNextSyncDatetime = new Date();
-                        newNextSyncDatetime.setMinutes(60 * newSyncFrequency + newNextSyncDatetime.getMinutes());
                     }
-                }
-                if (initBeginTime.toISOString() !== pickedDate.toISOString()) {
-                    const now = new Date();
-                    pickedDate = this.dateService.setDateTime(new Date(),
-                        Number(newBeginTime.slice(0, 2)),
-                        Number(newBeginTime.substring(3)));
-                    if (now.getTime() > pickedDate.getTime()) {
-                        pickedDate.setDate(pickedDate.getDate() + 1);
+                    if (initBeginTime.toISOString() !== pickedDate.toISOString()) {
+                        const now = new Date();
+                        pickedDate = this.dateService.setDateTime(new Date(),
+                            Number(newBeginTime.slice(0, 2)),
+                            Number(newBeginTime.substring(3)));
+                        if (now.getTime() > pickedDate.getTime()) {
+                            pickedDate.setDate(pickedDate.getDate() + 1);
+                        }
+                        newNextSyncDatetime = pickedDate;
                     }
-                    newNextSyncDatetime = pickedDate;
-                }
-                return zip(this.setValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY, newSyncFrequency.toString()),
-                    this.setValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME, pickedDate.toISOString()),
-                    this.updateNextSyncValue(newNextSyncDatetime));
-            }),
-        );
+                    return zip(
+                        this.setValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY, newSyncFrequency.toString()),
+                        this.setValue(StorageKeyEnum.SYNCHRONISATION_BEGIN_DATETIME, pickedDate.toISOString()),
+                        this.updateNextSyncValue(newNextSyncDatetime)
+                    );
+                }),
+            );
     }
 
-    public updateStorageAfterSync(newLastSyncDatetime: Date, newNextSyncDatetime: Date): Observable<any> {
-        return zip(this.updateLastSyncValue(newLastSyncDatetime),
-            this.updateNextSyncValue(newNextSyncDatetime));
+    public updateStorageAfterSync(newLastSyncDatetime: Date, newNextSyncDatetime: Date): Observable<SftpSyncInfo> {
+        return zip(
+            this.updateLastSyncValue(newLastSyncDatetime),
+            this.updateNextSyncValue(newNextSyncDatetime)
+        ).pipe(
+            map(() => {
+                return {
+                    nextSyncDate: newLastSyncDatetime.toISOString(),
+                    lastSyncDate: newNextSyncDatetime.toISOString()
+                };
+            })
+        );
     }
 
     private updateLastSyncValue(newLastSyncDatetime): Observable<any> {

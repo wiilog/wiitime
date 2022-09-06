@@ -43,7 +43,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     public ngAfterViewInit(): void {
         if (this.refreshHeader$) {
             this.refreshHeaderSubscription = this.refreshHeader$.subscribe((logo) => {
-                console.log('refresh');
                 if (logo) {
                     this.logo = logo;
                 } else {

@@ -96,7 +96,6 @@ export abstract class ModePagePage {
                 })
             ).toPromise();
 
-
         if (openModal) {
             const modal = await this.modalCtrl.create({
                 component: ClockingInfoModalPage,
@@ -111,7 +110,6 @@ export abstract class ModePagePage {
             await modal.present();
             await modal.onWillDismiss();
         } else {
-            //'badgeage du badge avec le numéro X ignoré car il a été bad '
             await this.toastService.displayToast(`Ce badgeage n'a pas été pris
             en compte, car le badge numéro ${hexId} a déjà été badgé récemment`, ToastTypeEnum.ERROR);
         }

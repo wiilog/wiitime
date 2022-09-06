@@ -118,11 +118,6 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
         this.isSubmitted = true;
         if (!this.form.valid) {
             console.log('Invalid form content !');
-            /* Todo re
-            this.toastService.displayToast(
-                `Test de connexion impossible, certains champs ont une valeur incorrecte`,
-                ToastTypeEnum.ERROR);
-             */
             return;
         }
         if (!this.isConnexionTestOngoing) {

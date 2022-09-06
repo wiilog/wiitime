@@ -1,12 +1,12 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
-import {iif, of, Subscription, timer} from 'rxjs';
+import {iif, Observable, of, Subscription, timer} from 'rxjs';
 import {LoadingService} from '@app/services/loading.service';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {ModalController, Platform} from '@ionic/angular';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {map, mergeMap, tap} from 'rxjs/operators';
+import {mergeMap, tap} from 'rxjs/operators';
 import {DateService} from '@app/services/date.service';
 import {ClockingInfo} from '@app/modals/clocking-info-modal/clocking-info';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
@@ -64,15 +64,10 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
             event: () => this.sqliteService.registerClocking(this.clockedBadgeNumber)
                 .pipe(
                     mergeMap(() =>
-                        iif(() => this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE
-                            , this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION)
-                                .pipe(
-                                    tap((displayDuration: string) => {
-                                        console.log(Number(displayDuration));
-                                        this.modalDisplayDuration = Number(displayDuration);
-                                    })
-                                )
-                            , of(null))
+                        iif(() => this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE,
+                            this.setClockingInfoModalDisplayDuration(),
+                            of(null)
+                        )
                     ),
                     mergeMap(() => this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL)),
                     mergeMap((clockingDisplayInterval: string) => {
@@ -85,7 +80,7 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
                 )
         }).subscribe(() => {
             this.isModalLoaded = true;
-            if(this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE) {
+            if (this.modalMode === ClockingInfoModalModeEnum.KIOSK_MODE) {
                 this.closingTimerSubscription = timer(this.modalDisplayDuration * 1000)
                     .subscribe(() => this.confirmButtonClicked());
             }
@@ -99,7 +94,7 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
         if (this.modalLoadingSubscription && !this.modalLoadingSubscription.closed) {
             this.modalLoadingSubscription.unsubscribe();
         }
-        if(this.closingTimerSubscription && !this.closingTimerSubscription.closed) {
+        if (this.closingTimerSubscription && !this.closingTimerSubscription.closed) {
             this.closingTimerSubscription.unsubscribe();
         }
     }
@@ -150,5 +145,15 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
             }
             lastClocking = clocking;
         });
+    }
+
+    private setClockingInfoModalDisplayDuration(): Observable<any> {
+        return this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION)
+            .pipe(
+                tap((displayDuration: string) => {
+                    console.log(Number(displayDuration));
+                    this.modalDisplayDuration = Number(displayDuration);
+                })
+            );
     }
 }
