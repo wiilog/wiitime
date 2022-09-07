@@ -3,6 +3,12 @@
 ion-content {
     --background: #{$white};
 
+    .flex-container {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+    }
+
     .welcome-label-wrapper {
         background-color: $background;
         height: 11.5rem;
@@ -80,11 +86,12 @@ ion-content {
     .communication-label-wrapper {
         display: flex;
         flex-direction: column;
+        flex: 1;
 
         .communication-label {
             @include text(body);
             text-align: center;
-            margin: 5rem 5rem 0 5rem;
+            margin: auto 5rem auto 5rem;
         }
     }
 }
