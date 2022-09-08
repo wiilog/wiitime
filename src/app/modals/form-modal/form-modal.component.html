@@ -10,11 +10,11 @@
                             [titleOnTop]="usernameTitleOnTop">
         </app-form-text-area>
         <span class="error" *ngIf="isSubmitted && getErrorControl().username.errors?.required">
-                Ce champ doit être renseigné pour sauvegarder
-            </span>
+            Ce champ doit être renseigné pour sauvegarder
+        </span>
         <span class="error" *ngIf="isSubmitted && getErrorControl().username.errors?.maxlength">
-                Ce champ est limité à {{usernameMaxLength}} caractères
-            </span>
+            Ce champ est limité à {{usernameMaxLength}} caractères
+        </span>
 
         <div class="mt-4">
             <app-form-password-input [formControlName]="passwordFormControlName"

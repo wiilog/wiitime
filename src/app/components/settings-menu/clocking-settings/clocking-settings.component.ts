@@ -109,8 +109,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                             exportedFileName = filename;
                             return this.fileService.writeFile(filename, clockingRecords, null, false);
                         }),
-                        mergeMap((writeFileResult) => {
-                            console.log(writeFileResult.uri);
+                        mergeMap(() => {
                             return from(this.toastService.displayToast(
                                 `Fichier d\'export \'${exportedFileName}\' sauvegardé dans les documents avec succès`
                                 , ToastTypeEnum.SUCCESS));
@@ -130,10 +129,12 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
     }
 
     protected initContent() {
-        this.valueSetterSubscription = zip(this.storageService.getValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION),
+        this.valueSetterSubscription = zip(
+            this.storageService.getValue(StorageKeyEnum.CLOCKING_STORAGE_DURATION),
             this.storageService.getValue(StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL),
             this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING),
-            this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION))
+            this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION)
+        )
             .subscribe(([storageDuration,
                             displayClockingFrom,
                             delayBetweenTwoClocking,

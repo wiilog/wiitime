@@ -28,8 +28,10 @@ export class BackgroundTaskService {
     }
 
     public startSynchronisationLoop(): Observable<boolean> {
-        return zip(this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
-            this.storageService.getValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME))
+        return zip(
+            this.storageService.getValue(StorageKeyEnum.SFTP_SETUP),
+            this.storageService.getValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME)
+        )
             .pipe(
                 mergeMap(([sftpIsSetup, nextSync]) => {
                     if (!Number(sftpIsSetup)) {
