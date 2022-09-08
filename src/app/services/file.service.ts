@@ -62,10 +62,14 @@ export class FileService {
                 if (resultIds) {
                     resultIds.push(value.id);
                 }
-                fileContent = fileContent + this.MCLI + this.csvSeparator +
+                const dateStr = this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true);
+                fileContent += (
+                    this.MCLI + this.csvSeparator +
                     value.badge_number + this.csvSeparator +
-                    this.dateService.utfDatetimeToLocalString(new Date(value.clocking_date), true) +
-                    this.csvSeparator + this.MTYPE + this.csvSeparator + this.MSTATE + '\n';
+                    dateStr + this.csvSeparator +
+                    this.MTYPE + this.csvSeparator +
+                    this.MSTATE + '\n'
+                );
             });
         }
         return from(Filesystem.writeFile({

@@ -80,10 +80,8 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                        protected ngZone: NgZone) {
         super(windowService, ngZone);
         this.form = this.formBuilder.group({
-            kioskMessage: ['', [Validators.maxLength(this.kioskMessageMaxLength)
-            ]],
-            kioskCommunication: ['', [Validators.maxLength(this.kioskCommunicationMaxLength)
-            ]],
+            kioskMessage: ['', [Validators.maxLength(this.kioskMessageMaxLength)]],
+            kioskCommunication: ['', [Validators.maxLength(this.kioskCommunicationMaxLength)]],
             clockingVolume: ['', []],
         });
     }
@@ -208,7 +206,8 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         }
         this.saveSubscription = this.loadingService.presentLoadingWhile({
             message: 'sauvegarde en cours...',
-            event: () => zip(this.storageService.setValue(StorageKeyEnum.LOGO, this.logoSelectionFieldLogo),
+            event: () => zip(
+                this.storageService.setValue(StorageKeyEnum.LOGO, this.logoSelectionFieldLogo),
                 this.storageService.setValue(StorageKeyEnum.ADMIN_USERNAME, this.adminUsername),
                 this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.adminPassword),
                 this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_MESSAGE, this.form.value.kioskMessage),
