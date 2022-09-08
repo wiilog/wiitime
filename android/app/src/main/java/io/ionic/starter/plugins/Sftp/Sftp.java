@@ -4,7 +4,6 @@ import com.jcraft.jsch.*;
 
 public class Sftp {
 
-    private final int port = 22;
     private JSch jsch;
     private Session session;
     private ChannelSftp sftpChannel;
@@ -12,12 +11,12 @@ public class Sftp {
     public Sftp() {
     }
 
-    public void createConnexion(String hostname, String username, String password) throws JSchException {
+    public void createConnexion(String hostname, String username, String password, int port) throws JSchException {
         if(session != null && sftpChannel != null) {
             disconnect();
         }
         jsch = new JSch();
-        session = jsch.getSession(username, hostname, port);
+        session = jsch.getSession(username, hostname, 22); //Todo do something about this
         session.setPassword(password);
         session.setConfig("StrictHostKeyChecking", "no");
         session.connect();
@@ -36,6 +35,7 @@ public class Sftp {
             session = null;
             throw new NotConnectedException("Current connection has been closed, try to connect again");
         }
+        localFile = localFile.replace("file://", "");
         sftpChannel.put(localFile, remoteFile, ChannelSftp.OVERWRITE);
     }
 

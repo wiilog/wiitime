@@ -58,8 +58,9 @@ public class SftpPlugin extends Plugin {
         String hostname = call.getString("hostname");
         String username = call.getString("username");
         String password = call.getString("password");
+        int port = Integer.parseInt(call.getString("port", "22"));
         try {
-            implementation.createConnexion(hostname, username, password);
+            implementation.createConnexion(hostname, username, password, port);
         } catch (JSchException jSchException) {
             call.reject(jSchException.getLocalizedMessage(), null, jSchException);
         }

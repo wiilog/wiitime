@@ -7,7 +7,14 @@ export interface SftpPlugin {
      * @param connexionInfo an object containing the address of the server and the username and the password to use to connect to it
      * @return true, if the connection was successfully created or raise an exception
      */
-    connect(connexionInfo: { hostname: string; username: string; password: string }): Promise<{success: boolean}>;
+    connect(connexionInfo:
+                {
+                    hostname: string;
+                    port: string;
+                    username: string;
+                    password: string;
+                }
+    ): Promise<{ success: boolean }>;
 
     /**
      * Upload the file at the given localPath to currently connected server at the given path
@@ -15,14 +22,14 @@ export interface SftpPlugin {
      * @param uploadInfo an object containing the path of the file to upload and the path where the file should be uploaded on the server
      * @return true, if the upload operation succeed or raise an exception
      */
-    upload(uploadInfo: { localFile: string; remoteFile: string }): Promise<{success: boolean}>;
+    upload(uploadInfo: { localFile: string; remoteFile: string }): Promise<{ success: boolean }>;
 
     /**
      * If a connection is ongoing, close it
      *
      * @return true if a connection was closed, false otherwise
      */
-    disconnect(): Promise<{success: boolean}>;
+    disconnect(): Promise<{ success: boolean }>;
 
     checkPermissions(): Promise<PermissionStatus>;
 

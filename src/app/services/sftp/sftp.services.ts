@@ -7,7 +7,6 @@ import {catchError, filter, map, mergeMap} from 'rxjs/operators';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FileService} from '@app/services/file.service';
-import {DateService} from '@app/services/date.service';
 import {SftpConfig} from '@app/services/sftp/sftp-config';
 import {WriteFileResult} from '@capacitor/filesystem';
 import {Sftp} from '../../../plugins/sftp';
@@ -19,8 +18,7 @@ export class SftpServices {
 
     public constructor(private sqliteService: SQLiteService,
                        private storageService: StorageService,
-                       private fileService: FileService,
-                       private dateService: DateService) {
+                       private fileService: FileService) {
     }
 
     public testConnection(): Observable<boolean> {
@@ -31,7 +29,8 @@ export class SftpServices {
                     from(
                         Sftp.connect(
                             {
-                                hostname: `${sftpConfig.serverAddress}`, //:${sftpConfig.serverPort}
+                                hostname: sftpConfig.serverAddress,
+                                port: `${sftpConfig.serverPort}`,
                                 username: sftpConfig.serverUsername,
                                 password: sftpConfig.serverPassword
                             })
@@ -41,7 +40,7 @@ export class SftpServices {
                     connectionSuccess = connectionResult.success;
                     return from(Sftp.disconnect());
                 }),
-                map((disconnectResult) =>
+                map(() =>
                     connectionSuccess
                 ),
                 catchError((err) => {
@@ -68,7 +67,8 @@ export class SftpServices {
                 return from(
                     Sftp.connect(
                         {
-                            hostname: `${usedConfig.serverAddress}`, //:${sftpConfig.serverPort}
+                            hostname: usedConfig.serverAddress,
+                            port: `${usedConfig.serverPort}`,
                             username: usedConfig.serverUsername,
                             password: usedConfig.serverPassword
                         })
@@ -102,7 +102,8 @@ export class SftpServices {
                     return from(
                         Sftp.connect(
                             {
-                                hostname: `${sftpConfig.serverAddress}`, //:${sftpConfig.serverPort}
+                                hostname: sftpConfig.serverAddress,
+                                port: `${sftpConfig.serverPort}`,
                                 username: sftpConfig.serverUsername,
                                 password: sftpConfig.serverPassword
                             })
@@ -168,7 +169,6 @@ export class SftpServices {
         if (sftpSavePath.endsWith('/')) {
             remotePath = sftpSavePath + fileName;
         }
-        localPath = localPath.replace('file://', '');
         return from(Sftp.upload({localFile: localPath, remoteFile: remotePath}));
     }
 }
