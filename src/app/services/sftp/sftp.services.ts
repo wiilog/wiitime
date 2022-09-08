@@ -6,11 +6,11 @@ import {iif, from, Observable, of, zip} from 'rxjs';
 import {catchError, filter, map, mergeMap} from 'rxjs/operators';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {FTP} from '@awesome-cordova-plugins/ftp/ngx';
 import {FileService} from '@app/services/file.service';
 import {DateService} from '@app/services/date.service';
 import {SftpConfig} from '@app/services/sftp/sftp-config';
 import {WriteFileResult} from '@capacitor/filesystem';
+import {Sftp} from '../../../plugins/sftp';
 
 @Injectable({
     providedIn: 'root'
@@ -20,8 +20,7 @@ export class SftpServices {
     public constructor(private sqliteService: SQLiteService,
                        private storageService: StorageService,
                        private fileService: FileService,
-                       private dateService: DateService,
-                       private ftp: FTP) {
+                       private dateService: DateService) {
     }
 
     public testConnection(): Observable<boolean> {
@@ -30,22 +29,24 @@ export class SftpServices {
             .pipe(
                 mergeMap((sftpConfig: SftpConfig) =>
                     from(
-                        this.ftp.connect(
-                            `${sftpConfig.serverAddress}:${sftpConfig.serverPort}`,
-                            sftpConfig.serverUsername,
-                            sftpConfig.serverPassword
-                        )
+                        Sftp.connect(
+                            {
+                                hostname: `${sftpConfig.serverAddress}`, //:${sftpConfig.serverPort}
+                                username: sftpConfig.serverUsername,
+                                password: sftpConfig.serverPassword
+                            })
                     )
                 ),
                 mergeMap((connectionResult) => {
-                    connectionSuccess = connectionResult === 'OK';
-                    return from(this.ftp.disconnect());
+                    connectionSuccess = connectionResult.success;
+                    return from(Sftp.disconnect());
                 }),
-                map(() => connectionSuccess
+                map((disconnectResult) =>
+                    connectionSuccess
                 ),
                 catchError((err) => {
                     console.log(err);
-                    return from(this.ftp.disconnect()).pipe(mergeMap(() => of(false)));
+                    return from(Sftp.disconnect()).pipe(mergeMap(() => of(false)));
                 })
             );
     }
@@ -65,27 +66,28 @@ export class SftpServices {
             mergeMap((dataExportFilename) => {
                 filename = dataExportFilename;
                 return from(
-                    this.ftp.connect(
-                        `${usedConfig.serverAddress}:${usedConfig.serverPort}`,
-                        usedConfig.serverUsername,
-                        usedConfig.serverPassword
-                    )
+                    Sftp.connect(
+                        {
+                            hostname: `${usedConfig.serverAddress}`, //:${sftpConfig.serverPort}
+                            username: usedConfig.serverUsername,
+                            password: usedConfig.serverPassword
+                        })
                 );
             }),
             mergeMap((connectionResult) => {
-                connectionSuccess = connectionResult === 'OK';
+                connectionSuccess = connectionResult.success;
                 return this.fileService.writeFile(filename, null, null, true);
             }),
             mergeMap((writeFileResult: WriteFileResult) =>
                 this.uploadFileToServer(writeFileResult.uri, usedConfig.remoteSavePath, filename)
             ),
             mergeMap(() =>
-                from(this.ftp.disconnect())
+                from(Sftp.disconnect())
             ),
             map(() => connectionSuccess),
             catchError((err) => {
                 console.log(err);
-                return from(this.ftp.disconnect()).pipe(mergeMap(() => of(err)));
+                return from(Sftp.disconnect()).pipe(map(() => err));
             }));
     }
 
@@ -98,11 +100,12 @@ export class SftpServices {
                 mergeMap((sftpConfig: SftpConfig) => {
                     sftpSaveFolderPath = sftpConfig.remoteSavePath;
                     return from(
-                        this.ftp.connect(
-                            `${sftpConfig.serverAddress}:${sftpConfig.serverPort}`,
-                            sftpConfig.serverUsername,
-                            sftpConfig.serverPassword
-                        )
+                        Sftp.connect(
+                            {
+                                hostname: `${sftpConfig.serverAddress}`, //:${sftpConfig.serverPort}
+                                username: sftpConfig.serverUsername,
+                                password: sftpConfig.serverPassword
+                            })
                     );
                 }),
                 mergeMap(() =>
@@ -117,20 +120,20 @@ export class SftpServices {
                     this.uploadFileToServer(writeFileResult.uri, sftpSaveFolderPath, fileName)
                 ),
                 filter((uploadResult) =>
-                    uploadResult === 1
+                    uploadResult.success === true
                 ),
                 mergeMap(() =>
                     this.sqliteService.updateClockingSynchronisation(resultIds)
                 ),
                 mergeMap(() =>
-                    from(this.ftp.disconnect())
+                    from(Sftp.disconnect())
                 ),
-                mergeMap((disconnectResult) =>
-                    of(disconnectResult === 'OK')
+                map((disconnectResult) =>
+                    disconnectResult.success
                 ),
                 catchError((err) => {
                     console.log(err);
-                    return from(this.ftp.disconnect()).pipe(mergeMap(() => of(false)));
+                    return from(Sftp.disconnect()).pipe(mergeMap(() => of(false)));
                 })
             );
     }
@@ -165,6 +168,7 @@ export class SftpServices {
         if (sftpSavePath.endsWith('/')) {
             remotePath = sftpSavePath + fileName;
         }
-        return this.ftp.upload(localPath, remotePath);
+        localPath = localPath.replace('file://', '');
+        return from(Sftp.upload({localFile: localPath, remoteFile: remotePath}));
     }
 }

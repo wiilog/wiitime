@@ -3,7 +3,7 @@ import {SftpServices} from '@app/services/sftp/sftp.services';
 import {StorageService} from '@app/services/storage/storage.service';
 import {Observable, of, Subject, Subscription, timer, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {mergeMap} from 'rxjs/operators';
+import {mergeMap, tap} from 'rxjs/operators';
 import {SftpSyncInfo} from '@app/services/sftp/sftp-sync-info';
 
 @Injectable({
@@ -63,13 +63,12 @@ export class BackgroundTaskService {
             newSyncFrequency
         ).pipe(
             mergeMap(() => this.storageService.getValue(StorageKeyEnum.NEXT_SYNCHRONISATION_DATETIME)),
-            mergeMap((nextSync) => {
+            tap((nextSync) => {
                 storageNextSyncDatetime = new Date(nextSync);
-                if (storageNextSyncDatetime.toISOString() !== this.lastNextSyncDatetime.toISOString()) {
+                if (!this.lastNextSyncDatetime || storageNextSyncDatetime.toISOString() !== this.lastNextSyncDatetime.toISOString()) {
                     this.lastNextSyncDatetime = storageNextSyncDatetime;
                     this.setClockingSyncSubscription(this.lastNextSyncDatetime);
                 }
-                return of(null);
             })
         );
     }
