@@ -17,6 +17,7 @@ import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clockin
 import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
 import {ToastService} from '@app/services/toast/toast.service';
 import {BackgroundTaskService} from '@app/services/background-task.service';
+import {AudioService} from '@app/services/audio/audio.service';
 
 @Component({
     selector: 'app-active-mode',
@@ -44,6 +45,7 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
                        protected sqliteService: SQLiteService,
                        protected windowService: WindowService,
                        protected toastService: ToastService,
+                       protected audioService: AudioService,
                        private sftpService: SftpServices,
                        private navService: NavService,
                        private backgroundTaskService: BackgroundTaskService,
@@ -53,6 +55,7 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
             sqliteService,
             windowService,
             toastService,
+            audioService,
             modalCtrl);
         this.refreshHeader$ = new Subject<string>();
     }

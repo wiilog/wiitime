@@ -126,7 +126,7 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                                 ToastTypeEnum.SUCCESS));
                         }),
                         catchError((err) => {
-                            console.log(err);
+                            console.error(err);
                             return this.toastService.displayToast(err, ToastTypeEnum.ERROR);
                         })
                     )

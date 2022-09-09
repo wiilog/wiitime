@@ -15,6 +15,7 @@ import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/pass
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
 import {ToastService} from '@app/services/toast/toast.service';
+import {AudioService} from '@app/services/audio/audio.service';
 
 @Component({
     selector: 'app-kiosk-mode',
@@ -37,6 +38,7 @@ export class KioskModePage extends ModePagePage implements ViewWillEnter, ViewWi
                        protected sqliteService: SQLiteService,
                        protected windowService: WindowService,
                        protected toastService: ToastService,
+                       protected audioService: AudioService,
                        private navService: NavService,
                        protected modalCtrl: ModalController,
                        private platform: Platform) {
@@ -45,6 +47,7 @@ export class KioskModePage extends ModePagePage implements ViewWillEnter, ViewWi
             sqliteService,
             windowService,
             toastService,
+            audioService,
             modalCtrl);
     }
 

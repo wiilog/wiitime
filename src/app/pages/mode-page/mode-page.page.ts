@@ -12,6 +12,7 @@ import {ClockingInfoModalPage} from '@app/modals/clocking-info-modal/clocking-in
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
 import {ToastService} from '@app/services/toast/toast.service';
 import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
+import {AudioService} from '@app/services/audio/audio.service';
 
 @Component({template: ''})
 export abstract class ModePagePage {
@@ -22,14 +23,18 @@ export abstract class ModePagePage {
     protected nfcSubscription: Subscription;
     protected storageGetterSubscription: Subscription;
 
+    private readonly clockingSoundId = 'clocking_sound';
+    private readonly clockingSoundFilePath = 'clockingSound.wav';
     private timerSubscription: Subscription;
     private windowSizeSubscription: Subscription;
+    private soundSetterSubscription: Subscription;
 
     protected constructor(protected nfcService: NfcService,
                           protected storageService: StorageService,
                           protected sqliteService: SQLiteService,
                           protected windowService: WindowService,
                           protected toastService: ToastService,
+                          protected audioService: AudioService,
                           protected modalCtrl: ModalController) {
     }
 
@@ -47,6 +52,13 @@ export abstract class ModePagePage {
         this.windowSizeSubscription = this.windowService.getWindowResizedObservable().subscribe(() => {
             this.isPortraitMode = this.windowService.isPortraitMode();
         });
+
+        this.soundSetterSubscription = this.audioService.preloadAudio(this.clockingSoundId,
+            {
+                assetPath: this.clockingSoundFilePath,
+                isPathUrl: false
+            }
+        ).subscribe((result: boolean) => console.log('sound set result:', result));
     }
 
 
@@ -66,6 +78,11 @@ export abstract class ModePagePage {
         if (this.windowSizeSubscription && !this.windowSizeSubscription.closed) {
             this.windowSizeSubscription.unsubscribe();
         }
+        if (this.soundSetterSubscription && !this.soundSetterSubscription.closed) {
+            this.soundSetterSubscription.unsubscribe();
+        }
+
+        this.audioService.unloadAudio(this.clockingSoundId);
     }
 
     /**
@@ -85,6 +102,8 @@ export abstract class ModePagePage {
         this.isClockingInfoModalOpen = true;
         const hexId = this.nfcService.convertIdToHex(badgeId);
         let openModal = false;
+
+        this.audioService.playAudio(this.clockingSoundId, 0);
 
         await this.storageService.getValue(StorageKeyEnum.DELAY_BETWEEN_TWO_CLOCKING)
             .pipe(

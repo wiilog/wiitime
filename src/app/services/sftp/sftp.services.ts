@@ -44,7 +44,7 @@ export class SftpServices {
                     connectionSuccess
                 ),
                 catchError((err) => {
-                    console.log(err);
+                    console.error(err);
                     return from(Sftp.disconnect()).pipe(mergeMap(() => of(false)));
                 })
             );
@@ -86,7 +86,7 @@ export class SftpServices {
             ),
             map(() => connectionSuccess),
             catchError((err) => {
-                console.log(err);
+                console.error(err);
                 return from(Sftp.disconnect()).pipe(map(() => err));
             }));
     }
@@ -133,7 +133,7 @@ export class SftpServices {
                     disconnectResult.success
                 ),
                 catchError((err) => {
-                    console.log(err);
+                    console.error(err);
                     return from(Sftp.disconnect()).pipe(mergeMap(() => of(false)));
                 })
             );
