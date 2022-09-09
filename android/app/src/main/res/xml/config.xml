@@ -6,6 +6,10 @@
     <param name="android-package" value="io.github.xfally.cordova.plugin.ftp.CDVFtp"/>
   </feature>
 
+  <feature name="Insomnia">
+    <param name="android-package" value="nl.xservices.plugins.Insomnia"/>
+  </feature>
+
   <feature name="CDVOrientation">
     <param name="android-package" value="cordova.plugins.screenorientation.CDVOrientation"/>
   </feature>

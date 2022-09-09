@@ -36,7 +36,6 @@ export class AudioService {
                 ),
                 map(() => {
                     this.preloadedAudioId.push(audioId);
-                    console.log('load done');
                     return true;
                 }),
                 catchError((err) => {

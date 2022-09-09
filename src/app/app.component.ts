@@ -9,6 +9,7 @@ import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {BackgroundTaskService} from '@app/services/background-task.service';
 import {SplashScreen} from '@capacitor/splash-screen';
+import {ScreenWakingService} from '@app/services/screen-waking.service';
 
 @Component({
     selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent {
                 private storageService: StorageService,
                 private sqliteService: SQLiteService,
                 private backgroundTaskService: BackgroundTaskService,
+                private screenWakingService: ScreenWakingService,
                 private navService: NavService) {
         this.initializeApp();
     }
@@ -30,6 +32,7 @@ export class AppComponent {
     public initializeApp(): void {
         SplashScreen.show();
         from(this.platform.ready()).pipe(
+            mergeMap(() => from(this.screenWakingService.keepScreenAwake())),
             mergeMap(() => this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME)),
             mergeMap((adminUsername) => {
                 this.isFirstApplicationLaunch = adminUsername == null;
