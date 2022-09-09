@@ -109,11 +109,11 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                             exportedFileName = filename;
                             return this.fileService.writeFile(filename, clockingRecords, null, false);
                         }),
-                        mergeMap(() => {
-                            return from(this.toastService.displayToast(
-                                `Fichier d\'export \'${exportedFileName}\' sauvegardé dans les documents avec succès`
-                                , ToastTypeEnum.SUCCESS));
-                        }),
+                        mergeMap(() =>
+                            from(this.toastService.displayToast(
+                                `Fichier d\'export \'${exportedFileName}\' sauvegardé dans les documents avec succès`,
+                                ToastTypeEnum.SUCCESS))
+                        ),
                         catchError((err) => {
                             console.log(err);
                             return this.toastService.displayToast(err, ToastTypeEnum.ERROR);
