@@ -3,13 +3,13 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {WindowService} from '@app/services/window.service';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {StorageService} from '@app/services/storage/storage.service';
-import {from, Subscription, zip} from 'rxjs';
+import {from, of, Subscription, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {LoadingService} from '@app/services/loading.service';
 import {ClockingRecord} from '@app/services/sqlite/entities/clocking-record';
 import {TableName} from '@app/services/sqlite/table-name';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {catchError, mergeMap} from 'rxjs/operators';
+import {catchError, map, mergeMap} from 'rxjs/operators';
 import {FileService} from '@app/services/file.service';
 import {ToastService} from '@app/services/toast/toast.service';
 import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
@@ -107,13 +107,24 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                     ).pipe(
                         mergeMap(([clockingRecords, filename]) => {
                             exportedFileName = filename;
-                            return this.fileService.writeFile(filename, clockingRecords, null, false);
+                            if (clockingRecords.length === 0) {
+                                return of(false);
+                            }
+                            return this.fileService.writeFile(filename, clockingRecords, null, false)
+                                .pipe(
+                                    map(() => true)
+                                );
                         }),
-                        mergeMap(() =>
-                            from(this.toastService.displayToast(
+                        mergeMap((wasFileCreated) => {
+                            if (!wasFileCreated) {
+                                return from(this.toastService.displayToast(
+                                    `Il n'y a aucun badgeage à exporter, aucun fichier n'a été créé`,
+                                    ToastTypeEnum.ERROR));
+                            }
+                            return from(this.toastService.displayToast(
                                 `Fichier d\'export \'${exportedFileName}\' sauvegardé dans les documents avec succès`,
-                                ToastTypeEnum.SUCCESS))
-                        ),
+                                ToastTypeEnum.SUCCESS));
+                        }),
                         catchError((err) => {
                             console.log(err);
                             return this.toastService.displayToast(err, ToastTypeEnum.ERROR);
