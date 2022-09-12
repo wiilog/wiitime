@@ -53,7 +53,7 @@ export abstract class ModePagePage {
             this.isPortraitMode = this.windowService.isPortraitMode();
         });
 
-        this.soundSetterSubscription = this.audioService.preloadAudio(this.clockingSoundId,
+        this.soundSetterSubscription = this.audioService.tryPreloadAudio(this.clockingSoundId,
             {
                 assetPath: this.clockingSoundFilePath,
                 isPathUrl: false

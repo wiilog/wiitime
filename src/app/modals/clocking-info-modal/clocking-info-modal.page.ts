@@ -151,7 +151,6 @@ export class ClockingInfoModalPage implements OnInit, OnDestroy {
         return this.storageService.getValue(StorageKeyEnum.CLOCKING_INFO_MODAL_DISPLAY_DURATION)
             .pipe(
                 tap((displayDuration: string) => {
-                    console.log(Number(displayDuration));
                     this.modalDisplayDuration = Number(displayDuration);
                 })
             );
