@@ -302,13 +302,6 @@
   dependencies:
     "@types/cordova" latest
 
-"@awesome-cordova-plugins/insomnia@^5.45.0":
-  version "5.45.0"
-  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/insomnia/-/insomnia-5.45.0.tgz#6bbecb92cba8562b0845edc17ce2af8e5e0616f5"
-  integrity sha512-Mufo4PmKQW0xjOlWKmNpzZ+eKTCt5Pgu5dkN5nI2iM7fqvndlILmq8glBYcstsc+PACm5IqSxXFEolSxo7ODBA==
-  dependencies:
-    "@types/cordova" latest
-
 "@awesome-cordova-plugins/nfc@^5.44.0":
   version "5.44.0"
   resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/nfc/-/nfc-5.44.0.tgz#6d1515e56b518ab072271930319ec0eef7bab7be"
@@ -3411,11 +3404,6 @@ cordova-plugin-ftp@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/cordova-plugin-ftp/-/cordova-plugin-ftp-1.2.1.tgz#a6a260182e8f4cb4e74feac886125229a9ae8e46"
   integrity sha512-mgk5i63lBQCKt3+tEVWSh2cKwVg32u7gVnxRF4OFXayXyHozJPjxRjbsg/kTQUKwIH1Al86A9o4yjBhXG9J7SA==
-
-cordova-plugin-insomnia@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-insomnia/-/cordova-plugin-insomnia-4.3.0.tgz#832a33f6d763f0b80273bdf761b35b678c43b957"
-  integrity sha512-MdlRFsyfmf6Q/8+npDeVSTo487eyrp7vbuGO3SPbnqR94DXmFRJWLbZGwf34dMeH6GQL45baxozUwhLTPxrQwg==
 
 "cordova-plugin-screen-orientation@git+https://github.com/apache/cordova-plugin-screen-orientation":
   version "3.0.3-dev"

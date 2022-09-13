@@ -1,17 +1,19 @@
 <app-header [mode]="headerMode"></app-header>
 <ion-content>
-    <div id="test">
         <div id="container">
-            <strong>NFC is not enable on this device !</strong>
+            <strong>la détection du NFC n'est pas active sur cet appareil !</strong>
             <br>
-            <strong>This application cannot work unless you activate it</strong>
             <div id="text">
-                <p>Go to your phone option to active nfc, then restart this application</p>
-                <p>You can access also your device options with the following button</p>
+                <p>Allez dans les paramètres de votre téléphone pour l'activer puis relancer cette application</p>
+                <p>Vous pouvez aussi utiliser le bouton ci-dessous pour ouvrir les paramètres</p>
             </div>
-            <ion-button (click)="openNfcParameters()"> Options NFC</ion-button>
+            <app-form-button class="button"
+                             buttonText="Paramètres NFC"
+                             [isLarge]="true"
+                             (buttonClickedEvent)="openNfcParameters()">
+
+            </app-form-button>
         </div>
-    </div>
 </ion-content>
 <app-footer [mode]="footerMode"></app-footer>
 

@@ -13,6 +13,7 @@ import {catchError, map, mergeMap} from 'rxjs/operators';
 import {FileService} from '@app/services/file.service';
 import {ToastService} from '@app/services/toast/toast.service';
 import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
+import {environment} from '../../../../environments/environment';
 
 @Component({
     selector: 'app-clocking-settings',
@@ -108,17 +109,22 @@ export class ClockingSettingsComponent extends SettingsMenuComponent implements 
                         mergeMap(([clockingRecords, filename]) => {
                             exportedFileName = filename;
                             if (clockingRecords.length === 0) {
-                                return of(false);
+                                return of(0);
                             }
                             return this.fileService.writeFile(filename, clockingRecords, null, false)
                                 .pipe(
-                                    map(() => true)
+                                    map(() => clockingRecords.length)
                                 );
                         }),
-                        mergeMap((wasFileCreated) => {
-                            if (!wasFileCreated) {
+                        mergeMap((clockingAmount) => {
+                            if (clockingAmount === 0) {
                                 return from(this.toastService.displayToast(
                                     `Il n'y a aucun badgeage à exporter, aucun fichier n'a été créé`,
+                                    ToastTypeEnum.ERROR));
+                            }
+                            if(clockingAmount >= environment.exportCriticalAmountOfClocking) {
+                                return from(this.toastService.displayToast(
+                                    `Nombre de badgeages à exporter critique, contactez le support`,
                                     ToastTypeEnum.ERROR));
                             }
                             return from(this.toastService.displayToast(

@@ -4,7 +4,7 @@ import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {Subscription} from 'rxjs';
+import {from, Subscription} from 'rxjs';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {ModalController} from '@ionic/angular';
 import {App} from '@capacitor/app';
@@ -21,24 +21,31 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     public readonly footerMode = FooterMode;
 
-    public currentVersionNumber: string; //TODO get value from storage instead
+    public currentVersionNumber: string;
 
     private valueGetterSubscription: Subscription;
+    private appInfoGetterSubscription: Subscription;
     private isPasswordCheckModalOpen: boolean;
 
     constructor(private navService: NavService,
                 private storage: StorageService,
                 private modalCtrl: ModalController,) {
-        this.currentVersionNumber = '0.0.42';
     }
 
     public ngOnInit(): void {
         this.isPasswordCheckModalOpen = false;
+        this.appInfoGetterSubscription = from(App.getInfo())
+            .subscribe((result) => {
+                this.currentVersionNumber = result.version;
+            });
     }
 
     public ngOnDestroy(): void {
         if (this.valueGetterSubscription && !this.valueGetterSubscription.closed) {
             this.valueGetterSubscription.unsubscribe();
+        }
+        if(this.appInfoGetterSubscription && !this.appInfoGetterSubscription.closed) {
+            this.appInfoGetterSubscription.unsubscribe();
         }
     }
 
@@ -65,7 +72,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     public async parametersButtonClicked() {
-        if(this.isPasswordCheckModalOpen) {
+        if (this.isPasswordCheckModalOpen) {
             return;
         }
         this.isPasswordCheckModalOpen = true;

@@ -11,8 +11,8 @@ import {FooterMode} from '@app/components/footer/footer-mode.enum';
 })
 export class HomePage implements ViewWillEnter, ViewWillLeave {
 
-    public headerMode: HeaderMode = HeaderMode.ACCOUNT_CREATION_PAGE;
-    public footerMode: FooterMode = FooterMode.ACTIVE_MODE;
+    public headerMode: HeaderMode = HeaderMode.ACTIVE_MODE;
+    public footerMode: FooterMode = FooterMode.KIOSK_MODE;
 
     public constructor(private nfcService: NfcService,) {
     }

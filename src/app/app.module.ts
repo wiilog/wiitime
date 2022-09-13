@@ -12,12 +12,11 @@ import {SQLite} from '@awesome-cordova-plugins/sqlite/ngx';
 import {ScreenOrientation} from '@awesome-cordova-plugins/screen-orientation/ngx';
 import {HttpClientModule} from '@angular/common/http';
 import {FTP} from '@awesome-cordova-plugins/ftp/ngx';
-import {Insomnia} from '@awesome-cordova-plugins/insomnia/ngx';
 
 @NgModule({
     declarations: [AppComponent],
     imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, CommonModule, HttpClientModule],
-    providers: [{provide: RouteReuseStrategy, useClass: IonicRouteStrategy}, NFC, Ndef, SQLite, ScreenOrientation, FTP, Insomnia],
+    providers: [{provide: RouteReuseStrategy, useClass: IonicRouteStrategy}, NFC, Ndef, SQLite, ScreenOrientation, FTP,],
     bootstrap: [AppComponent],
 })
 export class AppModule {

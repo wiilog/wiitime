@@ -4,4 +4,5 @@ export const environment = {
     adminUsernameMaxLength: 20,
     adminPasswordMinLength: 4,
     adminPasswordMaxLength: 30,
+    exportCriticalAmountOfClocking: 10000,
 };

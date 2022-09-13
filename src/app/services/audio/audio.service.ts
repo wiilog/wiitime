@@ -2,45 +2,64 @@ import {Injectable} from '@angular/core';
 import {StorageService} from '@app/services/storage/storage.service';
 import {AudioAssetInfo} from '@app/services/audio/audio-asset-info';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {from, Observable, of, ReplaySubject} from 'rxjs';
+import {from, iif, Observable, of, ReplaySubject} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {NativeAudio} from '@capacitor-community/native-audio';
+import {AudioStatus} from '@app/services/audio/audio-status';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AudioService {
 
-    private preloadedAudioId: Map<string, Observable<any>>;
+    private preloadedAudioId: Map<string, AudioStatus>;
 
     public constructor(private storageService: StorageService) {
-        this.preloadedAudioId = new Map<string, Observable<any>>();
+        this.preloadedAudioId = new Map<string, AudioStatus>();
     }
 
     public tryPreloadAudio(audioId: string, audioInfo: AudioAssetInfo): Observable<boolean> {
+        const loadOver = new ReplaySubject<any>(1);
 
-        const loadingOver = new ReplaySubject<any>(1);
+        if (this.preloadedAudioId.has(audioId)) {
+            const currentAudioStatus = this.preloadedAudioId.get(audioId);
 
-        if (!this.preloadedAudioId.has(audioId)) {
-            this.preloadedAudioId.set(audioId, loadingOver);
-            this.preloadAudio(audioId, audioInfo).subscribe((preloadResult: boolean) => {
-                loadingOver.next(preloadResult);
-            });
+            if (currentAudioStatus.unload$Array.length === 0) {
+                console.log(`cannot load the sound with id ${audioId}, it's already loading`);
+                return of(false);
+            }
+
+            currentAudioStatus.load$Array.push(loadOver);
+            currentAudioStatus.unload$Array.pop()
+                .pipe(
+                    mergeMap(() =>
+                        this.preloadAudio(audioId, audioInfo)
+                    ),
+                )
+                .subscribe((loadResult: boolean) => {
+                    loadOver.next(loadResult);
+                    currentAudioStatus.isLoaded = true;
+                    console.log('load done');
+                });
 
         } else {
-            this.preloadedAudioId.get(audioId)
-                .pipe(
-                    mergeMap(() => this.preloadAudio(audioId, audioInfo)),
-                )
-                .subscribe((preloadResult: boolean) => {
-                    this.preloadedAudioId.get(audioId)
-                        .pipe(
-                            mergeMap(() => loadingOver)
-                        );
-                    loadingOver.next(preloadResult);
+            const currentAudioStatus = {
+                load$Array: new Array<ReplaySubject<any>>(),
+                unload$Array: new Array<ReplaySubject<any>>(),
+                isLoaded: false
+            };
+            this.preloadedAudioId.set(audioId, currentAudioStatus);
+
+            currentAudioStatus.load$Array.push(loadOver);
+            this.preloadAudio(audioId, audioInfo)
+                .subscribe((loadResult: boolean) => {
+                    currentAudioStatus.isLoaded = true;
+                    loadOver.next(loadResult);
+                    console.log('load done');
                 });
         }
-        return loadingOver;
+
+        return loadOver;
     }
 
     /**
@@ -51,9 +70,11 @@ export class AudioService {
      * @param startTime the starting second of the audio file (should be inferior to the file length)
      */
     public playAudio(audioId: string, startTime: number): void {
-        if (!this.preloadedAudioId.has(audioId)) {
+        if (!this.preloadedAudioId.has(audioId) || !this.preloadedAudioId.get(audioId).isLoaded) {
+            console.log(`sound with id ${audioId} is not loaded, cannot play it`);
             return;
         }
+
         NativeAudio.getDuration({assetId: audioId})
             .then((soundDuration) => {
                     if (startTime > soundDuration.duration) {
@@ -67,15 +88,23 @@ export class AudioService {
             );
     }
 
-    public unloadAudio(audioId: string): void {
+    public unloadAudio(audioId: string): Observable<any> {
         if (!this.preloadedAudioId.has(audioId)) {
-            console.log('cannot unload a non loaded sound :', audioId);
-            return;
+            console.log(`cannot unload the sound with id ${audioId}, it's not loaded`);
+            return of(false);
+        }
+
+        const currentAudioStatus = this.preloadedAudioId.get(audioId);
+
+        if (currentAudioStatus.load$Array.length === 0) {
+            console.log(`cannot unload the sound with id ${audioId}, it's already unloading`);
+            return of(false);
         }
 
         const unloadOver = new ReplaySubject<any>(1);
+        currentAudioStatus.unload$Array.push(unloadOver);
 
-        this.preloadedAudioId.get(audioId)
+        currentAudioStatus.load$Array.pop()
             .pipe(
                 mergeMap(() =>
                     from(NativeAudio.unload({
@@ -85,12 +114,11 @@ export class AudioService {
             )
             .subscribe(() => {
                 console.log('unload done');
-                this.preloadedAudioId.get(audioId)
-                    .pipe(
-                        mergeMap(() => unloadOver)
-                    );
-                unloadOver.next(false);
+                currentAudioStatus.isLoaded = false;
+                unloadOver.next(true);
             });
+
+        return unloadOver;
     }
 
     private preloadAudio(audioId: string, audioInfo: AudioAssetInfo): Observable<boolean> {
