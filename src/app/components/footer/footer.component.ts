@@ -1,13 +1,14 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {from, Subscription} from 'rxjs';
+import {from, Subject, Subscription} from 'rxjs';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {ModalController} from '@ionic/angular';
 import {App} from '@capacitor/app';
+import {BackgroundService} from '@app/services/background.service';
 
 @Component({
     selector: 'app-footer',
@@ -19,6 +20,9 @@ export class FooterComponent implements OnInit, OnDestroy {
     @Input()
     public mode: FooterMode;
 
+    @Output()
+    public backgroundModeActivated: Subject<any>;
+
     public readonly footerMode = FooterMode;
 
     public currentVersionNumber: string;
@@ -29,7 +33,9 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     constructor(private navService: NavService,
                 private storage: StorageService,
+                private backgroundService: BackgroundService,
                 private modalCtrl: ModalController,) {
+        this.backgroundModeActivated = new Subject<any>();
     }
 
     public ngOnInit(): void {
@@ -44,7 +50,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         if (this.valueGetterSubscription && !this.valueGetterSubscription.closed) {
             this.valueGetterSubscription.unsubscribe();
         }
-        if(this.appInfoGetterSubscription && !this.appInfoGetterSubscription.closed) {
+        if (this.appInfoGetterSubscription && !this.appInfoGetterSubscription.closed) {
             this.appInfoGetterSubscription.unsubscribe();
         }
     }
@@ -60,8 +66,8 @@ export class FooterComponent implements OnInit, OnDestroy {
                 if (isActive != null) {
                     const numberValue: number = parseInt(isActive.toString(), 10);
                     if (numberValue) {
-                        // Todo connect to background mode when created
-                        this.navService.push(PagePath.KIOSK_MODE);
+                        this.backgroundModeActivated.next();
+                        this.backgroundService.activateBackgroundMode();
                     } else {
                         this.navService.push(PagePath.KIOSK_MODE);
                     }

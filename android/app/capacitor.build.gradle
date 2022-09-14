@@ -18,9 +18,9 @@ dependencies {
     implementation project(':capacitor-preferences')
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-status-bar')
-
+    implementation "androidx.core:core:1.0.0"
 }
-
+apply from: "../../node_modules/cordova-androidx-build/src/android/cordova-androidx-build.gradle"
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

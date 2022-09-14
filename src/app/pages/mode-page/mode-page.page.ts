@@ -97,7 +97,7 @@ export abstract class ModePagePage {
      */
     protected async manageClocking(badgeId: number[], clockingInfoModalMode: ClockingInfoModalModeEnum): Promise<any> {
         if (this.isClockingInfoModalOpen) {
-            return;
+            return Promise.resolve(false);
         }
         this.isClockingInfoModalOpen = true;
         const hexId = this.nfcService.convertIdToHex(badgeId);
@@ -134,5 +134,6 @@ export abstract class ModePagePage {
             en compte, car le badge numéro ${hexId} a déjà été badgé récemment`, ToastTypeEnum.ERROR);
         }
         this.isClockingInfoModalOpen = false;
+        return Promise.resolve(true);
     }
 }
