@@ -18,7 +18,8 @@ import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SettingsMenuComponent} from '@app/components/settings-menu/settings-menu.component';
 import {ModalController} from '@ionic/angular';
 import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
-import {ToastService} from '@app/services/toast/toast.service';
+import {AudioService} from '@app/services/audio/audio.service';
+import {environment} from '../../../../environments/environment';
 
 enum SecondaryMode {
     KIOSK = 0,
@@ -71,10 +72,13 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public readonly volumeRangeFieldName = 'Volume bip';
 
     private isUpdateUserInfoModalOpen: boolean;
+    private readonly clockingSoundId = environment.clockingSoundId;
+    private readonly clockingSoundFilePath = environment.clockingSoundFilePath;
 
     public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
                        private loadingService: LoadingService,
+                       private audioService: AudioService,
                        private formBuilder: FormBuilder,
                        private modalCtrl: ModalController,
                        protected ngZone: NgZone) {
@@ -89,6 +93,10 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public ngOnInit(): void {
         this.initSettingsMenu();
         this.isUpdateUserInfoModalOpen = false;
+        this.audioService.tryPreloadAudio(this.clockingSoundId, {
+            assetPath: this.clockingSoundFilePath,
+            isPathUrl: false
+        });
     }
 
     public ngAfterViewInit(): void {
@@ -97,6 +105,11 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
 
     public ngOnDestroy(): void {
         this.clearSubscriptionOnDestroy();
+        this.audioService.unloadAudio(this.clockingSoundId);
+    }
+
+    public volumeRangeValueChanged(newValue: number): void {
+        this.audioService.playAudio(this.clockingSoundId, 0, newValue);
     }
 
     public updateLogoButtonClicked(): void {

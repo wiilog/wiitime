@@ -9,6 +9,8 @@ export const environment = {
     adminPasswordMinLength: 4,
     adminPasswordMaxLength: 30,
     exportCriticalAmountOfClocking: 10000,
+    clockingSoundId: 'clocking_sound',
+    clockingSoundFilePath: 'clockingSound.wav',
 };
 
 /*

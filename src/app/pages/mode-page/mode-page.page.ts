@@ -13,6 +13,7 @@ import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clockin
 import {ToastService} from '@app/services/toast/toast.service';
 import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 import {AudioService} from '@app/services/audio/audio.service';
+import {environment} from '../../../environments/environment';
 
 @Component({template: ''})
 export abstract class ModePagePage {
@@ -23,8 +24,8 @@ export abstract class ModePagePage {
     protected nfcSubscription: Subscription;
     protected storageGetterSubscription: Subscription;
 
-    private readonly clockingSoundId = 'clocking_sound';
-    private readonly clockingSoundFilePath = 'clockingSound.wav';
+    private readonly clockingSoundId = environment.clockingSoundId;
+    private readonly clockingSoundFilePath = environment.clockingSoundFilePath;
     private timerSubscription: Subscription;
     private windowSizeSubscription: Subscription;
     private soundSetterSubscription: Subscription;

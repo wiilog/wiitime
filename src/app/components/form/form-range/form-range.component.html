@@ -3,6 +3,7 @@
            (ngModelChange)="valueChanged($event)"
            [disabled]="disabled"
            (ionFocus)="markAsTouched()"
+           (ionKnobMoveEnd)="knobMoveEnd($event)"
            [min]="min"
            [max]="max">
     <ion-label slot="start">

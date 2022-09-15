@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {StorageService} from '@app/services/storage/storage.service';
 import {AudioAssetInfo} from '@app/services/audio/audio-asset-info';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {from, iif, Observable, of, ReplaySubject} from 'rxjs';
+import {from, iif, Observable, of, ReplaySubject, Subscription} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {NativeAudio} from '@capacitor-community/native-audio';
 import {AudioStatus} from '@app/services/audio/audio-status';
@@ -13,6 +13,7 @@ import {AudioStatus} from '@app/services/audio/audio-status';
 export class AudioService {
 
     private preloadedAudioId: Map<string, AudioStatus>;
+    private lastPlaySoundSub: Subscription;
 
     public constructor(private storageService: StorageService) {
         this.preloadedAudioId = new Map<string, AudioStatus>();
@@ -68,24 +69,43 @@ export class AudioService {
      *
      * @param audioId the id of the loaded audio that should be played
      * @param startTime the starting second of the audio file (should be inferior to the file length)
+     * @param audioVolume the volume at which the sound should be played
      */
-    public playAudio(audioId: string, startTime: number): void {
+    public playAudio(audioId: string, startTime: number, audioVolume?: number): void {
         if (!this.preloadedAudioId.has(audioId) || !this.preloadedAudioId.get(audioId).isLoaded) {
             console.log(`sound with id ${audioId} is not loaded, cannot play it`);
             return;
         }
 
-        NativeAudio.getDuration({assetId: audioId})
-            .then((soundDuration) => {
+        this.setVolume(audioId, audioVolume)
+            .pipe(
+                mergeMap(() => from(NativeAudio.getDuration({assetId: audioId}))),
+                mergeMap((soundDuration) => {
                     if (startTime > soundDuration.duration) {
-                        return;
+                        return of(null);
                     }
-                    NativeAudio.play({
+                    return from(NativeAudio.play({
                         assetId: audioId,
                         time: startTime
-                    });
-                }
-            );
+                    }));
+                })
+            )
+            .subscribe(() => console.log('sound end'));
+    }
+
+    public setVolume(audioId: string, audioVolume: number): Observable<any> {
+        if (!this.preloadedAudioId.has(audioId) || !this.preloadedAudioId.get(audioId).isLoaded) {
+            console.log(`sound with id ${audioId} is not loaded, cannot set its sound`);
+            return;
+        }
+
+        if (audioVolume !== undefined) {
+            return from(NativeAudio.setVolume({
+                assetId: audioId,
+                volume: audioVolume / 100,
+            }));
+        }
+        return of(null);
     }
 
     public unloadAudio(audioId: string): Observable<any> {
@@ -125,14 +145,14 @@ export class AudioService {
         return this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME)
             .pipe(
                 mergeMap((clockingSoundVolume) =>
-                    NativeAudio.preload({
+                    from(NativeAudio.preload({
                         assetId: audioId,
                         assetPath: audioInfo.assetPath,
                         //volume should be between 0 and 1 and value from storage is between 0 and 100
                         volume: Number(clockingSoundVolume) / 100,
                         audioChannelNum: 1,
                         isUrl: audioInfo.isPathUrl,
-                    })
+                    }))
                 ),
                 map(() =>
                     true

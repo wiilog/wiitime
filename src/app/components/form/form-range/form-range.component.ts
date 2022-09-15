@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {RangeCustomEvent} from '@ionic/angular';
 
 @Component({
     selector: 'app-form-range',
@@ -27,6 +28,9 @@ export class FormRangeComponent implements OnInit, ControlValueAccessor {
     @Input()
     public value?: number;
 
+    @Output()
+    public valueChangeEvent: EventEmitter<number>;
+
     public disabled: boolean;
 
     private touched: boolean;
@@ -38,19 +42,20 @@ export class FormRangeComponent implements OnInit, ControlValueAccessor {
     public constructor() {
         this.touched = false;
         this.disabled = false;
+        this.valueChangeEvent = new EventEmitter<number>();
     }
 
     public ngOnInit(): void {
         if (!this.fieldName) {
             throw new Error('Form Range Component should have a fieldName');
         }
-        if(!this.min) {
+        if (!this.min) {
             this.min = 0;
         }
-        if(!this.max) {
+        if (!this.max) {
             this.max = 100;
         }
-        if(!this.value) {
+        if (!this.value) {
             this.value = this.min;
         }
     }
@@ -60,6 +65,10 @@ export class FormRangeComponent implements OnInit, ControlValueAccessor {
         if (this.onChange) {
             this.onChange(newValue);
         }
+    }
+
+    public knobMoveEnd(endValueEvent: Event): void {
+        this.valueChangeEvent.emit(Number((endValueEvent as RangeCustomEvent).detail.value));
     }
 
     public registerOnChange(onChange: any): void {
