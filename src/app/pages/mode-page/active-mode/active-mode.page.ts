@@ -7,7 +7,7 @@ import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SftpServices} from '@app/services/sftp/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {of, Subject, Subscription, zip} from 'rxjs';
+import {of, Subject, Subscription, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
@@ -18,6 +18,8 @@ import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
 import {ToastService} from '@app/services/toast/toast.service';
 import {BackgroundTaskService} from '@app/services/background-task.service';
 import {AudioService} from '@app/services/audio/audio.service';
+import {BackgroundService} from '@app/services/background.service';
+import {App} from "@capacitor/app";
 
 @Component({
     selector: 'app-active-mode',
@@ -39,6 +41,8 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
 
     private isSftpSetup: boolean;
     private clockingRecordSyncCompletedSubscription: Subscription;
+    private nfcBackgroundSubscription: Subscription;
+    private backgroundModeExitedSubscription: Subscription;
 
     public constructor(protected nfcService: NfcService,
                        protected storageService: StorageService,
@@ -46,6 +50,7 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
                        protected windowService: WindowService,
                        protected toastService: ToastService,
                        protected audioService: AudioService,
+                       private backgroundService: BackgroundService,
                        private sftpService: SftpServices,
                        private navService: NavService,
                        private backgroundTaskService: BackgroundTaskService,
@@ -79,6 +84,16 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
     public ionViewWillLeave(): void {
         this.leaveModePage();
 
+        this.backgroundService.disableBackgroundMode();
+
+        if (this.clockingRecordSyncCompletedSubscription && !this.clockingRecordSyncCompletedSubscription.closed) {
+            this.clockingRecordSyncCompletedSubscription.unsubscribe();
+        }
+
+        if (this.nfcBackgroundSubscription && !this.nfcBackgroundSubscription.closed) {
+            this.nfcBackgroundSubscription.unsubscribe();
+        }
+
         if (this.clockingRecordSyncCompletedSubscription && !this.clockingRecordSyncCompletedSubscription.closed) {
             this.clockingRecordSyncCompletedSubscription.unsubscribe();
         }
@@ -86,6 +101,8 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
 
     public initPage(): void {
         this.enterModePage();
+
+        this.backgroundService.enableBackgroundMode();
 
         if (this.refreshHeader$) {
             this.refreshHeader$.next();
@@ -123,6 +140,23 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
         });
 
         this.nfcSubscription = this.nfcService.nfcTags$.subscribe(
-            (data) => this.manageClocking(data.id, ClockingInfoModalModeEnum.ACTIVE_MODE));
+            (data) => {
+                return this.manageClocking(data.id, ClockingInfoModalModeEnum.ACTIVE_MODE);
+            });
+    }
+
+    public setupForBackgroundMode() {
+        this.nfcBackgroundSubscription = this.nfcService.addNdefFormatableCallback()
+            .subscribe((clockingEvent) => {
+                console.log(clockingEvent);
+                this.manageClocking(clockingEvent.tag.id, ClockingInfoModalModeEnum.KIOSK_MODE)
+                    .then(() => this.backgroundService.activateBackgroundMode());
+            });
+
+        /*
+        this.backgroundModeExitedSubscription = this.backgroundService.getBackgroundModeExited$().subscribe(() => {
+
+        });
+         */
     }
 }

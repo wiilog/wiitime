@@ -288,10 +288,24 @@
   resolved "https://registry.npmjs.org/@assemblyscript/loader/-/loader-0.10.1.tgz"
   integrity sha512-H71nDOOL8Y7kWRLqf6Sums+01Q5msqBW2KhDUTemh1tvY04eSkSXrK0uj/4mmY0Xr16/3zyZmsrxN7CKuRbNRg==
 
+"@awesome-cordova-plugins/background-mode@^5.45.0":
+  version "5.45.0"
+  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/background-mode/-/background-mode-5.45.0.tgz#b49fcc4e0729d8f4cbe3dc955c657eff479a002e"
+  integrity sha512-jikLZM5jDK+tRMOskDokOQ2wd3WhoFnkbsNWDSXcd28fUvDUYABRrvX/XsAdtpQyFLEFyDOrGEJ4eBANHnccIQ==
+  dependencies:
+    "@types/cordova" latest
+
 "@awesome-cordova-plugins/core@^5.44.0":
   version "5.44.0"
   resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/core/-/core-5.44.0.tgz#7e90fa629ed2c9d2e53d9ee3bb39d2093e810364"
   integrity sha512-LFa0RQyKoiMoh8GiFTOUh+SHdxs6XiozCAzOqq0YUrAAGb/sQRwZ+pDtqw0RTSQqN7DV3FH8ayeuHX8LEm3bNA==
+  dependencies:
+    "@types/cordova" latest
+
+"@awesome-cordova-plugins/device@^5.45.0":
+  version "5.45.0"
+  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/device/-/device-5.45.0.tgz#19d553720e76036e53d77138b19e6003c8e749bb"
+  integrity sha512-m+tPRZqI2vJK2Qf32ehHrvqpMkfItx3+wQOB3hqd4JTmjzS4Q2Qctb/881ip+9WX0Ql3bLxetP42fKzQ9VLeQg==
   dependencies:
     "@types/cordova" latest
 
@@ -3399,6 +3413,20 @@ copy-webpack-plugin@10.2.4:
     normalize-path "^3.0.0"
     schema-utils "^4.0.0"
     serialize-javascript "^6.0.0"
+
+cordova-androidx-build@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/cordova-androidx-build/-/cordova-androidx-build-1.0.4.tgz#caaf2bf59dcc82f4d12b4c384e1deafce6ba3ca4"
+  integrity sha512-ZC+NHOA4WPI8qV+YyvBba/XokF169tpc9X08fbov6zNXwczeA0w+9lqq+E5Nyp+hX4OX/r8p3q1MSPPYLDa8tA==
+
+"cordova-plugin-background-mode@git+https://bitbucket.org/TheBosZ/cordova-plugin-run-in-background":
+  version "0.8.0"
+  resolved "git+https://bitbucket.org/TheBosZ/cordova-plugin-run-in-background#e11ee4f4324cb1f67db093d2c7a815ea23bc48bb"
+
+cordova-plugin-device@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-device/-/cordova-plugin-device-2.1.0.tgz#ef2292c2f0a34d01b5aca6c39cf204e48a460fb2"
+  integrity sha512-FU0Lw1jZpuKOgG4v80LrfMAOIMCGfAVPumn7AwaX9S1iU/X3OPZUyoKUgP09q4bxL35IeNPkqNWVKYduAXZ1sg==
 
 cordova-plugin-ftp@^1.2.1:
   version "1.2.1"

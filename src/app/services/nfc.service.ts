@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {from, Observable} from 'rxjs';
+import {from, Observable, Subject, Subscription} from 'rxjs';
 import {NFC, NfcTag} from '@awesome-cordova-plugins/nfc/ngx';
 import {mergeMap, tap} from 'rxjs/operators';
 
@@ -38,5 +38,9 @@ export class NfcService {
 
     public openParameters(): Observable<void> {
         return from(this.nfc.showSettings());
+    }
+
+    public addNdefFormatableCallback(): Observable<any> {
+        return this.nfc.addNdefFormatableListener();
     }
 }
