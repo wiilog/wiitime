@@ -122,12 +122,17 @@ export class SftpSettingsComponent extends SettingsMenuComponent implements OnIn
         }
         if (!this.isConnexionTestOngoing) {
             this.isConnexionTestOngoing = true;
-            this.connexionTestSubscription = this.sftpService.testConnectionWithFile({
-                    serverAddress: this.form.value.serverAddress,
-                    serverPort: this.form.value.serverPort,
-                    serverUsername: this.form.value.serverUsername,
-                    serverPassword: this.form.value.serverPassword,
-                    remoteSavePath: this.form.value.serverPath
+            this.connexionTestSubscription = this.loadingService.presentLoadingWhile({
+                    message: 'Test de connexion en cours, veuillez patienter...',
+                    event: () => this.sftpService.testConnectionWithFile(
+                        {
+                            serverAddress: this.form.value.serverAddress,
+                            serverPort: this.form.value.serverPort,
+                            serverUsername: this.form.value.serverUsername,
+                            serverPassword: this.form.value.serverPassword,
+                            remoteSavePath: this.form.value.serverPath
+                        }
+                    )
                 }
             ).subscribe((result) => {
                 console.log('connection is good ?', result);

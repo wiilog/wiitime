@@ -5,6 +5,9 @@ import {Observable, of, Subject, Subscription, timer, zip} from 'rxjs';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {mergeMap, tap} from 'rxjs/operators';
 import {SftpSyncInfo} from '@app/services/sftp/sftp-sync-info';
+import {LoadingService} from '@app/services/loading.service';
+import {ToastService} from '@app/services/toast/toast.service';
+import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +22,8 @@ export class BackgroundTaskService {
     private lastNextSyncDatetime: Date;
 
     public constructor(private sftpService: SftpServices,
+                       private loadingService: LoadingService,
+                       private toastService: ToastService,
                        private storageService: StorageService) {
         this.syncCompleted$ = new Subject<any>();
     }
@@ -42,7 +47,7 @@ export class BackgroundTaskService {
                     const now = new Date();
                     if (now.toISOString() >= nextSyncDatetime.toISOString()) {
                         this.lastNextSyncDatetime = nextSyncDatetime;
-                        this.setClockingSyncSubscription(1);
+                        this.setClockingSyncSubscription(2000);
                     } else {
                         this.lastNextSyncDatetime = nextSyncDatetime;
                         this.setClockingSyncSubscription(nextSyncDatetime);
@@ -95,11 +100,15 @@ export class BackgroundTaskService {
         this.syncMessageSubscription = this.storageService.getValue(StorageKeyEnum.SYNCHRONISATION_FREQUENCY).pipe(
             mergeMap((syncFrequency) => {
                 currentSyncFrequency = Number(syncFrequency);
-                return this.sftpService.synchronizeClocking();
+                return this.loadingService.presentLoadingWhile({
+                    message: 'Synchronisation des badgeages avec le serveur en cours, veuillez patienter...',
+                    event: () => this.sftpService.synchronizeClocking()
+                });
             }), mergeMap((syncResult) => {
                 if (!syncResult) {
                     console.log('sync failed, will try again in', this.intervalDuration, 'seconds');
                     this.setClockingSyncSubscription(this.intervalDuration * 1000);
+                    this.toastService.displayToast('Échec de la Synchronisation, nouvelle tentative dans 1 minutes', ToastTypeEnum.ERROR);
                     return of(null);
                 }
                 const newNextSynchro = new Date();
@@ -113,6 +122,7 @@ export class BackgroundTaskService {
             console.log('synchronisation loop completed');
             if (newSyncInfo) {
                 this.syncCompleted$.next(newSyncInfo);
+                this.toastService.displayToast('Synchronisation réussie !', ToastTypeEnum.SUCCESS);
             }
             if (this.syncMessageSubscription && !this.syncMessageSubscription.closed) {
                 this.syncMessageSubscription.unsubscribe();
