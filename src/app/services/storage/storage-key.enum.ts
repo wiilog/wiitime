@@ -10,6 +10,7 @@ export enum StorageKeyEnum {
     KIOSK_MODE_COMMUNICATION = 'kioskModeCommunication',
 
     CLOCKING_SOUND_VOLUME = 'clockingSoundVolume',
+    CLOCKING_SOUND_FILENAME = 'clockingSoundFilename',
     CLOCKING_STORAGE_DURATION = 'clockingStoringDuration',
     CLOCKING_DISPLAY_INTERVAL = 'clockingDisplayInterval',
     CLOCKING_INFO_MODAL_DISPLAY_DURATION = 'clockingInfoModalDisplayDuration',

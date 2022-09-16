@@ -1,0 +1,18 @@
+<ion-item class="form-dropdown normal-field field-wrapper">
+    <ion-label position="fixed"
+               text-wrap
+               class="item-text-wrap">
+        {{fieldName}}
+    </ion-label>
+    <ion-select interface="popover"
+                slot="end"
+                position="fixed"
+                (ionChange)="handleChange($event)"
+                [compareWith]="compareWith"
+                [value]="currentOption.value">
+        <ion-select-option *ngFor="let elem of dropdownConfig"
+                           [value]="elem.value">
+            {{elem.elemName}}
+        </ion-select-option>
+    </ion-select>
+</ion-item>

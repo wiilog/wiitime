@@ -25,7 +25,6 @@ export abstract class ModePagePage {
     protected storageGetterSubscription: Subscription;
 
     private readonly clockingSoundId = environment.clockingSoundId;
-    private readonly clockingSoundFilePath = environment.clockingSoundFilePath;
     private areClockingDetected: boolean;
     private timerSubscription: Subscription;
     private windowSizeSubscription: Subscription;
@@ -56,12 +55,16 @@ export abstract class ModePagePage {
             this.isPortraitMode = this.windowService.isPortraitMode();
         });
 
-        this.soundSetterSubscription = this.audioService.tryPreloadAudio(this.clockingSoundId,
-            {
-                assetPath: this.clockingSoundFilePath,
-                isPathUrl: false
-            }
-        ).subscribe((result: boolean) => console.log('sound set result:', result));
+        this.soundSetterSubscription = this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME)
+            .pipe(
+                mergeMap((clockingSoundFilePath) => this.audioService.tryPreloadAudio(this.clockingSoundId,
+                    {
+                        assetPath: clockingSoundFilePath,
+                        isPathUrl: false
+                    })
+                )
+            )
+            .subscribe((result: boolean) => console.log('sound set result:', result));
     }
 
 
@@ -101,8 +104,7 @@ export abstract class ModePagePage {
      */
     protected async manageClocking(badgeId: number[],
                                    clockingInfoModalMode: ClockingInfoModalModeEnum,
-                                   forceDetection?: boolean): Promise<boolean>
-    {
+                                   forceDetection?: boolean): Promise<boolean> {
         if (this.isClockingInfoModalOpen || (!this.areClockingDetected && !forceDetection)) {
             return Promise.resolve(false);
         }

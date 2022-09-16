@@ -18,6 +18,7 @@ import {FormPasswordInputComponent} from '@app/components/form/form-password-inp
 import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {ClockingInfoLineComponent} from '@app/components/clocking-info-line/clocking-info-line.component';
+import {FormDropdownComponent} from '@app/components/form/form-dropdown/form-dropdown.component';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import {ClockingInfoLineComponent} from '@app/components/clocking-info-line/cloc
         FormPasswordInputComponent,
         ClockingInfoLineComponent,
         FormModalComponent,
+        FormDropdownComponent,
         PasswordCheckModalComponent,
     ],
     imports: [
@@ -56,6 +58,7 @@ import {ClockingInfoLineComponent} from '@app/components/clocking-info-line/cloc
         FormPasswordInputComponent,
         ClockingInfoLineComponent,
         FormModalComponent,
+        FormDropdownComponent,
         PasswordCheckModalComponent,
     ]
 })

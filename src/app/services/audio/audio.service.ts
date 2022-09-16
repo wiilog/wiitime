@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {StorageService} from '@app/services/storage/storage.service';
 import {AudioAssetInfo} from '@app/services/audio/audio-asset-info';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
-import {from, iif, Observable, of, ReplaySubject, Subscription} from 'rxjs';
+import {from, Observable, of, ReplaySubject} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 import {NativeAudio} from '@capacitor-community/native-audio';
 import {AudioStatus} from '@app/services/audio/audio-status';
@@ -13,7 +13,6 @@ import {AudioStatus} from '@app/services/audio/audio-status';
 export class AudioService {
 
     private preloadedAudioId: Map<string, AudioStatus>;
-    private lastPlaySoundSub: Subscription;
 
     public constructor(private storageService: StorageService) {
         this.preloadedAudioId = new Map<string, AudioStatus>();

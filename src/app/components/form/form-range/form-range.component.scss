@@ -2,7 +2,7 @@
 
 .range-field {
     margin-bottom: 0.5rem;
-    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.16);
+    @include form-box-shadow();
     background: $white;
 
     --padding-start: 1rem;

@@ -1,13 +1,5 @@
-import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    NgZone,
-    OnDestroy,
-    OnInit,
-    ViewChild
-} from '@angular/core';
-import {zip} from 'rxjs';
+import {AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Subscription, zip} from 'rxjs';
 import {FormBuilder, Validators} from '@angular/forms';
 import {FormSize} from '@app/components/form/form-size-enum';
 import {TabConfig} from '@app/components/tab/tab-config';
@@ -20,6 +12,8 @@ import {ModalController} from '@ionic/angular';
 import {FormModalComponent} from '@app/modals/form-modal/form-modal.component';
 import {AudioService} from '@app/services/audio/audio.service';
 import {environment} from '../../../../environments/environment';
+import {DropdownConfig} from '@app/components/form/form-dropdown/dropdown-config';
+import {mergeMap} from 'rxjs/operators';
 
 enum SecondaryMode {
     KIOSK = 0,
@@ -67,13 +61,23 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         {label: 'Background', key: SecondaryMode.BACKGROUND},
     ];
 
+    //clocking sound field settings
+    public readonly clockingSoundDropdownFieldName = 'Choix du bip';
+    public clockingSoundDropdownCurrentOption: DropdownConfig;
+    public readonly clockingSoundDropdownConfig: DropdownConfig[] = [
+        {elemName: 'bip 1', value: 'clockingSound.wav'},
+        {elemName: 'bip 2', value: 'clockingSound2.wav'},
+        {elemName: 'bip 3', value: 'clockingSound3.wav'},
+        {elemName: 'bip 4', value: 'clockingSound4.wav'},
+    ];
+
     //volume range field settings
     public readonly volumeRangeFormControlName = 'clockingVolume';
     public readonly volumeRangeFieldName = 'Volume bip';
 
     private isUpdateUserInfoModalOpen: boolean;
     private readonly clockingSoundId = environment.clockingSoundId;
-    private readonly clockingSoundFilePath = environment.clockingSoundFilePath;
+    private loadAudioSubscription: Subscription;
 
     public constructor(protected windowService: WindowService,
                        private storageService: StorageService,
@@ -93,10 +97,21 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public ngOnInit(): void {
         this.initSettingsMenu();
         this.isUpdateUserInfoModalOpen = false;
-        this.audioService.tryPreloadAudio(this.clockingSoundId, {
-            assetPath: this.clockingSoundFilePath,
-            isPathUrl: false
-        });
+        this.loadAudioSubscription = this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME)
+            .pipe(
+                mergeMap((clockingSoundFilePath) => this.audioService.tryPreloadAudio(
+                        this.clockingSoundId,
+                        {
+                            assetPath: clockingSoundFilePath,
+                            isPathUrl: false
+                        }
+                    )
+                )
+            )
+            .subscribe(() => {
+                this.loadAudioSubscription.unsubscribe();
+                this.loadAudioSubscription = null;
+            });
     }
 
     public ngAfterViewInit(): void {
@@ -110,6 +125,29 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
 
     public volumeRangeValueChanged(newValue: number): void {
         this.audioService.playAudio(this.clockingSoundId, 0, newValue);
+    }
+
+    public clockingSoundDropdownValueChange(newValue: DropdownConfig) {
+        this.clockingSoundDropdownCurrentOption = newValue;
+        if (this.loadAudioSubscription != null) {
+            this.loadAudioSubscription.unsubscribe();
+            this.loadAudioSubscription = null;
+        }
+        this.loadAudioSubscription = this.audioService.unloadAudio(this.clockingSoundId)
+            .pipe(
+                mergeMap(() => this.audioService.tryPreloadAudio(
+                        this.clockingSoundId,
+                        {
+                            assetPath: this.clockingSoundDropdownCurrentOption.value,
+                            isPathUrl: false
+                        }
+                    )
+                )
+            )
+            .subscribe(() => {
+                this.loadAudioSubscription.unsubscribe();
+                this.loadAudioSubscription = null;
+            });
     }
 
     public updateLogoButtonClicked(): void {
@@ -171,6 +209,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                 this.storageService.getValue(StorageKeyEnum.LOGO),
                 this.storageService.getValue(StorageKeyEnum.ADMIN_USERNAME),
                 this.storageService.getValue(StorageKeyEnum.ADMIN_PASSWORD),
+                this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME),
             )
                 .subscribe(([message,
                                 communication,
@@ -178,7 +217,8 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                                 clockingSoundVolume,
                                 logo,
                                 adminUsername,
-                                adminPassword]) => {
+                                adminPassword,
+                                clockingSoundFilename]) => {
                     if (!message && message !== '') {
                         throw new Error('Kiosk mode message should not be null');
                     }
@@ -200,6 +240,9 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                     if (!adminPassword) {
                         throw new Error('admin password should not be null');
                     }
+                    if (!clockingSoundFilename) {
+                        throw new Error('clocking sound filename should not be null !');
+                    }
                     this.form.controls.kioskMessage.setValue(message);
                     this.form.controls.kioskCommunication.setValue(communication);
                     this.currentToggleOption = (Number(currentSecondaryMode) === 0) ? SecondaryMode.KIOSK : SecondaryMode.BACKGROUND;
@@ -207,6 +250,8 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                     this.logoSelectionFieldLogo = logo;
                     this.adminUsername = adminUsername;
                     this.adminPassword = adminPassword;
+                    this.clockingSoundDropdownCurrentOption = this.clockingSoundDropdownConfig
+                        .filter((dropdownOption: DropdownConfig) => dropdownOption.value === clockingSoundFilename)[0];
                 });
         });
     }
@@ -217,6 +262,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
             console.log('Invalid form content !');
             return;
         }
+        console.log(this.clockingSoundDropdownCurrentOption);
         this.saveSubscription = this.loadingService.presentLoadingWhile({
             message: 'sauvegarde en cours...',
             event: () => zip(
@@ -228,6 +274,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                 this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE,
                     this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
                 this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.form.value.clockingVolume.toString()),
+                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME, this.clockingSoundDropdownCurrentOption.value)
             )
         })
             .subscribe(() => {

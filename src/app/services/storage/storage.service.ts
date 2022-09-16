@@ -22,6 +22,7 @@ export class StorageService {
         [StorageKeyEnum.KIOSK_MODE_MODAL_DURATION]: '3', //seconds
         [StorageKeyEnum.KIOSK_MODE_MESSAGE]: 'oui',
         [StorageKeyEnum.KIOSK_MODE_COMMUNICATION]: 'non',
+        [StorageKeyEnum.CLOCKING_SOUND_FILENAME]: 'clockingSound.waw',
         [StorageKeyEnum.CLOCKING_SOUND_VOLUME]: '100', //percentage
         [StorageKeyEnum.CLOCKING_STORAGE_DURATION]: '7', //days
         [StorageKeyEnum.CLOCKING_DISPLAY_INTERVAL]: '12', //hour

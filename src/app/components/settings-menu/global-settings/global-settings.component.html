@@ -38,6 +38,12 @@
                          (activeKeyChange)="secondaryModeToggleValueChanged($event)">
         </app-form-toggle>
 
+        <app-form-dropdown [dropdownConfig]="clockingSoundDropdownConfig"
+                           [currentOption]="clockingSoundDropdownCurrentOption"
+                           [fieldName]="clockingSoundDropdownFieldName"
+                           (valueChangedEvent)="clockingSoundDropdownValueChange($event)">
+        </app-form-dropdown>
+
         <app-form-range [formControlName]="volumeRangeFormControlName"
                         [fieldName]="volumeRangeFieldName"
                         (valueChangeEvent)="volumeRangeValueChanged($event)">
