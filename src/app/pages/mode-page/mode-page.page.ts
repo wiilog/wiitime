@@ -26,6 +26,7 @@ export abstract class ModePagePage {
 
     private readonly clockingSoundId = environment.clockingSoundId;
     private readonly clockingSoundFilePath = environment.clockingSoundFilePath;
+    private areClockingDetected: boolean;
     private timerSubscription: Subscription;
     private windowSizeSubscription: Subscription;
     private soundSetterSubscription: Subscription;
@@ -44,6 +45,7 @@ export abstract class ModePagePage {
      */
     public enterModePage(): void {
         this.isClockingInfoModalOpen = false;
+        this.areClockingDetected = true;
         this.isPortraitMode = this.windowService.isPortraitMode();
 
         this.timerSubscription = timer(0, 1000).subscribe(() => {
@@ -93,11 +95,15 @@ export abstract class ModePagePage {
      *
      * @param badgeId the id of the clocked badge
      * @param clockingInfoModalMode the mode to apply to the clocking-info-modal
+     * @param forceDetection only used when clocked from background
      *
      * @protected
      */
-    protected async manageClocking(badgeId: number[], clockingInfoModalMode: ClockingInfoModalModeEnum): Promise<any> {
-        if (this.isClockingInfoModalOpen) {
+    protected async manageClocking(badgeId: number[],
+                                   clockingInfoModalMode: ClockingInfoModalModeEnum,
+                                   forceDetection?: boolean): Promise<boolean>
+    {
+        if (this.isClockingInfoModalOpen || (!this.areClockingDetected && !forceDetection)) {
             return Promise.resolve(false);
         }
         this.isClockingInfoModalOpen = true;
@@ -133,8 +139,18 @@ export abstract class ModePagePage {
         } else {
             await this.toastService.displayToast(`Ce badgeage n'a pas été pris
             en compte, car le badge numéro ${hexId} a déjà été badgé récemment`, ToastTypeEnum.ERROR);
+            this.isClockingInfoModalOpen = false;
+            return Promise.resolve(false);
         }
         this.isClockingInfoModalOpen = false;
         return Promise.resolve(true);
+    }
+
+    protected lockClockingDetection(): void {
+        this.areClockingDetected = false;
+    }
+
+    protected unlockClockingDetection(): void {
+        this.areClockingDetected = true;
     }
 }

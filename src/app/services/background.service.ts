@@ -9,27 +9,18 @@ import {NfcService} from '@app/services/nfc.service';
 })
 export class BackgroundService {
 
-    private sub: Subscription;
-
-    public constructor(private backgroundMode: BackgroundMode, private nfc: NfcService) {
-        this.backgroundMode.on('enable').subscribe(() => console.log('enable'));
-        this.backgroundMode.on('disable').subscribe(() => console.log('disable'));
-        this.backgroundMode.on('activate').subscribe(() => console.log('activate'));
-        this.backgroundMode.on('deactivate').subscribe(() => console.log('deactivate'));
-        App.addListener('appStateChange', (appState) => {
-            console.log('App is active ->', appState.isActive);
-        });
+    public constructor(private backgroundMode: BackgroundMode) {
     }
 
-    public enableBackgroundMode() {
+    public enableBackgroundMode(): void {
         this.backgroundMode.enable();
     }
 
-    public disableBackgroundMode() {
+    public disableBackgroundMode(): void {
         this.backgroundMode.disable();
     }
 
-    public isAppInBackground() {
+    public isAppInBackground(): boolean {
         return this.backgroundMode.isActive();
     }
 
@@ -37,21 +28,15 @@ export class BackgroundService {
         return this.backgroundMode.on('deactivate');
     }
 
-    public wakeScreen() {
-        this.backgroundMode.wakeUp();
-    }
-
-    public unlockScreen() {
-        this.backgroundMode.unlock();
-    }
-
-    public activateBackgroundMode() {
-        this.backgroundMode.moveToBackground();
-    }
-
-    public moveToForeground() {
-        if (this.isAppInBackground()) {
-            this.backgroundMode.moveToForeground();
+    /**
+     * Force the application to go into background mode after delay second
+     *
+     * @param delay the delay in millisecond before the app goes to the background
+     */
+    public activateBackgroundMode(delay?: number): void {
+        if (!delay) {
+            delay = 100;
         }
+        timer(delay).subscribe(() => this.backgroundMode.moveToBackground());
     }
 }

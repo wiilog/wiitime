@@ -1,10 +1,10 @@
-import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {NavService} from '@app/services/nav/nav.service';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageService} from '@app/services/storage/storage.service';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {FooterMode} from '@app/components/footer/footer-mode.enum';
-import {from, Subject, Subscription} from 'rxjs';
+import {from, Subscription} from 'rxjs';
 import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 import {ModalController} from '@ionic/angular';
 import {App} from '@capacitor/app';
@@ -21,7 +21,7 @@ export class FooterComponent implements OnInit, OnDestroy {
     public mode: FooterMode;
 
     @Output()
-    public backgroundModeActivated: Subject<any>;
+    public backgroundModeActivated: EventEmitter<any>;
 
     public readonly footerMode = FooterMode;
 
@@ -35,7 +35,7 @@ export class FooterComponent implements OnInit, OnDestroy {
                 private storage: StorageService,
                 private backgroundService: BackgroundService,
                 private modalCtrl: ModalController,) {
-        this.backgroundModeActivated = new Subject<any>();
+        this.backgroundModeActivated = new EventEmitter<any>();
     }
 
     public ngOnInit(): void {
@@ -66,7 +66,7 @@ export class FooterComponent implements OnInit, OnDestroy {
                 if (isActive != null) {
                     const numberValue: number = parseInt(isActive.toString(), 10);
                     if (numberValue) {
-                        this.backgroundModeActivated.next();
+                        this.backgroundModeActivated.emit();
                         this.backgroundService.activateBackgroundMode();
                     } else {
                         this.navService.push(PagePath.KIOSK_MODE);
@@ -100,4 +100,3 @@ export class FooterComponent implements OnInit, OnDestroy {
         this.isPasswordCheckModalOpen = false;
     }
 }
-

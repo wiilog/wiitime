@@ -7,11 +7,11 @@ import {NavService} from '@app/services/nav/nav.service';
 import {StorageService} from '@app/services/storage/storage.service';
 import {SftpServices} from '@app/services/sftp/sftp.services';
 import {SQLiteService} from '@app/services/sqlite/sqlite.service';
-import {of, Subject, Subscription, timer, zip} from 'rxjs';
+import {from, iif, of, Subject, Subscription, timer, zip} from 'rxjs';
 import {PagePath} from '@app/services/nav/page-path.enum';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {SfpStatus} from '@app/services/storage/sftp-status.enum';
-import {mergeMap} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 import {WindowService} from '@app/services/window.service';
 import {ClockingInfoModalModeEnum} from '@app/modals/clocking-info-modal/clocking-info-modal-mode.enum';
 import {ModePagePage} from '@app/pages/mode-page/mode-page.page';
@@ -19,7 +19,7 @@ import {ToastService} from '@app/services/toast/toast.service';
 import {BackgroundTaskService} from '@app/services/background-task.service';
 import {AudioService} from '@app/services/audio/audio.service';
 import {BackgroundService} from '@app/services/background.service';
-import {App} from "@capacitor/app";
+import {PasswordCheckModalComponent} from '@app/modals/password-check-modal/password-check-modal.component';
 
 @Component({
     selector: 'app-active-mode',
@@ -42,7 +42,10 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
     private isSftpSetup: boolean;
     private clockingRecordSyncCompletedSubscription: Subscription;
     private nfcBackgroundSubscription: Subscription;
+    private nfcInternalBackgroundSubscription: Subscription;
     private backgroundModeExitedSubscription: Subscription;
+    private backgroundModeExitedInternalSubscription: Subscription;
+    private backgroundTagClockedEventFire: boolean;
 
     public constructor(protected nfcService: NfcService,
                        protected storageService: StorageService,
@@ -94,15 +97,30 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
             this.nfcBackgroundSubscription.unsubscribe();
         }
 
+        if (this.nfcInternalBackgroundSubscription && !this.nfcInternalBackgroundSubscription) {
+            this.nfcInternalBackgroundSubscription.unsubscribe();
+        }
+
         if (this.clockingRecordSyncCompletedSubscription && !this.clockingRecordSyncCompletedSubscription.closed) {
             this.clockingRecordSyncCompletedSubscription.unsubscribe();
         }
+
+        if (this.backgroundModeExitedSubscription && !this.backgroundModeExitedSubscription.closed) {
+            this.backgroundModeExitedSubscription.unsubscribe();
+        }
+
+        if (this.backgroundModeExitedInternalSubscription && !this.backgroundModeExitedInternalSubscription.closed) {
+            this.backgroundModeExitedInternalSubscription.unsubscribe();
+        }
+
+        this.backgroundService.disableBackgroundMode();
     }
 
     public initPage(): void {
         this.enterModePage();
 
         this.backgroundService.enableBackgroundMode();
+        this.backgroundTagClockedEventFire = false;
 
         if (this.refreshHeader$) {
             this.refreshHeader$.next();
@@ -145,18 +163,67 @@ export class ActiveModePage extends ModePagePage implements ViewWillEnter, ViewW
             });
     }
 
-    public setupForBackgroundMode() {
-        this.nfcBackgroundSubscription = this.nfcService.addNdefFormatableCallback()
-            .subscribe((clockingEvent) => {
-                console.log(clockingEvent);
-                this.manageClocking(clockingEvent.tag.id, ClockingInfoModalModeEnum.KIOSK_MODE)
-                    .then(() => this.backgroundService.activateBackgroundMode());
+    public setupForBackgroundMode(): void {
+        if (!this.nfcBackgroundSubscription) {
+            this.nfcBackgroundSubscription = this.nfcService.addNdefFormatableCallback()
+                .subscribe((clockingEvent) => {
+                    this.backgroundTagClockedEventFire = true;
+                    this.nfcInternalBackgroundSubscription =
+                        from(this.manageClocking(clockingEvent.tag.id, ClockingInfoModalModeEnum.KIOSK_MODE, true))
+                            .pipe(
+                                map((manageResult: boolean) =>
+                                    this.backgroundService.activateBackgroundMode(
+                                        manageResult === true ? undefined : ToastService.TOAST_DEFAULT_DURATION)
+                                ),
+                            )
+                            .subscribe(() => {
+                                this.nfcInternalBackgroundSubscription.unsubscribe();
+                            });
+                });
+        }
+
+        if (!this.backgroundModeExitedSubscription) {
+            this.backgroundModeExitedSubscription = this.backgroundService.getBackgroundModeExited$().subscribe(() => {
+                this.lockClockingDetection();
+                // The use of a timer here is not proper at all, but I did not think of another solution in time
+                this.backgroundModeExitedInternalSubscription = timer(100).pipe(
+                    mergeMap(() => {
+                        if (this.backgroundTagClockedEventFire === true) {
+                            this.backgroundTagClockedEventFire = false;
+                            return of(true);
+                        }
+                        return from(this.presentPasswordCheckModal());
+                    }),
+                    map((result) => {
+                        if (!result) {
+                            this.backgroundService.activateBackgroundMode();
+                        }
+                    })
+                ).subscribe(() => this.backgroundModeExitedInternalSubscription.unsubscribe());
             });
+        }
+    }
 
-        /*
-        this.backgroundModeExitedSubscription = this.backgroundService.getBackgroundModeExited$().subscribe(() => {
-
+    private async presentPasswordCheckModal(): Promise<boolean> {
+        const modal = await this.modalCtrl.create({
+            component: PasswordCheckModalComponent,
+            keyboardClose: true,
+            componentProps: {
+                modalTitle: 'Quitter le mode background',
+            },
+            cssClass: 'auto-height',
+            backdropDismiss: false,
         });
-         */
+        await modal.present();
+
+        const {role} = await modal.onWillDismiss();
+        if (role === 'confirm') {
+            this.unlockClockingDetection();
+            this.nfcBackgroundSubscription.unsubscribe();
+            this.nfcBackgroundSubscription = null;
+            return Promise.resolve(true);
+        } else {
+            return Promise.resolve(false);
+        }
     }
 }

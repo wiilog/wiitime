@@ -41,6 +41,6 @@ export class NfcService {
     }
 
     public addNdefFormatableCallback(): Observable<any> {
-        return this.nfc.addNdefFormatableListener();
+        return this.nfc.addNdefFormatableListener(() => console.log('callback on'), (error) => console.error('failed', error));
     }
 }

@@ -8,7 +8,7 @@ import {ToastTypeEnum} from '@app/services/toast/toast-type.enum';
 })
 export class ToastService {
 
-    private static readonly TOAST_DEFAULT_DURATION = 4000;
+    public static readonly TOAST_DEFAULT_DURATION = 4000;
 
     private currentToast: HTMLIonToastElement;
     private lastToastDismissSubscription: Subscription;
