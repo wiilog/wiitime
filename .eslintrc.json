@@ -46,7 +46,14 @@
                         "style": "camelCase"
                     }
                 ],
-                "@typescript-eslint/naming-convention": ["off"]
+                "@typescript-eslint/naming-convention": [
+                    "off"
+                ],
+                "max-len": [
+                    "error",
+                    120,
+                    2
+                ]
             }
         },
         {

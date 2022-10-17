@@ -10,6 +10,11 @@ export class DateService {
     public constructor() {
     }
 
+    private static FormatWithLeadingZero(n: number): string {
+        const prefix = n < 10 ? '0' : '';
+        return `${prefix}${n}`;
+    }
+
     public setDateTime(date: Date, hour: number, minute: number): Date {
         const newDate = new Date(date);
         newDate.setHours(hour);
@@ -60,27 +65,27 @@ export class DateService {
         if (!separator) {
             timeSeparator = '';
         }
-        return this.dateHourToString(date) + timeSeparator + this.dateMinuteToString(date)
-            + timeSeparator + this.dateSecondToString(date);
+        return this.dateHoursToString(date) + timeSeparator + this.dateMinutesToString(date)
+            + timeSeparator + this.dateSecondsToString(date);
     }
 
     public dateMonthToString(date: Date): string {
-        return date.getMonth() < 10 ? '0'.concat(date.getMonth().toString()) : date.getMonth().toString();
+        return DateService.FormatWithLeadingZero(date.getMonth() + 1);
     }
 
     public dateDayToString(date: Date): string {
-        return date.getDate() < 10 ? '0'.concat(date.getDate().toString()) : date.getDate().toString();
+        return DateService.FormatWithLeadingZero(date.getDate());
     }
 
-    public dateHourToString(date: Date): string {
-        return date.getHours() < 10 ? '0'.concat(date.getHours().toString()) : date.getHours().toString();
+    public dateHoursToString(date: Date): string {
+        return DateService.FormatWithLeadingZero(date.getHours());
     }
 
-    public dateMinuteToString(date: Date): string {
-        return date.getMinutes() < 10 ? '0'.concat(date.getMinutes().toString()) : date.getMinutes().toString();
+    public dateMinutesToString(date: Date): string {
+        return DateService.FormatWithLeadingZero(date.getMinutes());
     }
 
-    public dateSecondToString(date: Date): string {
-        return date.getSeconds() < 10 ? '0'.concat(date.getSeconds().toString()) : date.getSeconds().toString();
+    public dateSecondsToString(date: Date): string {
+        return DateService.FormatWithLeadingZero(date.getSeconds());
     }
 }

@@ -65,10 +65,10 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
     public readonly clockingSoundDropdownFieldName = 'Choix du bip';
     public clockingSoundDropdownCurrentOption: DropdownConfig;
     public readonly clockingSoundDropdownConfig: DropdownConfig[] = [
-        {elemName: 'bip 1', value: 'clockingSound.wav'},
-        {elemName: 'bip 2', value: 'clockingSound2.wav'},
-        {elemName: 'bip 3', value: 'clockingSound3.wav'},
-        {elemName: 'bip 4', value: 'clockingSound4.wav'},
+        {name: 'bip 1', value: 'clockingSound.wav'},
+        {name: 'bip 2', value: 'clockingSound2.wav'},
+        {name: 'bip 3', value: 'clockingSound3.wav'},
+        {name: 'bip 4', value: 'clockingSound4.wav'},
     ];
 
     //volume range field settings
@@ -99,14 +99,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         this.isUpdateUserInfoModalOpen = false;
         this.loadAudioSubscription = this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME)
             .pipe(
-                mergeMap((clockingSoundFilePath) => this.audioService.tryPreloadAudio(
-                        this.clockingSoundId,
-                        {
-                            assetPath: clockingSoundFilePath,
-                            isPathUrl: false
-                        }
-                    )
-                )
+                mergeMap((file) => this.audioService.tryPreloadAudio(this.clockingSoundId, file))
             )
             .subscribe(() => {
                 this.loadAudioSubscription.unsubscribe();
@@ -135,14 +128,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
         }
         this.loadAudioSubscription = this.audioService.unloadAudio(this.clockingSoundId)
             .pipe(
-                mergeMap(() => this.audioService.tryPreloadAudio(
-                        this.clockingSoundId,
-                        {
-                            assetPath: this.clockingSoundDropdownCurrentOption.value,
-                            isPathUrl: false
-                        }
-                    )
-                )
+                mergeMap(() => this.audioService.tryPreloadAudio(this.clockingSoundId, this.clockingSoundDropdownCurrentOption.value))
             )
             .subscribe(() => {
                 this.loadAudioSubscription.unsubscribe();
@@ -262,7 +248,7 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
             console.log('Invalid form content !');
             return;
         }
-        console.log(this.clockingSoundDropdownCurrentOption);
+
         this.saveSubscription = this.loadingService.presentLoadingWhile({
             message: 'sauvegarde en cours...',
             event: () => zip(
@@ -271,10 +257,9 @@ export class GlobalSettingsComponent extends SettingsMenuComponent implements On
                 this.storageService.setValue(StorageKeyEnum.ADMIN_PASSWORD, this.adminPassword),
                 this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_MESSAGE, this.form.value.kioskMessage),
                 this.storageService.setValue(StorageKeyEnum.KIOSK_MODE_COMMUNICATION, this.form.value.kioskCommunication),
-                this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE,
-                    this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
+                this.storageService.setValue(StorageKeyEnum.CURRENT_SECONDARY_MODE, this.currentToggleOption === SecondaryMode.KIOSK ? '0' : '1'),
                 this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME, this.form.value.clockingVolume.toString()),
-                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME, this.clockingSoundDropdownCurrentOption.value)
+                this.storageService.setValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME, this.clockingSoundDropdownCurrentOption && this.clockingSoundDropdownCurrentOption.value)
             )
         })
             .subscribe(() => {

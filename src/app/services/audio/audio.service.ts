@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {StorageService} from '@app/services/storage/storage.service';
-import {AudioAssetInfo} from '@app/services/audio/audio-asset-info';
 import {StorageKeyEnum} from '@app/services/storage/storage-key.enum';
 import {from, Observable, of, ReplaySubject} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
@@ -18,7 +17,7 @@ export class AudioService {
         this.preloadedAudioId = new Map<string, AudioStatus>();
     }
 
-    public tryPreloadAudio(audioId: string, audioInfo: AudioAssetInfo): Observable<boolean> {
+    public tryPreloadAudio(audioId: string, fileName: string): Observable<boolean> {
         const loadOver = new ReplaySubject<any>(1);
 
         if (this.preloadedAudioId.has(audioId)) {
@@ -33,7 +32,7 @@ export class AudioService {
             currentAudioStatus.unload$Array.pop()
                 .pipe(
                     mergeMap(() =>
-                        this.preloadAudio(audioId, audioInfo)
+                        this.preloadAudio(audioId, fileName)
                     ),
                 )
                 .subscribe((loadResult: boolean) => {
@@ -51,7 +50,7 @@ export class AudioService {
             this.preloadedAudioId.set(audioId, currentAudioStatus);
 
             currentAudioStatus.load$Array.push(loadOver);
-            this.preloadAudio(audioId, audioInfo)
+            this.preloadAudio(audioId, fileName)
                 .subscribe((loadResult: boolean) => {
                     currentAudioStatus.isLoaded = true;
                     loadOver.next(loadResult);
@@ -140,17 +139,17 @@ export class AudioService {
         return unloadOver;
     }
 
-    private preloadAudio(audioId: string, audioInfo: AudioAssetInfo): Observable<boolean> {
+    private preloadAudio(audioId: string, fileName: string): Observable<boolean> {
         return this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_VOLUME)
             .pipe(
                 mergeMap((clockingSoundVolume) =>
                     from(NativeAudio.preload({
                         assetId: audioId,
-                        assetPath: audioInfo.assetPath,
+                        assetPath: `public/assets/sounds/${fileName}`,
                         //volume should be between 0 and 1 and value from storage is between 0 and 100
                         volume: Number(clockingSoundVolume) / 100,
                         audioChannelNum: 1,
-                        isUrl: audioInfo.isPathUrl,
+                        isUrl: false,
                     }))
                 ),
                 map(() =>

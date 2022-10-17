@@ -1,5 +1,5 @@
 export interface DropdownConfig {
-    elemName: string;
+    name: string;
     value: string;
 }
 

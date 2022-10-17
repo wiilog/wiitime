@@ -57,12 +57,7 @@ export abstract class ModePagePage {
 
         this.soundSetterSubscription = this.storageService.getValue(StorageKeyEnum.CLOCKING_SOUND_FILENAME)
             .pipe(
-                mergeMap((clockingSoundFilePath) => this.audioService.tryPreloadAudio(this.clockingSoundId,
-                    {
-                        assetPath: clockingSoundFilePath,
-                        isPathUrl: false
-                    })
-                )
+                mergeMap((clockingSoundFilePath) => this.audioService.tryPreloadAudio(this.clockingSoundId, clockingSoundFilePath))
             )
             .subscribe((result: boolean) => console.log('sound set result:', result));
     }

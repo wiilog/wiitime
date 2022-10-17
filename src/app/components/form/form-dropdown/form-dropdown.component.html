@@ -9,10 +9,10 @@
                 position="fixed"
                 (ionChange)="handleChange($event)"
                 [compareWith]="compareWith"
-                [value]="currentOption.value">
+                [value]="currentOption && currentOption.value">
         <ion-select-option *ngFor="let elem of dropdownConfig"
                            [value]="elem.value">
-            {{elem.elemName}}
+            {{elem.name}}
         </ion-select-option>
     </ion-select>
 </ion-item>
