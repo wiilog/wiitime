@@ -1,10 +1,10 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import {CapacitorConfig} from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'WiiTime',
-  webDir: 'www',
-  bundledWebRuntime: false
+    appId: 'com.wiilog.wiitime',
+    appName: 'WiiTime',
+    webDir: 'www',
+    bundledWebRuntime: false
 };
 
 export default config;

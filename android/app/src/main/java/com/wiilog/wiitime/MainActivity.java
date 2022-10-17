@@ -1,9 +1,9 @@
-package io.ionic.starter;
+package com.wiilog.wiitime;
 
 import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 
-import io.ionic.starter.plugins.Sftp.SftpPlugin;
+import com.wiilog.wiitime.plugins.Sftp.SftpPlugin;
 
 public class MainActivity extends BridgeActivity {
 

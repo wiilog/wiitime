@@ -1,4 +1,4 @@
-package io.ionic.starter.plugins.Sftp;
+package com.wiilog.wiitime.plugins.Sftp;
 
 public class NotConnectedException extends Exception {
 
